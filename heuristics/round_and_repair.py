@@ -14,7 +14,7 @@ def round_and_repair(G, x_frac: Dict[tuple, float], y_frac: Dict[int, float], cu
     # global color priority (higher y first)
     ranked_colors = sorted(colors, key=lambda c: y_frac.get(c, 0.0), reverse=True)
 
-    # ---------- Ordered rounding (DSATUR) ----------
+    #Ordered rounding (DSATUR)
     # Track: uncolored set, saturation sets, degrees
     uncolored = set(V)
     colored: Dict[int, int] = {}
@@ -57,7 +57,7 @@ def round_and_repair(G, x_frac: Dict[tuple, float], y_frac: Dict[int, float], cu
             colored[v] = candidate
             assigned = True
         else:
-            # no available color: try a Kempe swap
+            #ifno available color: try a Kempe swap
             want = max(ranked_colors, key=lambda c: x_frac.get((v, c), 0.0))
             # attempt a Kempe swap between 'want' and any neighbor color
             tried = False
@@ -83,7 +83,7 @@ def round_and_repair(G, x_frac: Dict[tuple, float], y_frac: Dict[int, float], cu
             if u in uncolored and colored.get(v) is not None:
                 sat_sets[u].add(colored[v])
 
-    # ---------- Repair a small number of remaining conflicts ----------
+    #just repair a small number of remaining conflicts
     cand = colored
 
     def conflicts():
@@ -124,7 +124,7 @@ def round_and_repair(G, x_frac: Dict[tuple, float], y_frac: Dict[int, float], cu
             if ok:
                 moved = True
                 break
-            kempe_swap(cand, comp, c_now, c_try)  # revert
+            kempe_swap(cand, comp, c_now, c_try)  # revert one more time
 
     return cand
 

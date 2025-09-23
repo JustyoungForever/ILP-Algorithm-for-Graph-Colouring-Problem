@@ -6,7 +6,7 @@ def _try_recolor_vertex(G, coloring: Dict[int, int], v: int, target_colors: List
     """Try to recolor v into one of target_colors; greedy first, then Kempe swaps."""
     neigh_cols = {coloring.get(u) for u in G.neighbors(v)}
 
-    # greedy recolor
+    #greedy recolor
     for c in target_colors:
         if c not in neigh_cols:
             coloring[v] = c
@@ -22,7 +22,7 @@ def _try_recolor_vertex(G, coloring: Dict[int, int], v: int, target_colors: List
         ok = all(coloring[w] != coloring[v] for w in G.neighbors(v))
         if ok:
             return True
-        # revert if failed
+        #revert if failed
         kempe_swap(coloring, comp, c_now, c)
     return False
 
@@ -41,7 +41,7 @@ def consolidate_colors(G, coloring: Dict[int, int], passes: int = 5) -> Tuple[Di
         if len(colors) <= 1:
             break
 
-        # try to clear the highest color class
+        #try to clear the highest color class
         maxc = max(colors)
         targets = list(range(maxc))
         vertices = [v for v, c in curr.items() if c == maxc]
@@ -52,7 +52,7 @@ def consolidate_colors(G, coloring: Dict[int, int], passes: int = 5) -> Tuple[Di
                 moved_all = False
 
         if moved_all:
-            # remove the emptied color class by reindexing
+            #remove the emptied color class by reindexing
             used = sorted(set(curr.values()))
             remap = {c: i for i, c in enumerate(used)}
             for v in curr:

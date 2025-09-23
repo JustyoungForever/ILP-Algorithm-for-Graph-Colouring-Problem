@@ -10,11 +10,11 @@ def choose_colors_after_fixing(
     eps: float = 1e-6,
 ) -> List[int]:
     """
-    Safe prefix-shrink rule driven by the LP lower bound:
+    safe prefix-shrink rule driven by the LP lower bound:
       K_new = min(UB, max(LB_reserved, ceil(z_LP)))
-    - LB_reserved = max(reserved_colors)+1 (typically the clique size)
-    - Always return a contiguous prefix 0..K_new-1 to keep invariants.
-    - We never expand K here; we only shrink or keep the same.
+    - LB_reserved = max(reserved_colors)+1 (the clique size)
+    -always return a contiguous prefix 0..K_new-1 to keep invariants.
+    -  only shrink or keep the same.
     """
     if not allowed_colors:
         return []

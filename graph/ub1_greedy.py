@@ -3,7 +3,7 @@ from graph.kempe import kempe_chain_component, kempe_swap
 
 def _try_recolor_vertex(G, coloring: Dict[int, int], v: int, targets: List[int]) -> bool:
     neigh_cols = {coloring.get(u) for u in G.neighbors(v)}
-    # greedy recolor
+    #greedy recolor
     for c in targets:
         if c not in neigh_cols:
             coloring[v] = c
@@ -42,7 +42,7 @@ def try_ub_minus_one_greedy(G, coloring: Dict[int, int]) -> Tuple[Dict[int, int]
             moved_all = False
 
     if moved_all:
-        # success: reindex colors to keep 0..k-1 contiguous
+        #success: reindex colors to keep 0..k-1 contiguous
         used = sorted(set(curr.values()))
         remap = {c: i for i, c in enumerate(used)}
         for v in curr:

@@ -3,11 +3,11 @@ from ortools.linear_solver import pywraplp
 
 def solve_lp_and_extract(solver: pywraplp.Solver, var_maps: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Solve LP with GLOP and extract:
+    solve LP with GLOP and extract:
       - z_LP
       - x_frac: dict[(v,c)] -> float
-      - y_frac: dict[c] -> float
-      - rc_y:   dict[c] -> reduced cost of y_c
+      - y_frac:dict[c] -> float
+      - rc_y: dict[c] -> reduced cost of y_c
     """
     status = solver.Solve()
     if status != pywraplp.Solver.OPTIMAL:

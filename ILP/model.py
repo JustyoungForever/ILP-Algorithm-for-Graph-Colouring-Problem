@@ -36,21 +36,21 @@ def build_lp_model(
     # objective
     solver.Minimize(solver.Sum([y_vars[c] for c in C]))
 
-    # (1) each vertex exactly one color
+    #1) each vertex exactly one color
     for v in V:
         solver.Add(solver.Sum(x_vars[(v, c)] for c in C) == 1.0)
 
-    # (2) edge constraints per color
+    # 2) edge constraints per color
     for (u, v) in G.edges():
         for c in C:
             solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= 1.0)
 
-    # (3) linking x <= y
+    #3) linking x <= y
     for v in V:
         for c in C:
             solver.Add(x_vars[(v, c)] <= y_vars[c])
 
-    # (4) clique-based symmetry breaking: fix clique_nodes[i] to color i
+    #4) clique-based symmetry breaking: fix clique_nodes[i] to color i
     t = min(len(clique_nodes), len(C))
     for i in range(t):
         v = clique_nodes[i]
@@ -62,12 +62,12 @@ def build_lp_model(
             else:
                 solver.Add(x_vars[(v, c)] == 0.0)
 
-    # (5) precedence y_{c+1} ≤ y_c
+    # 5) precedence y_{c+1} ≤ y_c
     if add_precedence:
         for i in range(len(C) - 1):
             solver.Add(y_vars[C[i + 1]] <= y_vars[C[i]])
 
-    # (6) clique cuts: ∑_{v∈Q} x_{v,c} ≤ 1
+    #6) clique cuts: ∑_{v∈Q} x_{v,c} ≤ 1
     if extra_cliques:
         for Q in extra_cliques:
             Qset = set(Q)

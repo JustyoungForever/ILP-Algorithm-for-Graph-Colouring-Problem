@@ -8,9 +8,9 @@ from graph.dsatur import dsatur_coloring
 import time
 
 if __name__ == "__main__":
-    G = load_demo_graph()  # load small  graph
+    G = load_demo_graph()  # load the small  graph
 
-    # baseline: DSATUR
+    #baseline: DSATUR
     t0 = time.time()
     ds_col = dsatur_coloring(G)
     t_ds = time.time() - t0
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     print(f"Time (s): {t_ds:.6f}")
     print_check_summary(rep_ds, prefix="[DSATUR] ")
 
-    # iterative LP Heuristic
+    # iterative LP heuristic
     t1 = time.time()
     result = run_iterative_lp(
         G,
