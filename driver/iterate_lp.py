@@ -12,7 +12,6 @@ from ilp.lp_solve import solve_lp_and_extract
 from ilp.fixing import choose_colors_after_fixing
 from heuristics.round_and_repair import round_and_repair_multi
 
-
 def _bootstrap_initial_from_lp(
     G,
     headroom: int = 3,
