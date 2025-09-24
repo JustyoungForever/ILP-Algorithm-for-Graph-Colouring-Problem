@@ -26,6 +26,11 @@ ILP-Algorithm-for-Graph-Colouring-Problem/
 
 **Abhängigkeiten**: `python>=3.9`, `networkx`, `ortools` (GLOP).
 
+
+**useage**: 
+```python
+python3 main.py
+```
 ---
 
 ## Mathematisches Modell (Assignment-LP als Relaxation)
