@@ -1,50 +1,86 @@
-from driver.iterate_lp import run_iterative_lp
+# main.py
+import argparse, time
 from graph.loader import load_demo_graph
-from graph.verify import print_check_summary, verify_coloring
-
-# baseline:DSATUR
+from graph.verify import verify_coloring, print_check_summary
 from graph.dsatur import dsatur_coloring
-
-import time
+from driver.iterate_lp import run_iterative_lp, run_iterative_lp_v2
 
 if __name__ == "__main__":
-    G = load_demo_graph()  # load the small  graph
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--algo", default="iterlp2", choices=["dsatur", "iterlp", "iterlp2"])
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--time", type=int, default=60)
+    ap.add_argument("--init-heuristic", default="dsatur", choices=["dsatur","smallest_last"])
+    ap.add_argument("--fix-policy", default="prefix_shrink+strong_assign")
+    ap.add_argument("--strong-margin", type=float, default=0.25)
+    ap.add_argument("--max-fix-per-round", type=int, default=50)
+    ap.add_argument("--restarts", type=int, default=16)
+    ap.add_argument("--perturb-y", type=float, default=1e-6)
+    args = ap.parse_args()
 
-    #baseline: DSATUR
-    t0 = time.time()
-    ds_col = dsatur_coloring(G)
-    t_ds = time.time() - t0
-    UB_ds = len(set(ds_col.values()))
-    rep_ds = verify_coloring(G, ds_col, allowed_colors=list(range(UB_ds)))
+    G = load_demo_graph(seed=args.seed)
 
-    print("=== DSATUR Baseline ===")
-    print(f"UB (colors used): {UB_ds}")
-    print(f"Time (s): {t_ds:.6f}")
-    print_check_summary(rep_ds, prefix="[DSATUR] ")
+    if args.algo == "dsatur":
+        t0 = time.time()
+        col = dsatur_coloring(G)
+        t1 = time.time() - t0
+        UB = len(set(col.values()))
+        rep = verify_coloring(G, col, allowed_colors=list(range(UB)))
+        print("=== DSATUR ===")
+        print(f"UB={UB} time={t1:.4f}s")
+        print_check_summary(rep, prefix="[DSATUR] ")
+    elif args.algo == "iterlp":
+        t0 = time.time()
+        res = run_iterative_lp(G, time_limit_sec=args.time, verbose=True)
+        t1 = time.time() - t0
+        print("\n=== Final (Iterative LP v1) ===")
+        print(f"LB={res['LB']} UB={res['UB']} iters={res['iters']} stop={res['stop_reason']} time={t1:.4f}s")
+        print_check_summary(res['final_check'], prefix="[IterLP] ")
+        #dsatur as baseline
+        t0 = time.time()
+        ds_col = dsatur_coloring(G)
+        ds_time = time.time() - t0
+        UB_ds = len(set(ds_col.values()))
+        rep_ds = verify_coloring(G, ds_col, allowed_colors=list(range(UB_ds)))
+        print("[Baseline/DSATUR] colors=%d | time=%.4fs | feasible=%s | conflicts=%d"
+            % (UB_ds, ds_time, rep_ds["feasible"], rep_ds["num_conflicts"]))
+    else:
+        if args.algo == "iterlp2":
+            print("[Main] algo=iterlp2 | time=%ds | seed=%d | init=%s | fix-policy=%s | restarts=%d | perturb-y=%g"
+                % (args.time, args.seed, args.init_heuristic, args.fix_policy, args.restarts, args.perturb_y))
+            #  DSATUR baseline 
+            t0 = time.time()
+            ds_col = dsatur_coloring(G)
+            ds_time = time.time() - t0
+            UB_ds = len(set(ds_col.values()))
+            rep_ds = verify_coloring(G, ds_col, allowed_colors=list(range(UB_ds)))
+            print("[Baseline/DSATUR] colors=%d | time=%.4fs | feasible=%s | conflicts=%d"
+                % (UB_ds, ds_time, rep_ds["feasible"], rep_ds["num_conflicts"]))
 
-    # iterative LP heuristic
-    t1 = time.time()
-    result = run_iterative_lp(
-        G,
-        time_limit_sec=6000,
-        max_rounds=200,
-        stall_rounds=10,
-        min_rounds=5,
-        verbose=True,
-    )
-    t_lp = time.time() - t1
+            #  run iterlp2 with timing 
+            t1 = time.time()
+            res = run_iterative_lp_v2(
+                G,
+                time_limit_sec=args.time,
+                verbose=True,
+                init_heuristic=args.init_heuristic,
+                fix_policy=args.fix_policy,
+                strong_margin=args.strong_margin,
+                max_fix_per_round=args.max_fix_per_round,
+                restarts=args.restarts,
+                perturb_y=args.perturb_y,
+            )
+            lp_time = time.time() - t1
 
-    print("\n=== Final Result (Iterative LP) ===")
-    print(f"LB (clique size): {result['LB']}")
-    print(f"UB (colors used): {result['UB']}")
-    print(f"Iterations: {result['iters']}")
-    print(f"Stopped: {result['stop_reason']}")
-    print(f"Time (s): {t_lp:.6f}")
-    print_check_summary(result['final_check'], prefix="[IterLP] ")
+            #  comparison with DSATUR
+            UB_lp = res["UB"]
+            delta = UB_ds - UB_lp
+            verdict = "IterLP2 better" if delta > 0 else ("Tie" if delta == 0 else "DSATUR better")
+            print("[Compare] DSATUR colors=%d vs IterLP2 colors=%d  → %s (Δ=%d)"
+                % (UB_ds, UB_lp, verdict, delta))
+            print("[Compare] DSATUR time=%.4fs | IterLP2 time=%.4fs | stop=%s"
+                % (ds_time, lp_time, res["stop_reason"]))
 
-    # side-by-side comparison
-    print("\n=== Comparison: DSATUR vs Iterative-LP ===")
-    delta = UB_ds - result['UB']
-    better = "Iterative-LP better" if delta > 0 else ("Tie" if delta == 0 else "DSATUR better")
-    print(f"DSATUR colors = {UB_ds} | IterLP colors = {result['UB']}  -> {better} (Δ = {delta})")
-    print(f"DSATUR time   = {t_ds:.6f}s | IterLP time   = {t_lp:.6f}s")
+            # final short recap (keep your existing final print too)
+            print("[Main] Done. stop_reason=%s | LB=%d | UB=%d | iters=%d"
+                % (res["stop_reason"], res["LB"], res["UB"], res["iters"]))

@@ -1,3 +1,5 @@
+# graph/kempe.py
+
 from collections import deque
 
 def kempe_chain_component(G, coloring, u, c1, c2):

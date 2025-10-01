@@ -1,3 +1,4 @@
+# graph/loader.py
 import networkx as nx
 
 def load_demo_graph(seed: int = 0):

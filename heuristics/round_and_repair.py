@@ -1,3 +1,4 @@
+# heuristics/round_and_repair.py
 from typing import Dict, List
 import random
 from graph.kempe import kempe_chain_component, kempe_swap
@@ -129,13 +130,13 @@ def round_and_repair(G, x_frac: Dict[tuple, float], y_frac: Dict[int, float], cu
     return cand
 
 
-def round_and_repair_multi(G, x_frac, y_frac, current_UB, restarts=16, seed=0) -> Dict[int, int]:
-    """Multi-start wrapper: jitter y_frac to diversify tie-breaks; keep the best (fewest colors used)."""
+# heuristics/round_and_repair.py 仅改 wrap 多启动函数
+def round_and_repair_multi(G, x_frac, y_frac, current_UB, restarts=36, seed=0, perturb_y: float = 1e-6):
     best = None
     best_used = 10**9
     rnd = random.Random(seed)
     for _ in range(restarts):
-        y_jitter = {c: y_frac.get(c, 0.0) + 1e-6 * rnd.random() for c in range(current_UB)}
+        y_jitter = {c: y_frac.get(c, 0.0) + perturb_y * rnd.random() for c in range(current_UB)}
         cand = round_and_repair(G, x_frac, y_jitter, current_UB)
         used = len(set(cand.values()))
         if used < best_used:
