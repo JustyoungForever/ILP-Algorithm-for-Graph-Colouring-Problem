@@ -82,7 +82,7 @@ python3 main.py --algo iterlp2 --time 60 --seed 0 \
 
 ---
 
-## Algorithmus (Schritt 0–5; entspricht der Betreuer-Vorgabe)
+## Algorithmus (Schritt 0–5)
 
 **Schritt 0 – Initialisierung**
 
