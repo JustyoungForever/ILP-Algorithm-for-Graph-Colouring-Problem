@@ -42,11 +42,12 @@ ILP-Algorithm-for-Graph-Colouring-Problem/
 
 
 ```bash
-python3 main.py --algo iterlp2 --time 60 --seed 0 \
+python3 main.py --algo iterlp2 --time 300 --seed 0 \
   --init-heuristic smallest_last \
   --fix-policy prefix_shrink+rounded_support \
   --max-fix-per-round 20 \
-  --restarts 48 --perturb-y 1e-6
+  --restarts 48 --perturb-y 1e-6 \
+  2>&1 | tee -a logs/run_$(date +%F_%H%M%S).log
 ```
 
 ### Wichtige Argumente

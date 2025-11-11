@@ -2,7 +2,7 @@
 from typing import Dict, Any, List, Tuple, Optional, Iterable
 
 FixPlan = Dict[str, Any]
-# structure: {"y_zero": List[int], "x_one": List[Tuple[int,int]], "x_zero": List[Tuple[int,int]]}
+#structure: {"y_zero": List[int], "x_one": List[Tuple[int,int]], "x_zero": List[Tuple[int,int]]}
 
 def pick_fixings(
     G,

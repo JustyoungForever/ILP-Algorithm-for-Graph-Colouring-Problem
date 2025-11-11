@@ -1,0 +1,7 @@
+[Main] algo=iterlp2 | time=300s | seed=0 | init=smallest_last | fix-policy=prefix_shrink+rounded_support | restarts=48 | perturb-y=1e-06
+[Baseline/DSATUR] colors=4 | time=0.0003s | feasible=True | conflicts=0
+[Init] graph: |V|=10 |E|=19 |LB|=4 |UB(init)|=4 |K|=4 via smallest_last
+[Init] LB=4 | UB(init:smallest_last)=4
+[Compare] DSATUR colors=4 vs IterLP2 colors=4  → Tie (Δ=0)
+[Compare] DSATUR time=0.0003s | IterLP2 time=0.3339s | stop=UB==LB
+[Main] Done. stop_reason=UB==LB | LB=4 | UB=4 | iters=0

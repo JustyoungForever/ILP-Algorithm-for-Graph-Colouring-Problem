@@ -1,0 +1,125 @@
+[Main] algo=iterlp2 | time=300s | seed=0 | init=smallest_last | fix-policy=prefix_shrink+rounded_support | restarts=48 | perturb-y=1e-06
+[Baseline/DSATUR] colors=32 | time=0.0225s | feasible=True | conflicts=0
+[Init] graph: |V|=100 |E|=3941 |LB|=16 |UB(init)|=35 |K|=35 via smallest_last
+[Init] LB=16 | UB(init:smallest_last)=35
+[LP] model built once (incremental), initial |C|=35 (K=35) with precedence & clique-cuts
+[Round 1] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=35 | t=3.96s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=33 | conflicts=0
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+  [Rounding/Local] improved UB -> 33
+  [Sync] K aligned to new UB: K=33
+  [Rounding] feasible=True | used=33 | conflicts=0
+  [Side] skip: K+1=34 exceeds current UB=33
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=16 | x_one=10 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [FixApply] applying tokens=10 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=32 | conflicts=0
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+  [After-Fix] improved UB -> 32
+  [Sync] K aligned to new UB: K=32
+  [Round 1 END] UB=32 | K=32 | ceil(zLP)=17 | improved=True | fixed=True
+[Round 2] zLP=17.000000 | ceil(zLP)=17 | K=32 | UB=32 | t=25.37s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=32
+  [Rounding] feasible=True | used=32 | conflicts=0
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+  [Rounding] feasible=True | used=32 | conflicts=0
+  [Side] skip: K+1=33 exceeds current UB=32
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=15 | x_one=10 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [FixApply] applying tokens=10 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=31 | conflicts=0
+[LocalSearch] highest color class removed; colors now=31
+[LocalSearch] highest color class removed; colors now=31
+[LocalSearch] highest color class removed; colors now=31
+  [After-Fix] improved UB -> 31
+  [Sync] K aligned to new UB: K=31
+  [Round 2 END] UB=31 | K=31 | ceil(zLP)=17 | improved=True | fixed=True
+[Round 3] zLP=17.000000 | ceil(zLP)=17 | K=31 | UB=31 | t=59.25s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=31
+  [Rounding] feasible=False | used=31 | conflicts=11
+  [Side] trying K+1 rounding (K=31 - 32) to break stalemate
+  [Side] skip: K+1=32 exceeds current UB=31
+  [Rounding] feasible=False | used=31 | conflicts=11
+  [Side] skip: K+1=32 exceeds current UB=31
+  [FixPolicy] y_zero=14 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 3 END] UB=31 | K=31 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 4] zLP=17.000000 | ceil(zLP)=17 | K=31 | UB=31 | t=91.61s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=31
+  [Rounding] feasible=False | used=31 | conflicts=2
+  [Side] trying K+1 rounding (K=31 - 32) to break stalemate
+  [Side] skip: K+1=32 exceeds current UB=31
+  [Rounding] feasible=False | used=31 | conflicts=2
+  [Side] skip: K+1=32 exceeds current UB=31
+  [FixPolicy] y_zero=14 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 4 END] UB=31 | K=31 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 5] zLP=17.000000 | ceil(zLP)=17 | K=31 | UB=31 | t=122.75s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=31
+  [Rounding] feasible=False | used=31 | conflicts=12
+  [Side] trying K+1 rounding (K=31 - 32) to break stalemate
+  [Side] skip: K+1=32 exceeds current UB=31
+  [Rounding] feasible=False | used=31 | conflicts=12
+  [Side] skip: K+1=32 exceeds current UB=31
+  [FixPolicy] y_zero=14 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 5 END] UB=31 | K=31 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 6] zLP=17.000000 | ceil(zLP)=17 | K=31 | UB=31 | t=153.28s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=31
+  [Rounding] feasible=False | used=31 | conflicts=6
+  [Side] trying K+1 rounding (K=31 - 32) to break stalemate
+  [Side] skip: K+1=32 exceeds current UB=31
+  [Rounding] feasible=False | used=31 | conflicts=6
+  [Side] skip: K+1=32 exceeds current UB=31
+  [FixPolicy] y_zero=14 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 6 END] UB=31 | K=31 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 7] zLP=17.000000 | ceil(zLP)=17 | K=31 | UB=31 | t=183.83s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=31
+  [Rounding] feasible=False | used=31 | conflicts=8
+  [Side] trying K+1 rounding (K=31 - 32) to break stalemate
+  [Side] skip: K+1=32 exceeds current UB=31
+  [Rounding] feasible=False | used=31 | conflicts=8
+  [Side] skip: K+1=32 exceeds current UB=31
+  [FixPolicy] y_zero=14 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 7 END] UB=31 | K=31 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 8] zLP=17.000000 | ceil(zLP)=17 | K=31 | UB=31 | t=215.18s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=31
+  [Rounding] feasible=False | used=31 | conflicts=8
+  [Side] trying K+1 rounding (K=31 - 32) to break stalemate
+  [Side] skip: K+1=32 exceeds current UB=31
+  [Rounding] feasible=False | used=31 | conflicts=8
+  [Side] skip: K+1=32 exceeds current UB=31
+  [FixPolicy] y_zero=14 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 8 END] UB=31 | K=31 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 9] zLP=17.000000 | ceil(zLP)=17 | K=31 | UB=31 | t=248.08s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=31
+  [Rounding] feasible=False | used=31 | conflicts=15
+  [Side] trying K+1 rounding (K=31 - 32) to break stalemate
+  [Side] skip: K+1=32 exceeds current UB=31
+  [Rounding] feasible=False | used=31 | conflicts=15
+  [Side] skip: K+1=32 exceeds current UB=31
+  [FixPolicy] y_zero=14 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 9 END] UB=31 | K=31 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 10] zLP=17.000000 | ceil(zLP)=17 | K=31 | UB=31 | t=282.06s
+  [Fix] shrink to K=17 infeasible - rollback; keep K=31
+  [Rounding] feasible=False | used=31 | conflicts=4
+  [Side] trying K+1 rounding (K=31 - 32) to break stalemate
+  [Side] skip: K+1=32 exceeds current UB=31
+  [Rounding] feasible=False | used=31 | conflicts=4
+  [Side] skip: K+1=32 exceeds current UB=31
+  [FixPolicy] y_zero=14 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 10 END] UB=31 | K=31 | ceil(zLP)=17 | improved=False | fixed=False
+[Final] UB=31 LB=16 feasible=True zLP≈17.000000
+[Compare] DSATUR colors=32 vs IterLP2 colors=31  → IterLP2 better (Δ=1)
+[Compare] DSATUR time=0.0225s | IterLP2 time=310.4454s | stop=time_limit
+[Main] Done. stop_reason=time_limit | LB=16 | UB=31 | iters=10

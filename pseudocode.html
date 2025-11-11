@@ -1,0 +1,412 @@
+<!DOCTYPE html><html><head>
+      <title>pseudocode</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///c:\Users\Pan\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.20\crossnote\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>python3 main.py <span class="token parameter variable">--algo</span> iterlp2 <span class="token parameter variable">--time</span> <span class="token number">60</span> <span class="token parameter variable">--seed</span> <span class="token number">0</span> <span class="token punctuation">\</span>
+  --init-heuristic smallest_last <span class="token punctuation">\</span>
+  --fix-policy prefix_shrink+rounded_support <span class="token punctuation">\</span>
+  --max-fix-per-round <span class="token number">20</span> <span class="token punctuation">\</span>
+  <span class="token parameter variable">--restarts</span> <span class="token number">48</span> --perturb-y 1e-6
+</code></pre><hr>
+<h1 id="main-einstieg--steuerung">MAIN (Einstieg &amp; Steuerung) </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Function MAIN(args)  // Haupteinstieg: Argumente parsen → Graph vorbereiten → ausgewählten Algorithmus ausführen → Zusammenfassung ausgeben
+  G ← LOAD_GRAPH(args.seed)  
+  // Graph laden oder generieren; der Seed beeinflusst die Zufälligkeit und macht Experimente reproduzierbar.
+
+  if args.algo == "dsatur" then  
+    // Falls nur die Baseline ohne LP laufen soll – gut als Vergleich zum Hauptverfahren.
+    col ← DSATUR(G)  
+    // Klassischer Greedy-Färber: färbt in Sättigungs-Reihenfolge und liefert eine zulässige Lösung.
+    PRINT(VERIFY(G, col), used=|colors(col)|)  
+    // Prüfe Konfliktfreiheit und gib die Farbanzahl aus (als UB-Baseline).
+  else  // iterlp2  
+    // Ansonsten unsere Hauptpipeline „iteratives LP + Runden + Reparatur“ starten.
+    base ← DSATUR(G)  
+    // Erst DSATUR laufen lassen, um ein zulässiges UB (Vergleichswert) zu bekommen.
+    PRINT(VERIFY(G, base), used=|colors(base)|)  
+    // Qualität der Baseline ausgeben, damit man spätere Verbesserungen einordnen kann.
+
+    res  ← ITER_LP_V2(G, time_limit=args.time,      // wie lange laufen
+                         init_heuristic=args.init_heuristic,        // womit Startlösung, UB und K initial bestimmen
+                         fix_policy=args.fix_policy,            // aus x_* und y_* Fixierungen auswählen
+                         restarts=args.restarts,    // wie viele Rounding-Versuche für die Fraktionslösung
+                         perturb_y=args.perturb_y,  // wie stark y-Prioritäten stören, um Gleichstände/Replays zu brechen
+                         max_fix_per_round=args.max_fix_per_round       // max. Anzahl (v,c) pro Runde fixieren, damit das LP nicht „festfährt“
+                         )
+    // Kernalgorithmus aufrufen. Nur die „Strategie-Parameter“ übergeben; Rechen-Details stecken in den Bibliotheksfunktionen.
+
+    PRINT(res.summary)  
+    // Am Ende UB/LB und Stoppgrund (Optimum erreicht/Stillstand/Zeitlimit) ausgeben – hilft bei der schnellen Laufkontrolle.
+End
+</code></pre><hr>
+<h1 id="iterlp2-kern-iteratives-lp-v2">ITERLP2 (Kern: iteratives LP v2) </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Algorithm ITER_LP_V2(G, time_limit, init_heuristic, fix_policy, restarts, perturb_y, max_fix_per_round)
+
+  LB ← CLIQUE_LOWER_BOUND(G)  
+  // Untergrenze via schneller Clique-Aufzählungs-Näherung. Begründung: In einer Clique müssen alle Knoten verschiedene Farben haben, daher ist |Q| eine gültige Untergrenze.
+
+  col0 ← (init_heuristic == "smallest_last" ? SMALLEST_LAST(G) : DSATUR(G))  
+  // Startlösung: Smallest-Last ist auf dünnen Graphen oft strenger als DSATUR.
+  UB  ← |colors(COMPACT(col0))|  
+  // Farbcodes erst kompakt auf 0..k-1 remappen, dann zählen → „aktuelles bestes zulässiges UB“. Komprimieren spart später Aufräumkosten.
+  K   ← UB  
+  // K (erlaubte Farb-Slots im LP) an UB ausrichten. Idee: anfangs nicht strenger sein als die vorhandene Lösung – sonst gleich unzulässig.
+
+  if UB ≤ LB then return RESULT(UB, LB, col0, stop="UB==LB")  
+  // Falls UB bereits LB entspricht, haben wir das Optimum und brauchen keine LP-Schleife.
+
+  INC ← BUILD_INCREMENTAL_LP(G, colors=0..UB-1, with_precedence=True, with_clique_cuts=True)  
+  // LP einmalig bauen: Variablen x[v,c], y[c]; Ziel min Σ y[c]; Grundconstraints + Clique-Cuts + Präzedenz.
+  // „Incremental“ heißt: später ändern wir nur Bounds (Prefix sperren, x fixieren), ohne das Modell neu zu bauen.
+
+  while time_remaining(time_limit) do  
+    // Hauptschleife: solange Zeit übrig ist, weitermachen. So holen wir im festen Budget möglichst viele UB-Verbesserungen.
+
+    (zLP, x*, y*) ← INC.SOLVE()  
+    // LP lösen, Fraktionslösung bekommen. zLP ist eine LP-Untergrenze für χ(G); x*, y* geben Präferenzen (Tendenzen) vor.
+
+    if ceil(zLP) &lt; K then  
+      // LP sagt: theoretisch braucht man mindestens ceil(zLP) Farben.
+      // Wenn das kleiner als unser aktuelles K ist, versuchen wir den Suchraum enger zu machen.
+      K_target ← max(LB, ceil(zLP))  
+      // K niemals unter LB drücken – sonst widerspricht man der Theorie-Untergrenze.
+      if INC.TRY_APPLY_AND_SOLVE(LOCK_PREFIX(K_target)) == ok then  
+        // Prefix sperren: y[c]=0 für c ≥ K_target. Direkt neu lösen, um die Machbarkeit zu checken.
+        // Nur bei Erfolg übernehmen, um kein unzulässiges, festgefahrenes Modell zu riskieren.
+        K ← K_target  
+      else
+        INC.REVERT()  
+        // Sperren hat LP unzulässig gemacht → sofort rückgängig, damit die Schleife gesund weiterlaufen kann.
+
+    cand ← ROUND_AND_REPAIR_MULTI(G, x*, y*, K, restarts, perturb_y)  
+    // Runden+Reparatur (Multi-Start): mit x*/y*-Präferenzen erst „gute“ Färbung versuchen, klappt’s nicht, Kempe/kleine Reparaturen hinterher.
+    // Ziel: aus der Fraktionslösung schnell eine echte zulässige Färbung bauen (Integer), idealerweise mit ≤ K Farben.
+
+    if VERIFY(G, cand, allowed=0..K-1) == feasible then  
+      // Wenn Rounding geklappt hat (keine Konflikte, Colors im Bereich), probieren wir noch „hohe Farbcodes nach vorne zu schieben“, um weiter zu reduzieren.
+      cand ← CONSOLIDATE_COLORS(G, COMPACT(cand))  
+      // Erst Farbcodes kompakt machen, dann „von oben nach vorne schieben“. Grund: hohe Farben enthalten oft nur wenige Knoten und lassen sich wegfalten.
+      if |colors(cand)| &lt; UB then  
+        // Wirklicher Fortschritt: UB sinkt. Nur das zählt als „substantielle Verbesserung“.
+        UB ← |colors(cand)|; best ← cand  
+        if K &gt; UB and INC.TRY_APPLY_AND_SOLVE(LOCK_PREFIX(UB)) == ok then  
+          // Falls LP noch mehr Farben erlaubt, K auf das neue UB synchronisieren; Prefix-Kohärenz beschleunigt die nächste Runde.
+          K ← UB
+        if UB ≤ LB then return RESULT(UB, LB, best, stop="UB==LB")  
+        // Trifft UB den LB, haben wir Theorie + Konstruktion im Einklang → Optimum, Ende.
+
+    else  
+      // Rounding fehlgeschlagen: mit dem aktuellen Prefix K klappt’s nicht „auf Anhieb“. Jetzt „seitlich suchen“, um lokale Fallen zu vermeiden.
+      if (K+1) &lt; UB then  
+        // Nur wenn „+1 Farbe“ strikt besser ist als das aktuelle UB – sonst lohnt sich die Rechnung nicht.
+        (ok1, cand1) ← TRY_SIDE_ROUNDING(G, x*, y*, target_UB=K+1, restarts, perturb_y)  
+        // Mit einem großzügigeren Budget (K+1) eine Struktur bauen, die sich eventuell leichter zusammendrücken lässt.
+        if ok1 and |colors(cand1)| &lt; UB then  
+          // Wenn diese Nebenroute direkt ein kleineres UB liefert, nehmen wir sie.
+          UB ← |colors(cand1)|; best ← cand1
+          if UB ≤ LB then return RESULT(UB, LB, best, stop="UB==LB")
+
+      if (UB-1) ≥ LB then  
+        // Man kann auch „nach unten tasten“: probiere UB-1, aber nur nicht unter LB – Untergrenzen respektieren.
+        (ok2, cand2) ← TRY_SIDE_ROUNDING(G, x*, y*, target_UB=UB-1, restarts, perturb_y)
+        if ok2 and |colors(cand2)| &lt; UB then
+          UB ← |colors(cand2)|; best ← cand2
+          if UB ≤ LB then return RESULT(UB, LB, best, stop="UB==LB")
+
+    if UB == K+1 then  
+      // Wichtiges „Fenster“: Wenn UB nur 1 größer als K ist, ist das LP schon sehr eng – es fehlt im Grunde nur, die oberste Farbschicht in den Prefix zu packen.
+      (ok_pack, col_pack) ← TRY_LP_GUIDED_PACK(G, best, x*, K, UB)  
+      // Mit Hilfe von x* (LP-Präferenzen) die höchste Farbe (UB-1) bevorzugt in „freundliche“ Prefix-Farben schieben.
+      if ok_pack and |colors(col_pack)| &lt; UB then
+        UB ← |colors(col_pack)|; best ← col_pack
+        if K &gt; UB then (try sync K→UB via LOCK_PREFIX)  
+        // Prefix synchronisieren – Constraints und „erlaubte Menge“ im Einklang halten.
+        if UB ≤ LB then return RESULT(UB, LB, best, stop="UB==LB")
+
+      (ok_g,  col_g) ← TRY_GRAPH_UB1_GREEDY(G, best, UB)  
+      // Dann noch rein graphbasiert UB-1 (Greedy/Kempe) probieren: unabhängig vom LP – deckt LP-ausfallende Fälle ab.
+      if ok_g and |colors(col_g)| &lt; UB then
+        UB ← |colors(col_g)|; best ← col_g
+        if K &gt; UB then (try sync K→UB via LOCK_PREFIX)
+        if UB ≤ LB then return RESULT(UB, LB, best, stop="UB==LB")
+
+    plan ← PICK_FIXINGS(x*, y*, zLP, UB=K, LB, policy=fix_policy,
+                        max_fix_per_round=max_fix_per_round, support_from_round=cand)
+    // „Konservativen Fixier-Plan“ bauen: nur (v,c) mit hoher Sicherheit und im Einklang mit der aktuellen Rundung auswählen, und x[v,c] direkt auf 1 setzen.
+    // Ziel: Suchraumzittern reduzieren, LP und Rundung stabilisieren; hart deckeln, damit das Modell nicht blockiert.
+
+    if plan.x_one ≠ ∅ then
+      if INC.TRY_APPLY_AND_SOLVE(FIX_X_ON(plan.x_one where color&lt;K)) == ok then
+        // Nur Variablen im Prefix K fixieren, um keinen Konflikt mit der „Prefix-Sperre“ zu erzeugen.
+        cand3 ← ROUND_AND_REPAIR_MULTI(G, INC.x*, INC.y*, K, max(2, ⌊restarts/2⌋), perturb_y)
+        // Nach dem Fixieren noch einmal R&amp;R (mit weniger Starts); ist es zulässig und besser, UB updaten.
+        if VERIFY(G, cand3, allowed=0..K-1) == feasible and |colors(COMPACT(cand3))| &lt; UB then
+          UB ← |colors(COMPACT(cand3))|; best ← COMPACT(cand3)
+          if K &gt; UB then (try sync K→UB via LOCK_PREFIX)
+          if UB ≤ LB then return RESULT(UB, LB, best, stop="UB==LB")
+      else
+        INC.REVERT()  
+        // Macht das Fixieren das LP unzulässig, sofort zurückrollen – Schleife bleibt gesund lauffähig.
+
+    if ceil(zLP) ≥ UB and K ≤ UB then  
+      // Abbruchkriterium 1: LP-Untergrenze ist nicht kleiner als UB, und K ist nicht kleiner als UB – mehr wird realistisch nicht mehr passieren.
+      return RESULT(UB, LB, best, stop="no_better_than_UB")
+
+    if STALLING_AT_FIXED_K() then  
+      // Abbruchkriterium 2: Wenn K bereits an ceil(zLP) ausgerichtet ist und mehrere Runden ohne „K schrumpfen/Fixieren/UB sinkt“ vergehen → Stillstand.
+      return RESULT(UB, LB, best, stop="stalled")
+
+  end while
+
+  return RESULT(UB, LB, best, stop="time_limit")  
+  // Abbruchkriterium 3: Zeitlimit – laufzeitkontrolliert und reproduzierbar.
+End
+</code></pre><hr>
+<h1 id="incremental_lp-einmal-modellieren-dann-nur-bounds-ändern">INCREMENTAL_LP (einmal modellieren, dann nur Bounds ändern) </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Class INCREMENTAL_LP
+  State:
+    solver                        // LP-Solver
+    X[v,c] ∈ [0,1]                // Vertex-Farb-Variablen (LP-Relaxation, geben Fraktions-Hinweise)
+    Y[c] ∈ [0,1]                  // Farb-Aktivierungsvariablen (LP-Relaxation; steuern „Farb-Slots“)
+    bounds_stack                  // Für Rollback: alte Bounds der veränderten Variablen
+
+  Method BUILD(G, allowed_colors, root_clique, extra_cliques, add_precedence)
+    Variablen X, Y erstellen, Ziel min Σ_c Y[c]                  // Ziel: so wenig aktivierte Farben wie möglich (LP-Untergrenze)
+    Für jedes v: Σ_c X[v,c] = 1                                  // Jeder Knoten genau eine Farbe (auch fraktional erlaubt)
+    Für jede Kante (u,v) und jede Farbe c: X[u,c] + X[v,c] ≤ Y[c] // ASS-ähnlich: gleiche Farbe wird von Y[c] begrenzt;
+                                                                  // wenn das Prefix Y[c]=0 setzt, ist die Farbe im ganzen Graph verboten
+    Für jedes (v,c): X[v,c] ≤ Y[c]                                // Kopplung: Knotenfarbe darf Aktivierung nicht überschreiten
+    Für jede Farbe c: Y[c] ≤ Σ_v X[v,c]                           // Kein „leerer“ Farbslot (Y&gt;0 aber niemand nutzt ihn)
+    Clique-Ungleichungen für root_clique und extra_cliques        // Clique-Cuts: Σ_{v∈Q} X[v,c] ≤ 1, stärken die Untergrenze
+    Falls add_precedence: für c=0..K-2 Y[c+1] ≤ Y[c]              // Symmetriebrecher: Farben in Prefix-Reihenfolge aktivieren – hilft bei Konvergenz/Prefix-Sperre
+    return self                                                   // Inkremental-Objekt: später nur Bounds ändern, mit Rollback
+
+  Method SOLVE()
+    solver.Solve() aufrufen, zLP, x_frac, y_frac extrahieren      // LP lösen, Untergrenze + Fraktionslösung bekommen
+    return (zLP, x_frac, y_frac)                                  // y_frac ist oft nicht-integer: dient als Farb-Priorität
+
+  Method LOCK_PREFIX_K(K_target)
+    Token erzeugen und alle Y[c] für c ≥ K_target auf 0 setzen    // Prefix sperren: erlaubte Farben auf 0..K_target-1 einschränken
+    return token                                                  // Für Try/Rollback – nur behalten, wenn das Re-Solve ok ist
+
+  Method FIX_VERTEX_COLOR(v,c)
+    Token erzeugen, X[v,c]=1 und X[v,c'≠c]=0 setzen               // Eine Knotenfarbe festnageln; stabilisiert LP/Runding danach
+    return token
+
+  Method TRY_APPLY_AND_SOLVE(token or tokens[])
+    Bounds anwenden und lösen                                     // Bei Erfolg neues (zLP,x*,y*), sonst soll der Aufrufer zurückrollen
+    return (info, ok)
+
+  Method REVERT(token or tokens[])
+    Alte Bounds aus dem Token wiederherstellen                    // Streng umkehrbar – sichere iterative Exploration
+    Token verwerfen
+End
+</code></pre><hr>
+<h1 id="lp-modell">LP-Modell </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Function BUILD_ASSIGNMENT_LP(G, K, cliques, with_precedence)
+  Variablen anlegen: X[v,c] ∈ [0,1], Y[c] ∈ [0,1]                 // LP-Relaxation für fraktionale Hinweise
+  Ziel: minimize Σ_{c=0}^{K-1} Y[c]                                // Wenig aktivierte Farben → Untergrenze für χ(G)
+
+  Nebenbed.: ∀v, Σ_c X[v,c] = 1                                   // Jeder Knoten genau eine Farbe
+  Nebenbed.: ∀(u,v)∈E, ∀c, X[u,c] + X[v,c] ≤ Y[c]                  // Wenn Y[c]=0, dann ist die Farbe global verboten; spielt gut mit Prefix-Sperre zusammen
+  Nebenbed.: ∀v,c, X[v,c] ≤ Y[c]                                   // Kopplung (hält die Relaxation enger), x wird von y „eingeklemmt“
+  Nebenbed.: ∀c,   Y[c] ≤ Σ_{v∈V} X[v,c]                           // Keine leeren Farben zulassen (verhindert künstlich kleine y)
+  Clique-Cuts: ∀Q∈cliques, ∀c, Σ_{v∈Q} X[v,c] ≤ 1                  // Einige Cliquen stärken die LP-Untergrenze (optional, aber empfehlenswert)
+  Falls with_precedence: ∀c=0..K-2, Y[c+1] ≤ Y[c]                   // Prefix-Aktivierungsreihenfolge – bricht Symmetrien und hilft K schrittweise zu schrumpfen
+
+  return (solver, X, Y)
+End
+</code></pre><hr>
+<h1 id="round_and_repair-multi-start--single-run">ROUND_AND_REPAIR (Multi-Start &amp; Single-Run) </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Function ROUND_AND_REPAIR_MULTI(G, x*, y*, current_UB, restarts, seed, perturb_y)
+  best &lt;- None                                                    // Aktuell beste zulässige Lösung
+  RNG &lt;- INIT_RNG(seed)                                           // Reproduzierbarkeit
+  for r in 1..restarts do
+    yj &lt;- ADD_TINY_NOISE(y*, scale=perturb_y, rng=RNG)            // Minimale Störung auf y, um Gleichstände zu brechen
+    cand &lt;- ROUND_AND_REPAIR(G, x*, yj, current_UB, RNG)          // Eine Runde Runden+Reparatur
+    if cand.feasible and (best==None or USED_COLORS(cand)&lt;USED_COLORS(best))
+      best &lt;- cand                                                // Besseren Kandidaten behalten
+  return (best if best≠None else INFEASIBLE_MARKER)              // Wenn alles scheitert: Unzulässigkeits-Marker
+End
+
+Function ROUND_AND_REPAIR(G, x*, y~, current_UB, rng)
+  order_colors &lt;- SORT_BY(y~, ascending)
+  // Farben nach y~ priorisieren.
+  //  - je „aktiver“ (größer y*), desto eher probieren
+  // Ergebnis: eine Reihenfolge wie [Farbe0, Farbe1, Farbe2, …].
+
+  order_vertices &lt;- DSATUR_ORDER(G)
+  // Knotenreihenfolge mit DSATUR (Sättigung zuerst: Knoten mit vielen bereits benutzten Nachbarfarben zuerst).
+  // Warum: die „harten“ Knoten früh lösen – senkt die Chance, dass wir später falsch abbiegen.
+
+  init coloring &lt;- EMPTY
+  // …
+
+  for v in order_vertices do
+    cand_colors &lt;- FILTER_AVAILABLE_COLORS(v, coloring, order_colors)
+    // Aus der Farbpriorität nur die konfliktfreien Farben für v behalten.
+    // Legale Zuweisung geht vor.
+
+    prefer &lt;- ARGMAX_c x*[v,c] over cand_colors
+    // Unter den erlaubten Farben die wählen, die das LP am meisten „mag“. x* dient als starker Hinweis.
+
+    if prefer exists then
+      ASSIGN(v, prefer)
+      // Wenn’s mit der LP-Präferenz klappt, direkt nehmen. Idee: möglichst LP folgen – oft näher am Optimum.
+
+    else
+      if TRY_KEMPE_CHAIN_MOVE(G, coloring, v, order_colors) then
+        continue
+        // Keine erlaubte Farbe frei (alle würden Konflikte erzeugen) → Kempe-Kette versuchen:
+        // Auf einer abwechselnden a/b-Kette Farben tauschen – einem Nachbarn a→b, einem anderen b→a –,
+        // um für v eine Farbe freizuräumen. Klappt’s, weiter mit dem nächsten Knoten.
+
+      else
+        ASSIGN_BEST_GREEDY(v, cand_colors, tie=rng)
+        // Selbst mit Kempe nicht lösbar? Dann einfache Greedy-Wahl (min. „Kosten“ in cand_colors, Gleichstand via RNG).
+        // Es können kleine Restprobleme bleiben, die in den Reparatur-Pässen noch behebbar sind.
+
+  coloring &lt;- SMALL_REPAIR_PASSES(G, coloring, passes=2..3)
+  // Kleine lokale Reparaturen: eher hochgradige Knoten zuerst; freie Farben bevorzugen (nach y_frac-Priorität),
+  // sonst Kempe versuchen; wenn’s gar nicht geht, Rollback – Ziel: Restkonflikte/überflüssige Farben wegputzen.
+
+  feasible &lt;- CHECK_NO_CONFLICTS(G, coloring)
+  // Schlusscheck: keine gleichfarbigen Nachbarn, Farben im erlaubten Bereich.
+
+  return (coloring if feasible else INFEASIBLE_MARKER)
+  // Zulässig → an die Außenebene zum UB-Vergleich zurückgeben; sonst „dieser Start hat nicht geklappt“, nächster Versuch.
+End
+</code></pre><hr>
+<h1 id="drei-methode-side--pack--greedy">drei Methode (Side / Pack / Greedy) </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Function TRY_SIDE_ROUNDING(G, x*, y*, target_UB, restarts, perturb_y)
+  cand ← ROUND_AND_REPAIR_MULTI(G, x*, y*, K=target_UB, restarts, perturb_y)  
+  // „Erlaubte Farbanzahl“ als K in R&amp;R stecken (auch wenn sie target_UB heißt – im R&amp;R ist das das Prefix-Budget).
+  if VERIFY(G, cand, allowed=0..target_UB-1) == feasible then
+    return (True, CONSOLIDATE_COLORS(G, COMPACT(cand)))  
+    // Kompaktierte zulässige Lösung zurückgeben; die aufrufende Ebene prüft, ob’s besser als das aktuelle UB ist.
+  else
+    return (False, None)  
+    // Unzulässig → diese Seitenroute abbrechen, keine Zeit verschwenden.
+End
+
+
+Function TRY_LP_GUIDED_PACK(G, best, x*, K, UB)
+  if UB ≠ K+1 then return (False, None)  
+  // Nur im „Differenz-1“-Fenster aktivieren; sonst ist Aufwand/Nutzen schlecht.
+
+  S ← vertices with color = UB-1 in best  
+  // Die Knoten der höchsten Farbschicht. Ziel: alle zurück in 0..K-1.
+
+  order S by preference from x* (desc)  
+  // Zuerst Knoten mit starker x*-Präferenz für niedrige Farben bewegen – höhere Erfolgsquote, kleinere Nebenwirkungen.
+
+  for v in S do
+    try place v into prefix 0..K-1 using greedy + small local moves  
+    // Erst Greedy; bei Konflikt kleine lokale Moves (z.B. Kempe), aber mit Schritt-Limit – kein übermäßiges Suchen.
+
+  if all moved then
+    return (True, COMPACT(best_after_moves))  
+    // Oberste Farbe leer → UB um 1 gesenkt.
+  else
+    return (False, None)  
+    // Nicht alles umgezogen → „Packen“ zählt nicht als Erfolg. Andere Strategien probieren.
+End
+
+
+Function TRY_GRAPH_UB1_GREEDY(G, best, UB)
+  attempt ← greedy + limited Kempe to fit colors into 0..UB-2  
+  // Reine Graph-Heuristik: ohne LP, mit Greedy/Kempe versuchen, alles in UB-1 Farben zu pressen.
+  if success then return (True, COMPACT(attempt)) else return (False, None)
+  // Erfolg → zulässige UB-1-Lösung; sonst zeigt’s, dass es graphbasiert aktuell auch nicht klappt.
+End
+</code></pre><hr>
+<h1 id="fixier-strategie-pick_fixings">Fixier-Strategie (PICK_FIXINGS) </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Function PICK_FIXINGS(x*, y*, zLP, UB, LB, policy, max_fix_per_round, support_from_round)
+  plan.x_one ← ∅  
+  // Hier nutzen wir nur „x[v,c]=1 festnageln“. y_zero (Prefix-Schrumpfen) macht LOCK_PREFIX – saubere Aufgabentrennung.
+
+  if "prefix_shrink" in policy then
+    K_hint ← max(LB, ceil(zLP))  
+    // LP-Untergrenze als Hinweis, welche hinteren Farben man schließen könnte; wirklich schließen tut LOCK_PREFIX.
+
+  if "rounded_support" in policy and support_from_round ≠ None then
+    // Nur Knoten fixieren, bei denen LP-Präferenz und die letzte Rundung übereinstimmen – reduziert LP/Rundungs-Divergenzen (entzittert).
+    candidates ← { v | argmax_c x*[v,c] == support_from_round[v] and x*[v,that] ≥ 0.8 }
+    // 0,8 ist eine Erfahrungs-Schwelle: höher = konservativer, niedriger = riskanter. Idee: erst die „offensichtlich richtigen“ Nägel setzen.
+    plan.x_one ← take up to max_fix_per_round from candidates, highest x* first
+    // Hartes Budget, um nicht zu viele Variablen auf einmal festzunageln → sonst blockiert das LP. Schrittweise ist stabiler.
+
+  return plan  
+  // Die Anwendung (mit Rollback-Schutz) übernimmt FIX_X_ON auf der oberen Ebene.
+End
+</code></pre><hr>
+<h1 id="verifikation--visualisierung-verify--viz">Verifikation &amp; Visualisierung (VERIFY / VIZ) </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Function VERIFY(G, coloring, allowed)
+  if coloring == None then return {feasible:False, reason:"empty"}
+  if EXISTS v with coloring[v] ∉ allowed then
+    return {feasible:False, reason:"color_out_of_range"}
+  for each edge (u,v) in E(G) do
+    if coloring[u] == coloring[v] then
+      return {feasible:False, reason:"conflict", edge:(u,v)}
+  return {feasible:True, reason:"ok"}
+End
+
+Function VIZ(enabled, tag, round_id, coloring, K_or_UB)
+  if not enabled then return                                // Visualisierung kann deaktiviert sein
+  IMG &lt;- DRAW_PARTIAL_COLORING(G, coloring, highlight_conflicts=True,
+                               title=f"{tag} r{round_id} K={K_or_UB}")
+  SAVE_IMAGE(IMG, dir=viz_out_dir, name=f"{tag}-{round_id}.png")
+End
+</code></pre><hr>
+<h1 id="kompaktieren--zusammenführen-">(Kompaktieren / Zusammenführen ) </h1>
+<pre data-role="codeBlock" data-info="text" class="language-text text"><code>Function COMPACT_COLORS(coloring)
+  remap &lt;- BUILD_ORDERED_MAP(sorted(unique(coloring.values()))) // Remapping-Tabelle für Farben bauen
+  for v in VERTICES(G) do coloring[v] &lt;- remap[coloring[v]]     // Farben auf 0..k-1 komprimieren
+  return (coloring, |remap|)                                   // Neue Lösung + Farbanzahl
+End
+
+Function CONSOLIDATE_COLORS(G, coloring, passes)
+  changed &lt;- False
+  repeat passes times:
+    for c from HIGHEST_COLOR down to 1 do                      // Von oben nach unten in den Prefix reinpacken versuchen
+      S &lt;- {v | coloring[v]=c}
+      if TRY_MOVE_SET_TO_PREFIX(G, S, allowed_colors=0..c-1)   // Greedy + etwas Kempe
+        ERASE_COLOR(c); changed &lt;- True
+  return (coloring, changed)
+End
+
+</code></pre><hr>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>

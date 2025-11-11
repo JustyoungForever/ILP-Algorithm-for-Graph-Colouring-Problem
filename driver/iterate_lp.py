@@ -17,11 +17,13 @@ from driver.accelerators import (
     try_side_rounding,
     try_lp_guided_pack,
     try_graph_ub1_greedy,
+    _debug_candidate_from_xfrac,
 )
 
 from ilp.incremental import IncrementalLP
 from ilp.fixing_policies import pick_fixings
 from graph.slo import smallest_last_coloring
+from visualisierung.draw import visualize_coloring
 
 def run_iterative_lp_v2(
     G,
@@ -33,8 +35,24 @@ def run_iterative_lp_v2(
     max_fix_per_round: int = 50,
     restarts: int = 16,
     perturb_y: float = 1e-6,
+    enable_visualization: bool = True,
+    viz_out_dir: str = "visualisierung/picture",
+    viz_layout_seed: int = 42,
 ) -> Dict[str, Any]:
     t0 = time.time()
+
+    def viz(step: str, rid: int, cmap: Dict[int, int], K_allowed: int, *, only_colored: bool = True) -> None:
+        if not cmap:
+            return
+        visualize_coloring(
+            G, cmap, step=step, round_id=rid,
+            out_dir=viz_out_dir, layout_seed=viz_layout_seed,
+            only_colored=only_colored,  # ← 动态控制
+            allowed_colors=list(range(max(1, K_allowed))),
+            conflict_nodes_fill_black=True,
+        )
+
+
     stall_after_K = 8  # Trigger Step-5 termination when consecutive rounds without progress reach this value and K==ceil(zLP)
     
     # Schritt 0: LB + Initial solution (and compact color indices)
@@ -42,13 +60,20 @@ def run_iterative_lp_v2(
     LB = len(clique_nodes)
     init_col = smallest_last_coloring(G) if init_heuristic == "smallest_last" else dsatur_coloring(G)
     init_col, UB = compact_colors(init_col)   # Compact color indices to 0..UB-1
+
     best_coloring = init_col
     K = UB  # Initialize LP/rounding palette K, later tightened by ceil(zLP)
     if verbose:
         n = G.number_of_nodes()
         m = G.number_of_edges()
         print(f"[Init] graph: |V|={n} |E|={m} |LB|={LB} |UB(init)|={UB} |K|={K} via {init_heuristic}")
-
+    if enable_visualization:
+        visualize_coloring(
+            G, best_coloring, step="Init", round_id=0,
+            out_dir=viz_out_dir, layout_seed=viz_layout_seed,
+            only_colored=True, allowed_colors=list(range(UB)),
+            conflict_nodes_fill_black=True,
+        )
     if verbose:
         print(f"[Init] LB={LB} | UB(init:{init_heuristic})={UB}")
     if UB <= LB:
@@ -94,90 +119,109 @@ def run_iterative_lp_v2(
                 K_shrunk_this_round = True
                 if verbose:
                     print(f"  [Fix] shrink K to {K} (ceil(zLP)={K})")
+                dbg = _debug_candidate_from_xfrac(ok_info["x_frac"], K_eff=K)
+                if enable_visualization:
+                    viz("ShrinkK-ok", round_id, dbg, K, only_colored=False)
                 # continue with updated solution to avoid re-solving
                 zLP, x_frac, y_frac = ok_info["z_LP"], ok_info["x_frac"], ok_info["y_frac"]
             else:
                 inc.revert_all(tok)
                 if verbose:
                     print(f"  [Fix] shrink to K={K_target} infeasible - rollback; keep K={K}")
+                dbg = _debug_candidate_from_xfrac(x_frac, K_eff=K_target)
+                if enable_visualization:
+                    viz("ShrinkK-rollback", round_id, dbg, K_target, only_colored=False)
 
-            # 3) rounding with K colors
-            cand = round_and_repair_multi(G, x_frac, y_frac, current_UB=K,
+        # 3) rounding with K colors
+        cand = round_and_repair_multi(G, x_frac, y_frac, current_UB=K,
                                         restarts=restarts, seed=round_id, perturb_y=perturb_y)
-            rep = verify_coloring(G, cand, allowed_colors=list(range(K)))
+        rep = verify_coloring(G, cand, allowed_colors=list(range(K)))
+        if enable_visualization:
+            viz("Rounding", round_id, cand, K)
+        if verbose:
+            used_try = len(set(cand.values()))
+            print(f"  [Rounding] feasible={rep['feasible']} | used={used_try} | conflicts={rep['num_conflicts']}")
 
-            if rep["feasible"]:
-                # (A) feasible path: maybe improve UB, sync K, etc.
-                cand, used = compact_colors(cand)
-                cand2, reduced = consolidate_colors(G, dict(cand), passes=5)
-                if reduced:
-                    cand2, used = compact_colors(cand2)
-                    cand = cand2
-                if used < UB:
-                    UB = used
-                    best_coloring = cand
-                    improved_this_round = True
-                    if verbose:
-                        print(f"  [Rounding/Local] improved UB -> {UB}")
-                    if K > UB:
-                        tok2 = [inc.lock_prefix_K(UB)]
-                        ok_info2, ok2 = inc.try_apply_and_solve(tok2)
-                        if ok2:
-                            K = UB
-                            if verbose:
-                                print(f"  [Sync] K aligned to new UB: K={K}")
-                            zLP, x_frac, y_frac = ok_info2["z_LP"], ok_info2["x_frac"], ok_info2["y_frac"]
-                        else:
-                            inc.revert_all(tok2)
-                    if UB <= LB:
-                        stop_reason = "UB==LB"
-                        break
-            else:
-                # (B) infeasible path: try K+1 side rounding before any fixing
+        if rep["feasible"]:
+            # (A) feasible path: maybe improve UB, sync K, etc.
+            cand, used = compact_colors(cand)
+            cand2, reduced = consolidate_colors(G, dict(cand), passes=5)
+            if reduced:
+                cand2, used = compact_colors(cand2)
+                cand = cand2
+                if enable_visualization:
+                    viz("Local-Consolidate", round_id, cand, max(K, used))
+            if used < UB:
+                UB = used
+                best_coloring = cand
+                improved_this_round = True
                 if verbose:
-                    print(f"  [Side] trying K+1 rounding (K={K} - {K+1}) to break stalemate")
-                newUB, newCol, applied = try_side_rounding(
-                    G, x_frac, y_frac, K, UB,
-                    restarts=restarts, perturb_y=perturb_y,
-                    seed=9000 + round_id, verbose=verbose
-                )
-                if applied and newUB < UB:
-                    UB = newUB
-                    best_coloring = newCol
-                    improved_this_round = True
-                    if UB <= LB:
-                        stop_reason = "UB==LB"
-                        break
-
+                    print(f"  [Rounding/Local] improved UB -> {UB}")
+                if K > UB:
+                    tok2 = [inc.lock_prefix_K(UB)]
+                    ok_info2, ok2 = inc.try_apply_and_solve(tok2)
+                    if ok2:
+                        K = UB
+                        if verbose:
+                            print(f"  [Sync] K aligned to new UB: K={K}")
+                        zLP, x_frac, y_frac = ok_info2["z_LP"], ok_info2["x_frac"], ok_info2["y_frac"]
+                    else:
+                        inc.revert_all(tok2)
+                if UB <= LB:
+                    stop_reason = "UB==LB"
+                    break
+        else:
+            # (B) infeasible path: try K+1 side rounding before any fixing
             if verbose:
-                used_try = len(set(cand.values()))
-                print(f"  [Rounding] feasible={rep['feasible']} | used={used_try} | conflicts={rep['num_conflicts']}")
-
-            # 3.5) UB-1 side attempt (allow K+1 colors, only for constructing better feasible solutions; doesn't change LP locking)
+                print(f"  [Side] trying K+1 rounding (K={K} - {K+1}) to break stalemate")
             newUB, newCol, applied = try_side_rounding(
-                G, x_frac, y_frac, K, UB,
-                restarts=restarts, perturb_y=perturb_y, seed=9000 + round_id, verbose=verbose
-            )
+                    G, x_frac, y_frac, K, UB,
+                    restarts=restarts, perturb_y=perturb_y, seed=9000 + round_id, verbose=verbose,
+                    enable_visualization=enable_visualization,
+                    viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,
+                    step_name="Side-K+1",
+                )
             if applied and newUB < UB:
+
                 UB = newUB
                 best_coloring = newCol
                 improved_this_round = True
                 if UB <= LB:
                     stop_reason = "UB==LB"
                     break
+
         if verbose:
             used_try = len(set(cand.values()))
             print(f"  [Rounding] feasible={rep['feasible']} | used={used_try} | conflicts={rep['num_conflicts']}")
+            
+        # 3.5) UB-1 side attempt (allow K+1 colors, only for constructing better feasible solutions; doesn't change LP locking)
+        newUB, newCol, applied = try_side_rounding(
+                G, x_frac, y_frac, K, UB,
+                restarts=restarts, perturb_y=perturb_y, seed=9000 + round_id, verbose=verbose,
+                enable_visualization=enable_visualization,
+                viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,
+                step_name="UB-1-Side",
+            )
+        if applied and newUB < UB:
+            UB = newUB
+            best_coloring = newCol
+            improved_this_round = True
+            if UB <= LB:
+                stop_reason = "UB==LB"
+                break
         #  and LP-guided pack: when UB == K+1, pack highest color layer back into 0..K-1
         if verbose and UB == K + 1:
             print(f"  [PackWindow] UB==K+1 (UB={UB}, K={K}) - attempt LP-guided pack and UB-1 greedy")
 
         if UB == K + 1:
             # B1) LP-guided highest color layer packing
-            newUB, newCol, applied = try_lp_guided_pack(G, best_coloring, x_frac, K, UB, verbose=verbose)
+            newUB, newCol, applied = try_lp_guided_pack(G, best_coloring, x_frac, K, UB, verbose=verbose,
+                enable_visualization=enable_visualization,
+                viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,)
             if applied and newUB < UB:
                 UB = newUB
                 best_coloring = newCol
+
                 improved_this_round = True
                 if K > UB:
                     tok3 = [inc.lock_prefix_K(UB)]
@@ -192,10 +236,14 @@ def run_iterative_lp_v2(
                     stop_reason = "UB==LB"
                     break
             # B2) pure graph-domain UB-1 greedy 
-            newUB, newCol, applied = try_graph_ub1_greedy(G, best_coloring, UB, verbose=verbose)
+            newUB, newCol, applied = try_graph_ub1_greedy(G, best_coloring, UB, verbose=verbose,
+                enable_visualization=enable_visualization,
+                viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,)
+
             if applied and newUB < UB:
                 UB = newUB
                 best_coloring = newCol
+
                 improved_this_round = True
                 if K > UB:
                     tok4 = [inc.lock_prefix_K(UB)]
@@ -235,16 +283,21 @@ def run_iterative_lp_v2(
                 print(f"  [FixApply] status={'OK' if ok3 else 'ROLLBACK'}")
             if not ok3:
                 inc.revert_all(tokens)
+                if enable_visualization:
+                    dbg = _debug_candidate_from_xfrac(x_frac, K_eff=K)
+                    viz("FixApply-rollback", round_id, dbg, K, only_colored=False)
             else:
                 x_fix_applied_this_round = True
                 cand3 = round_and_repair_multi(G, ok_info3["x_frac"], ok_info3["y_frac"],
                                                current_UB=K, restarts=max(2, restarts // 2),
                                                seed=7777 + round_id, perturb_y=perturb_y)
                 rep3 = verify_coloring(G, cand3, allowed_colors=list(range(K)))
+                if enable_visualization:
+                    viz("After-Fix-Rounding", round_id, cand3, K, only_colored=rep3["feasible"])
                 if verbose:
                     used3_try = len(set(cand3.values()))
                     print(f"  [After-Fix Rounding] feasible={rep3['feasible']} | used={used3_try} | conflicts={rep3['num_conflicts']}")
-
+                
                 if rep3["feasible"]:
                     cand3, used3 = compact_colors(cand3)
                     cand3b, reduced3 = consolidate_colors(G, dict(cand3), passes=3)
@@ -274,7 +327,7 @@ def run_iterative_lp_v2(
         if verbose:
             print(f"  [Round {round_id} END] UB={UB} | K={K} | ceil(zLP)={int(math.ceil(zLP - 1e-12))} "
                 f"| improved={improved_this_round} | fixed={(K_shrunk_this_round or x_fix_applied_this_round)}")
-
+        viz("End-Of-Round", round_id, best_coloring, UB)
         logs.append(dict(round=round_id, zLP=zLP, UB=UB, K=K))
 
         # 5) termination logic
@@ -311,6 +364,18 @@ def run_iterative_lp_v2(
     final_report = verify_coloring(G, best_coloring, allowed_colors=list(range(UB)))
     if verbose:
         print(f"[Final] UB={UB} LB={LB} feasible={final_report['feasible']} zLP≈{zLP:.6f}")
+    if enable_visualization:
+        try:
+            visualize_coloring(
+                G, best_coloring, step="Final", round_id=round_id,
+                out_dir=viz_out_dir, layout_seed=viz_layout_seed,
+                only_colored=True,
+                allowed_colors=None,
+                conflict_nodes_fill_black=True,
+            )
+        except Exception as e:
+            if verbose:
+                print(f"  [Viz] skip (Final) due to: {e}")
     return dict(
         UB=UB, LB=LB, coloring=best_coloring, iters=len(logs), log=logs,
         stop_reason=stop_reason, feasible=final_report["feasible"], final_check=final_report
@@ -400,18 +465,38 @@ def _bootstrap_initial_from_lp(
 
 
 def try_shrink_UB_by_one_LP(
-    G, UB: int, clique_nodes: List[int], extra_cliques: List[List[int]], seed: int = 0, verbose: bool = False
+    G, UB: int, clique_nodes: List[int], extra_cliques: List[List[int]],
+    seed: int = 0, verbose: bool = False,
+    enable_visualization: bool = False, viz_round_id: int = 0,
+    viz_out_dir: str = "visualisierung", viz_layout_seed: int = 42
 ):
     """LP with K=UB-1 + multi-start rounding; success -> return (UB-1, coloring, True)."""
     if UB <= len(clique_nodes):
+        # 没法再降，也给一张 -nc 占位图（可选）
         return UB, None, False
+
     K2 = list(range(UB - 1))
     model2, var_maps2 = build_lp_model(
-        G, allowed_colors=K2, clique_nodes=clique_nodes, extra_cliques=extra_cliques, add_precedence=True
+        G, allowed_colors=K2, clique_nodes=clique_nodes,
+        extra_cliques=extra_cliques, add_precedence=True
     )
     info2 = solve_lp_and_extract(model2, var_maps2)
-    cand = round_and_repair_multi(G, info2["x_frac"], info2["y_frac"], current_UB=UB - 1, restarts=8, seed=seed)
+    cand = round_and_repair_multi(G, info2["x_frac"], info2["y_frac"],
+                                  current_UB=UB - 1, restarts=8, seed=seed)
     rep = verify_coloring(G, cand, allowed_colors=K2)
+
+    # —— 成败都出图（cand 可能是 infeasible 的失败候选，我们一样画）
+    if enable_visualization:
+        visualize_coloring(
+            G, cand if cand else {},
+            step=("LP-UB-1" if rep["feasible"] else "LP-UB-1-failed"),
+            round_id=viz_round_id,
+            out_dir=viz_out_dir, layout_seed=viz_layout_seed,
+            only_colored=True,
+            allowed_colors=K2,
+            conflict_nodes_fill_black=True,
+        )
+
     if rep["feasible"]:
         if verbose:
             print(f"  [UB-1 Test (LP)] success -> UB={UB-1}")
@@ -421,150 +506,149 @@ def try_shrink_UB_by_one_LP(
             print(f"  [UB-1 Test (LP)] failed")
         return UB, None, False
 
+# def run_iterative_lp(
+#     G,
+#     time_limit_sec: int = 60,
+#     max_rounds: int = 200,
+#     stall_rounds: int = 10,
+#     min_rounds: int = 5,
+#     verbose: bool = True,
+# ) -> Dict[str, Any]:
+#     """
+#     iterative LP-based heuristic (first feasible solution from LP rounding):
+#     - bootstrap: start from LB; build LP with K=LB+headroom and use rounding/repair for initial feasible UB0.
+#     - iteration: each round runs LP - rounding -> conservative fixing (K=0..UB-1) - local search - UB-1 (graph) - UB-1 (LP).
+#     - stop when UB==LB, or stalled, or time/round limits are hit.
+#     """
+#     t_all0 = time.time()
 
-def run_iterative_lp(
-    G,
-    time_limit_sec: int = 60,
-    max_rounds: int = 200,
-    stall_rounds: int = 10,
-    min_rounds: int = 5,
-    verbose: bool = True,
-) -> Dict[str, Any]:
-    """
-    iterative LP-based heuristic (first feasible solution from LP rounding):
-    - bootstrap: start from LB; build LP with K=LB+headroom and use rounding/repair for initial feasible UB0.
-    - iteration: each round runs LP - rounding -> conservative fixing (K=0..UB-1) - local search - UB-1 (graph) - UB-1 (LP).
-    - stop when UB==LB, or stalled, or time/round limits are hit.
-    """
-    t_all0 = time.time()
+#     #Bootstrap: use LP rounding to get the first feasible coloring
+#     UB, LB, clique_nodes, extra_cliques, best_coloring, zLP0 = _bootstrap_initial_from_lp(
+#         G, headroom=3, max_k_increase=None, restarts=16, time_limit_bootstrap=min(10.0, time_limit_sec * 0.2), verbose=verbose
+#     )
+#     allowed_colors: List[int] = list(range(UB))  # Keep K aligned with UB 
+#     reserved_colors: Set[int] = set(range(LB))
 
-    #Bootstrap: use LP rounding to get the first feasible coloring
-    UB, LB, clique_nodes, extra_cliques, best_coloring, zLP0 = _bootstrap_initial_from_lp(
-        G, headroom=3, max_k_increase=None, restarts=16, time_limit_bootstrap=min(10.0, time_limit_sec * 0.2), verbose=verbose
-    )
-    allowed_colors: List[int] = list(range(UB))  # Keep K aligned with UB 
-    reserved_colors: Set[int] = set(range(LB))
+#     if verbose:
+#         print(f"[Init] (from LP-rounding) UB0 = {UB}, LB = {LB}, clique = {clique_nodes}, z_LP0 = {zLP0:.6f}")
 
-    if verbose:
-        print(f"[Init] (from LP-rounding) UB0 = {UB}, LB = {LB}, clique = {clique_nodes}, z_LP0 = {zLP0:.6f}")
+#     # maain loop
+#     logs: List[Dict[str, Any]] = []
+#     no_change_rounds = 0
+#     stop_reason = ""
 
-    # maain loop
-    logs: List[Dict[str, Any]] = []
-    no_change_rounds = 0
-    stop_reason = ""
+#     for it in range(1, max_rounds + 1):
+#         if time.time() - t_all0 > time_limit_sec:
+#             stop_reason = "time_limit"
+#             break
 
-    for it in range(1, max_rounds + 1):
-        if time.time() - t_all0 > time_limit_sec:
-            stop_reason = "time_limit"
-            break
+#         improved = False
 
-        improved = False
+#         # step 1: build and solve LP (with precedence + clique cuts)
+#         model, var_maps = build_lp_model(
+#             G=G, allowed_colors=allowed_colors, clique_nodes=clique_nodes,
+#             extra_cliques=extra_cliques, add_precedence=True
+#         )
+#         info = solve_lp_and_extract(model, var_maps)
+#         z_LP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
+#         rc_y = info["rc_y"]
+#         if verbose:
+#             print(f"[Iter {it}] z_LP={z_LP:.6f} |K|={len(allowed_colors)}")
 
-        # step 1: build and solve LP (with precedence + clique cuts)
-        model, var_maps = build_lp_model(
-            G=G, allowed_colors=allowed_colors, clique_nodes=clique_nodes,
-            extra_cliques=extra_cliques, add_precedence=True
-        )
-        info = solve_lp_and_extract(model, var_maps)
-        z_LP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
-        rc_y = info["rc_y"]
-        if verbose:
-            print(f"[Iter {it}] z_LP={z_LP:.6f} |K|={len(allowed_colors)}")
+#         #step 2: multi-start rounding -> verify
+#         rounding_coloring = round_and_repair_multi(G, x_frac, y_frac, current_UB=len(allowed_colors), restarts=16, seed=it)
+#         rep = verify_coloring(G, rounding_coloring, allowed_colors=list(range(len(allowed_colors))))
+#         if verbose:
+#             print(f"  [Iter {it} / Rounding] feasible={rep['feasible']}|used_colors={len(set(rounding_coloring.values()))}|conflicts={rep['num_conflicts']}")
+#             if not rep["feasible"]:
+#                 print(f"  [Iter {it} / Rounding] conflicts_sample ={rep['conflicts_sample'][:10]}")
 
-        #step 2: multi-start rounding -> verify
-        rounding_coloring = round_and_repair_multi(G, x_frac, y_frac, current_UB=len(allowed_colors), restarts=16, seed=it)
-        rep = verify_coloring(G, rounding_coloring, allowed_colors=list(range(len(allowed_colors))))
-        if verbose:
-            print(f"  [Iter {it} / Rounding] feasible={rep['feasible']}|used_colors={len(set(rounding_coloring.values()))}|conflicts={rep['num_conflicts']}")
-            if not rep["feasible"]:
-                print(f"  [Iter {it} / Rounding] conflicts_sample ={rep['conflicts_sample'][:10]}")
+#         if rep["feasible"]:
+#             best_coloring = rounding_coloring
+#             used_colors_round = len(set(best_coloring.values()))
+#             if used_colors_round < UB:
+#                 UB = used_colors_round
+#                 allowed_colors = list(range(UB))
+#                 improved = True
+#                 if verbose:
+#                     print(f"  [Round+Repair] Improved UB -> {UB}")
+#         # if not feasible, keep previous best_coloring as a safety net.
 
-        if rep["feasible"]:
-            best_coloring = rounding_coloring
-            used_colors_round = len(set(best_coloring.values()))
-            if used_colors_round < UB:
-                UB = used_colors_round
-                allowed_colors = list(range(UB))
-                improved = True
-                if verbose:
-                    print(f"  [Round+Repair] Improved UB -> {UB}")
-        # if not feasible, keep previous best_coloring as a safety net.
+#         #step 3: conservative fixing (keep K = 0..UB-1)
+#         new_allowed = choose_colors_after_fixing(
+#             allowed_colors=allowed_colors, rc_y=rc_y, z_LP=z_LP, UB=UB, reserved_colors=reserved_colors
+#         )
+#         if set(new_allowed) != set(allowed_colors):
+#             allowed_colors = new_allowed
+#             improved = True
+#             if verbose:
+#                 print(f"  [Fixing] K changed to {allowed_colors}")
 
-        #step 3: conservative fixing (keep K = 0..UB-1)
-        new_allowed = choose_colors_after_fixing(
-            allowed_colors=allowed_colors, rc_y=rc_y, z_LP=z_LP, UB=UB, reserved_colors=reserved_colors
-        )
-        if set(new_allowed) != set(allowed_colors):
-            allowed_colors = new_allowed
-            improved = True
-            if verbose:
-                print(f"  [Fixing] K changed to {allowed_colors}")
+#         #local search: consolidate highest color classes
+#         best_coloring, reduced_flag = consolidate_colors(G, best_coloring, passes=5)
+#         if reduced_flag:
+#             newUB = len(set(best_coloring.values()))
+#             if newUB < UB:
+#                 UB = newUB
+#                 allowed_colors = list(range(UB))
+#                 improved = True
+#                 if verbose:
+#                     print(f"  [LocalSearch] Reduced to UB={UB}")
 
-        #local search: consolidate highest color classes
-        best_coloring, reduced_flag = consolidate_colors(G, best_coloring, passes=5)
-        if reduced_flag:
-            newUB = len(set(best_coloring.values()))
-            if newUB < UB:
-                UB = newUB
-                allowed_colors = list(range(UB))
-                improved = True
-                if verbose:
-                    print(f"  [LocalSearch] Reduced to UB={UB}")
+#         #pure graph-domain UB-1 attempt
+#         if not improved:
+#             cand, ok = try_ub_minus_one_greedy(G, best_coloring)
+#             if ok:
+#                 best_coloring = cand
+#                 UB = len(set(best_coloring.values()))
+#                 allowed_colors = list(range(UB))
+#                 improved = True
+#                 if verbose:
+#                     print(f"  [UB-1 Greedy] success -> UB={UB}")
 
-        #pure graph-domain UB-1 attempt
-        if not improved:
-            cand, ok = try_ub_minus_one_greedy(G, best_coloring)
-            if ok:
-                best_coloring = cand
-                UB = len(set(best_coloring.values()))
-                allowed_colors = list(range(UB))
-                improved = True
-                if verbose:
-                    print(f"  [UB-1 Greedy] success -> UB={UB}")
+#         #LP(UB-1) attempt
+#         if not improved:
+#             newUB, newcol, ok = try_shrink_UB_by_one_LP(G, UB, clique_nodes, extra_cliques, seed=it, verbose=verbose)
+#             if ok:
+#                 UB = newUB
+#                 allowed_colors = list(range(UB))
+#                 best_coloring = newcol
+#                 improved = True
 
-        #LP(UB-1) attempt
-        if not improved:
-            newUB, newcol, ok = try_shrink_UB_by_one_LP(G, UB, clique_nodes, extra_cliques, seed=it, verbose=verbose)
-            if ok:
-                UB = newUB
-                allowed_colors = list(range(UB))
-                best_coloring = newcol
-                improved = True
+#         # Logs and invariants
+#         logs.append(dict(it=it, UB=UB, LB=LB, z_LP=z_LP, K=len(allowed_colors)))
 
-        # Logs and invariants
-        logs.append(dict(it=it, UB=UB, LB=LB, z_LP=z_LP, K=len(allowed_colors)))
+#         assert UB >= LB, "Invariant broken: UB < LB"
+#         assert set(allowed_colors) == set(range(len(allowed_colors))), "Invariant broken: K must be contiguous 0..K-1"
+#         assert z_LP <= UB + 1e-6, "LP lower bound exceeds UB"
+#         assert verify_coloring(G, best_coloring, allowed_colors=list(range(UB)))["feasible"], "Best coloring infeasible"
 
-        assert UB >= LB, "Invariant broken: UB < LB"
-        assert set(allowed_colors) == set(range(len(allowed_colors))), "Invariant broken: K must be contiguous 0..K-1"
-        assert z_LP <= UB + 1e-6, "LP lower bound exceeds UB"
-        assert verify_coloring(G, best_coloring, allowed_colors=list(range(UB)))["feasible"], "Best coloring infeasible"
+#         #stopping criteria
+#         if UB <= LB:
+#             stop_reason = "UB==LB"
+#             if verbose:
+#                 print("  [Stop] UB==LB")
+#             break
 
-        #stopping criteria
-        if UB <= LB:
-            stop_reason = "UB==LB"
-            if verbose:
-                print("  [Stop] UB==LB")
-            break
+#         no_change_rounds = 0 if improved else (no_change_rounds + 1)
+#         if no_change_rounds >= stall_rounds and it >= min_rounds:
+#             stop_reason = f"no_progress {no_change_rounds} rounds"
+#             if verbose:
+#                 print(f"  [Stop] {stop_reason}")
+#             break
 
-        no_change_rounds = 0 if improved else (no_change_rounds + 1)
-        if no_change_rounds >= stall_rounds and it >= min_rounds:
-            stop_reason = f"no_progress {no_change_rounds} rounds"
-            if verbose:
-                print(f"  [Stop] {stop_reason}")
-            break
+#         if time.time() - t_all0 > time_limit_sec:
+#             stop_reason = "time_limit"
+#             break
 
-        if time.time() - t_all0 > time_limit_sec:
-            stop_reason = "time_limit"
-            break
+#     if not stop_reason:
+#         stop_reason = "max_rounds"
 
-    if not stop_reason:
-        stop_reason = "max_rounds"
+#     final_report = verify_coloring(G, best_coloring, allowed_colors=list(range(UB)))
+#     if verbose:
+#         print(f"  [Final] feasible={final_report['feasible']}|used_colors={UB}|conflicts={final_report['num_conflicts']}")
 
-    final_report = verify_coloring(G, best_coloring, allowed_colors=list(range(UB)))
-    if verbose:
-        print(f"  [Final] feasible={final_report['feasible']}|used_colors={UB}|conflicts={final_report['num_conflicts']}")
-
-    return dict(
-        UB=UB, LB=LB, coloring=best_coloring, iters=len(logs), log=logs,
-        stop_reason=stop_reason, feasible=final_report["feasible"], final_check=final_report
-    )
+#     return dict(
+#         UB=UB, LB=LB, coloring=best_coloring, iters=len(logs), log=logs,
+#         stop_reason=stop_reason, feasible=final_report["feasible"], final_check=final_report
+#     )

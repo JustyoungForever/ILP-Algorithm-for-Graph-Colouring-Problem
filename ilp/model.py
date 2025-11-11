@@ -13,7 +13,8 @@ def build_lp_model(
     Assignment-LP:
       min  sum_c y_c
       s.t. sum_c x_{v,c} = 1                        ∀v
-           x_{u,c} + x_{v,c} ≤ 1                     ∀(u,v)∈E, ∀c
+           x_{u,c} + x_{v,c} ≤ y_c                    ∀(u,v)∈E, ∀c
+           y_c ≤ Σ_v x_{v,c}
            x_{v,c} ≤ y_c                             ∀v,c
       + symmetry breaking by clique: v_i uses color i (i=0..|clique|-1)
       + optional precedence: y_{c+1} ≤ y_c
@@ -44,12 +45,15 @@ def build_lp_model(
     # 2) edge constraints per color
     for (u, v) in G.edges():
         for c in C:
-            solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= 1.0)
+            solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= y_vars[c])
 
     #3) linking x <= y
     for v in V:
         for c in C:
             solver.Add(x_vars[(v, c)] <= y_vars[c])
+    for c in C:
+        # （y_c>0），at least one vertex use this color
+        solver.Add(y_vars[c] <= solver.Sum(x_vars[(v, c)] for v in V))
 
     #4) clique-based symmetry breaking: fix clique_nodes[i] to color i
     t = min(len(clique_nodes), len(C))
