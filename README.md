@@ -49,7 +49,10 @@ python3 main.py --algo iterlp2 --time 300 --seed 0 \
   --restarts 48 --perturb-y 1e-6 \
   2>&1 | tee -a logs/run_$(date +%F_%H%M%S).log
 ```
-
+```bash
+mmdc -i .\main_flow.mmd -o main_flow.svg -b transparent
+mmdc -i .\explanation.mmd    -o .explanation.svg    -b transparent
+```
 ### Wichtige Argumente
 
 * `--algo`: `dsatur` | `iterlp` | `iterlp2` 

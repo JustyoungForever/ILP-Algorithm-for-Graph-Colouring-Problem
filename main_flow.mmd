@@ -1,0 +1,228 @@
+flowchart TD
+  %% ====== Core nodes ======
+  S[Start]
+  N1[Compute LB using clique size]
+  N2[Init by DSATUR or Smallest Last. UB == numColors col0. K == UB]
+  D0{Is UB <= LB}
+  E1[Stop. UB == LB]
+
+  N3[Build LP once. Vars x_vc and y_c. Objective minimize sum y_c. Add clique cuts and precedence]
+  L0{Time left}
+  E2[Stop. Time limit]
+  N4[Solve LP. Outputs zLP, x_star, y_star]
+
+  D1{Is ceil zLP < K}
+  K1[Lock prefix to ceil zLP. Set y_c == 0 for c >= ceil zLP. then solve]
+  D1a[Did lock succeed]
+  KOKC[Update K == ceil zLP. Refresh zLP, x_star, y_star]
+  KRBC[Rollback. Keep K]
+
+  G1[ROUND_AND_REPAIR_MULTI with K, x_star, y_star]
+  D2[Feasible]
+  F1[Compact and merge via CONSOLIDATE_COLORS. If highest color removed then UB == UB - 1]
+
+  %% ====== UB update + K sync + optimal stop (expanded inline) ======
+  D3[Is used < UB]
+  U1[Update UB == used. best == cand]
+  DK1[Is UB < K]
+  KTRY1[Apply lock_prefix_K to UB and solve]
+  KSET1[Success. Set K == UB. Refresh zLP, x_star, y_star]
+  KKEEP1[Fail. Keep K]
+  D4[Is UB <= LB]
+  E3[Stop. UB == LB]
+
+  %% ====== Accelerators and side rounding with explicit K+1 gate ======
+  A0[Accelerators: K plus 1 side, UB minus 1 side, LP guided pack, or fixing]
+  D5a{Is K plus 1 <= UB}
+  A1[Side rounding with K plus 1]
+  D5[Improved UB]
+  U2[Update UB == used. best == cand]
+  DK2[Is UB < K]
+  KTRY2[Apply lock_prefix_K to UB then solve]
+  KSET2[Success. Set K == UB. Refresh zLP x_star y_star]
+  KKEEP2[Fail. Keep K]
+  A2[Optional extra UB minus 1 try]
+  D6[Is UB == K plus 1]
+
+  %% ====== Packing paths ======
+  FIX0[Go to fixing stage]
+  P1[LP guided pack. Move highest color K into lower colors]
+  D7[Reduced to UB - 1]
+  U3[Update UB == UB - 1. best == cand]
+  DK3[Is UB < K]
+  KTRY3[Apply lock_prefix_K to UB and solve]
+  KSET3[Success. Set K == UB. Refresh zLP, x_star, y_star]
+  KKEEP3[Fail. Keep K]
+  P2[Graph only UB1 GREEDY pack]
+  D8[Reduced to UB - 1]
+  U4[Update UB == UB - 1. best == cand]
+  DK4[Is UB < K]
+  KTRY4[Apply lock_prefix_K to UB and solve]
+  KSET4[Success. Set K == UB. Refresh zLP, x_star, y_star]
+  KKEEP4[Fail. Keep K]
+
+  %% ====== Fixing stage ======
+  FIX1[Pick few safe fixings. prefix_shrink and strong x_vc == 1. limit per round]
+  D9[Any tokens]
+  T0{Stop check. ceil zLP >= UB and K <= UB}
+  FIX2[Apply tokens and warm start LP]
+  D10[Feasible or stable]
+  FIXR[Revert tokens]
+  R2[Optionally rerun rounding to seek UB drop]
+  E4[Stop. No further improvement]
+
+  %% ====== Yes No helper nodes ======
+  Y_D0[Yes];   N_D0[No]
+  Y_L0[Yes];   N_L0[No]
+  Y_D1[Yes];   N_D1[No]
+  Y_D1a[Yes];  N_D1a[No]
+  Y_D2[Yes];   N_D2[No]
+  Y_D3[Yes];   N_D3[No]
+  Y_D4[Yes];   N_D4[No]
+  Y_D5a[Yes];  N_D5a[No]
+  Y_D5[Yes];   N_D5[No]
+  Y_D6[Yes];   N_D6[No]
+  Y_D7[Yes];   N_D7[No]
+  Y_D8[Yes];   N_D8[No]
+  Y_D9[Yes];   N_D9[No]
+  Y_D10[Yes];  N_D10[No]
+  Y_DK1[Yes];  N_DK1[No]
+  Y_DK2[Yes];  N_DK2[No]
+  Y_DK3[Yes];  N_DK3[No]
+  Y_DK4[Yes];  N_DK4[No]
+
+  %% ====== Edges ======
+  S --> N1
+  N1 --> N2
+  N2 --> D0
+  D0 --> Y_D0
+  D0 --> N_D0
+  Y_D0 --> E1
+  N_D0 --> N3
+
+  N3 --> L0
+  L0 --> Y_L0
+  L0 --> N_L0
+  N_L0 --> E2
+  Y_L0 --> N4
+
+  N4 --> D1
+  D1 --> Y_D1
+  D1 --> N_D1
+  Y_D1 --> K1
+  N_D1 --> G1
+
+  K1 --> D1a
+  D1a --> Y_D1a
+  D1a --> N_D1a
+  Y_D1a --> KOKC
+  N_D1a --> KRBC
+  KOKC --> G1
+  KRBC --> G1
+
+  G1 --> D2
+  D2 --> Y_D2
+  D2 --> N_D2
+  Y_D2 --> F1
+  %% 修正：不可行时不再直达 A1，改为走 A0 → 判定 D5a
+  N_D2 --> A0
+
+  F1 --> D3
+  D3 --> Y_D3
+  D3 --> N_D3
+  Y_D3 --> U1
+  N_D3 --> D4
+
+  U1 --> DK1
+  DK1 --> Y_DK1
+  DK1 --> N_DK1
+  Y_DK1 --> KTRY1
+  N_DK1 --> D4
+  KTRY1 --> KSET1
+  KTRY1 --> KKEEP1
+  KSET1 --> D4
+  KKEEP1 --> D4
+
+  D4 --> Y_D4
+  D4 --> N_D4
+  Y_D4 --> E3
+  N_D4 --> A0
+
+  %% —— K+1 gate and side rounding wiring ——
+  A0 --> D5a
+  D5a --> Y_D5a
+  D5a --> N_D5a
+  Y_D5a --> A1
+  N_D5a --> A2
+
+  A1 --> D5
+  D5 --> Y_D5
+  D5 --> N_D5
+  Y_D5 --> U2
+  N_D5 --> A2
+
+  U2 --> DK2
+  DK2 --> Y_DK2
+  DK2 --> N_DK2
+  Y_DK2 --> KTRY2
+  N_DK2 --> A2
+  KTRY2 --> KSET2
+  KTRY2 --> KKEEP2
+  KSET2 --> A2
+  KKEEP2 --> A2
+
+  A2 --> D6
+  D6 --> Y_D6
+  D6 --> N_D6
+  Y_D6 --> P1
+  N_D6 --> FIX0
+
+  P1 --> D7
+  D7 --> Y_D7
+  D7 --> N_D7
+  Y_D7 --> U3
+  N_D7 --> P2
+
+  U3 --> DK3
+  DK3 --> Y_DK3
+  DK3 --> N_DK3
+  Y_DK3 --> KTRY3
+  N_DK3 --> FIX0
+  KTRY3 --> KSET3
+  KTRY3 --> KKEEP3
+  KSET3 --> FIX0
+  KKEEP3 --> FIX0
+
+  P2 --> D8
+  D8 --> Y_D8
+  D8 --> N_D8
+  Y_D8 --> U4
+  N_D8 --> FIX0
+
+  U4 --> DK4
+  DK4 --> Y_DK4
+  DK4 --> N_DK4
+  Y_DK4 --> KTRY4
+  N_DK4 --> FIX0
+  KTRY4 --> KSET4
+  KTRY4 --> KKEEP4
+  KSET4 --> FIX0
+  KKEEP4 --> FIX0
+
+  FIX0 --> FIX1
+  FIX1 --> D9
+  D9 --> Y_D9
+  D9 --> N_D9
+  Y_D9 --> FIX2
+  N_D9 --> T0
+
+  FIX2 --> D10
+  D10 --> Y_D10
+  D10 --> N_D10
+  Y_D10 --> R2
+  N_D10 --> FIXR
+
+  FIXR --> T0
+  R2 --> T0
+  T0 --> E4
+  T0 --> L0
