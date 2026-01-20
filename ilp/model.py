@@ -45,8 +45,8 @@ def build_lp_model(
     # 2) edge constraints per color
     for (u, v) in G.edges():
         for c in C:
-            solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= y_vars[c])
-
+            # solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= y_vars[c])
+            solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= 1.0)
     #3) linking x <= y
     for v in V:
         for c in C:

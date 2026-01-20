@@ -1,0 +1,5 @@
+﻿algo,ablation,stop_reason,count
+dsatur,baseline,baseline,112
+iterlp2_full,full,time_limit,99
+iterlp2_full,full,stalled_at_K_eq_ceil_zLP,11
+slo,baseline,baseline,110

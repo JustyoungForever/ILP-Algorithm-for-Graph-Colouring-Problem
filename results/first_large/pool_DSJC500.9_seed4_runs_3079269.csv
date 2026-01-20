@@ -1,0 +1,4 @@
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,ablation
+DSJC500.9,dimacs,500,112437,0.9012985971943888,449.748,dsatur,4,3,,,,,,,43,170,127,True,0,7.025329984724522,0,baseline,7.025329984724522,0,
+DSJC500.9,dimacs,500,112437,0.9012985971943888,449.748,slo,4,3,,,,,,,43,172,129,True,0,0.625935897231102,0,baseline,0.625935897231102,0,
+DSJC500.9,dimacs,500,112437,0.9012985971943888,449.748,iterlp2_full,4,3,smallest_last,prefix_shrink+rounded_support,0.25,2,2,1e-06,43,172,129,True,0,184.2190015166998,0,time_limit,0.0,0,full

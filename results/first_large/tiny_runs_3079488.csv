@@ -1,0 +1,10 @@
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,ablation
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,dsatur,0,5,,,,,,,2,4,2,True,0,0.0003912299871444702,0,baseline,0.0003912299871444702,0,
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,slo,0,5,,,,,,,2,4,2,True,0,0.000241108238697052,0,baseline,0.000241108238697052,0,
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,iterlp2_full,0,5,smallest_last,prefix_shrink+rounded_support,0.25,5,1,1e-06,2,4,2,True,0,0.06115560233592987,9,stalled_at_K_eq_ceil_zLP,0.0,0,full
+myciel4,dimacs,23,71,0.28063241106719367,6.173913043478261,dsatur,0,5,,,,,,,2,5,3,True,0,0.0005530416965484619,0,baseline,0.0005530416965484619,0,
+myciel4,dimacs,23,71,0.28063241106719367,6.173913043478261,slo,0,5,,,,,,,2,5,3,True,0,0.0004099830985069275,0,baseline,0.0004099830985069275,0,
+myciel4,dimacs,23,71,0.28063241106719367,6.173913043478261,iterlp2_full,0,5,smallest_last,prefix_shrink+rounded_support,0.25,5,1,1e-06,2,5,3,True,0,5.01686068624258,286,time_limit,0.0,0,full
+myciel5,dimacs,47,236,0.2183163737280296,10.042553191489361,dsatur,0,5,,,,,,,2,6,4,True,0,0.0022761523723602295,0,baseline,0.0022761523723602295,0,
+myciel5,dimacs,47,236,0.2183163737280296,10.042553191489361,slo,0,5,,,,,,,2,6,4,True,0,0.0010311678051948547,0,baseline,0.0010311678051948547,0,
+myciel5,dimacs,47,236,0.2183163737280296,10.042553191489361,iterlp2_full,0,5,smallest_last,prefix_shrink+rounded_support,0.25,5,1,1e-06,2,6,4,True,0,5.0146296843886375,95,time_limit,0.0,0,full

@@ -7,6 +7,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import networkx as nx
 import numbers
+
+_VIZ_ENABLED = os.environ.get("GCP_VIZ", "0").strip().lower() in ("1", "true", "yes", "on")
 # Zähler für Schnappschüsse je (Schritt, Runde) → int
 _SHOT_COUNTER = {}  # Schlüssel=(step_clean, round_id) -> int
 
@@ -71,6 +73,8 @@ def visualize_coloring(
       - Alle anderen gefärbten Knoten → Palettenfarben
       - Ungfärbte Knoten sowie Kanten mit mindestens einem ungefärbten Endpunkt → werden nicht gezeichnet
     """
+    if not _VIZ_ENABLED:
+        return ""
     ensure_outdir(out_dir)
     step_clean = _sanitize_step(step)
 

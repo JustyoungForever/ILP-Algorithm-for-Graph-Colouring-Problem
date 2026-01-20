@@ -1,0 +1,2 @@
+[ERROR] INST is empty. Submit like:
+  sbatch --export=ALL,INST=DSJC500.9.col,TL=86400 sbatch_final_dsjc_single.sbatch

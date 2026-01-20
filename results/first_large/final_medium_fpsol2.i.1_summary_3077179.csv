@@ -1,0 +1,4 @@
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+fpsol2.i.1,dsatur,3,65,65.0,0.526358425617218,0.526358425617218
+fpsol2.i.1,iterlp2_full,3,65,65.0,6132.220083450277,0.0
+fpsol2.i.1,slo,3,65,65.0,0.027746528387069702,0.027746528387069702

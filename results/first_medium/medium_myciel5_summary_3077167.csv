@@ -1,0 +1,4 @@
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+myciel5,dsatur,3,6,6.0,0.0017492547631263733,0.0017492547631263733
+myciel5,iterlp2_full,3,6,6.0,10.372331003348032,0.0
+myciel5,slo,3,6,6.0,0.0007926250497500101,0.0007926250497500101

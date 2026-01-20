@@ -17,6 +17,11 @@ class IncrementalLP:
         self.y_vars = self.var_maps["y_vars"]  # c -> var
         self.V = self.var_maps["V"]
         self.C = self.var_maps["C"]
+    def set_time_limit_ms(self, ms: int) -> None:
+        try:
+            self.solver.SetTimeLimit(int(max(0, ms)))
+        except Exception:
+            pass
 
     def _snapshot(self, vars: Iterable[pywraplp.Variable]) -> BoundsToken:
         tok: BoundsToken = []
@@ -65,13 +70,11 @@ class IncrementalLP:
 
     def try_apply_and_solve(self, tokens: List[BoundsToken]) -> Tuple[Optional[Dict[str, Any]], bool]:
         """Apply a batch of modifications and try to solve; if not optimal (e.g., infeasible), revert and return (None, False)."""
-        status = self.solver.Solve()
-        # Solve once first (warm start), then actually solve and extract
-        if status != pywraplp.Solver.OPTIMAL:
-            # If cannot solve even without modifications, fail directly
+        try:
+            info = solve_lp_and_extract(self.solver, self.var_maps)  # 内部 solve + extract
+            return info, True
+        except TimeoutError:
             return None, False
-        info = solve_lp_and_extract(self.solver, self.var_maps)
-        return info, True
 
     def revert_all(self, tokens: List[BoundsToken]) -> None:
         for tok in reversed(tokens):

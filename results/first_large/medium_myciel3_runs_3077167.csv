@@ -1,0 +1,10 @@
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,ablation
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,dsatur,0,10,,,,,,,2,4,2,True,0,0.00030556321144104004,0,baseline,0.00030556321144104004,0,
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,dsatur,1,10,,,,,,,2,4,2,True,0,0.0001313909888267517,0,baseline,0.0001313909888267517,0,
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,dsatur,2,10,,,,,,,2,4,2,True,0,0.00010720640420913696,0,baseline,0.00010720640420913696,0,
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,slo,0,10,,,,,,,2,4,2,True,0,0.00022591650485992432,0,baseline,0.00022591650485992432,0,
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,slo,1,10,,,,,,,2,4,2,True,0,0.0001356080174446106,0,baseline,0.0001356080174446106,0,
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,slo,2,10,,,,,,,2,4,2,True,0,0.00012522190809249878,0,baseline,0.00012522190809249878,0,
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,iterlp2_full,0,10,smallest_last,prefix_shrink+rounded_support,0.25,20,16,1e-06,2,4,2,True,0,1.8089423924684525,9,stalled_at_K_eq_ceil_zLP,0.0,0,full
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,iterlp2_full,1,10,smallest_last,prefix_shrink+rounded_support,0.25,20,16,1e-06,2,4,2,True,0,1.7411962673068047,9,stalled_at_K_eq_ceil_zLP,0.0,0,full
+myciel3,dimacs,11,20,0.36363636363636365,3.6363636363636362,iterlp2_full,2,10,smallest_last,prefix_shrink+rounded_support,0.25,20,16,1e-06,2,4,2,True,0,1.775933876633644,9,stalled_at_K_eq_ceil_zLP,0.0,0,full

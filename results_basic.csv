@@ -1,0 +1,13 @@
+instance,n,m,algo,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round
+K6,6,15,dsatur,6,6,0,True,0,0.00025963783264160156,0,baseline,,
+K6,6,15,slo,6,6,0,True,0,0.00014138221740722656,0,baseline,,
+K6,6,15,iterlp2,6,6,0,True,0,0.0001506805419921875,0,UB==LB,0.0,0
+C9,9,9,dsatur,2,3,1,True,0,0.00011086463928222656,0,baseline,,
+C9,9,9,slo,2,3,1,True,0,9.894371032714844e-05,0,baseline,,
+C9,9,9,iterlp2,2,3,1,True,0,0.24376559257507324,1,no_better_than_UB,0.0,0
+ER60_p006,60,128,dsatur,2,4,2,True,0,0.002340555191040039,0,baseline,,
+ER60_p006,60,128,slo,2,4,2,True,0,0.0006501674652099609,0,baseline,,
+ER60_p006,60,128,iterlp2,2,4,2,True,0,42.09288954734802,9,stalled_at_K_eq_ceil_zLP,0.0,0
+RR100_d10,100,500,dsatur,3,5,2,True,0,0.006966829299926758,0,baseline,,
+RR100_d10,100,500,slo,3,8,5,True,0,0.00164031982421875,0,baseline,,
+RR100_d10,100,500,iterlp2,3,8,5,True,0,103.76418137550354,2,time_limit,0.0,0

@@ -1,0 +1,4 @@
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+inithx.i.1,dsatur,3,54,54.0,1.5158282419045765,1.5158282419045765
+inithx.i.1,iterlp2_full,3,54,54.0,6768.406261203189,0.0
+inithx.i.1,slo,3,54,54.0,0.04968692113955816,0.04968692113955816

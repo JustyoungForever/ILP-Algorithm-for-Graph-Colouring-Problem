@@ -42,12 +42,39 @@ ILP-Algorithm-for-Graph-Colouring-Problem/
 
 
 ```bash
-python3 main.py --algo iterlp2 --time 300 --seed 0 \
+python3 main.py --algo iterlp2 --graph demo --time 10 --seed 0 \
   --init-heuristic smallest_last \
   --fix-policy prefix_shrink+rounded_support \
-  --max-fix-per-round 20 \
-  --restarts 48 --perturb-y 1e-6 \
+  --max-fix-per-round 5 \
+  --restarts 2 --perturb-y 1e-3 \
   2>&1 | tee -a logs/run_$(date +%F_%H%M%S).log
+
+
+python3 -m experiments.smoke_test
+python3 -m experiments.runner_basic
+
+## experiments DIMACS
+python3 runner.py --suite dimacs \
+  --dimacs-dir experiments/data/dimacs_selected \
+  --time-limit 300 \
+  --algos dsatur,slo,iterlp2_full \
+  --algo-seeds 0 \
+  --restarts 4 \
+  --max-fix-per-round 10 \
+  --strong-margin 0.25 \
+  --perturb-y 1e-6 \
+  --save-trace 0 \
+  --out-dir results \
+  --out-csv dimacs_all_safe_runs.csv \
+  --summary-csv dimacs_all_safe_summary.csv
+
+
+squeue -u ta32xoy -o "%.18i %.12P %.25j %.8T %.10M %.9l %.6D %R"
+
+tail -f /home/ta32xoy/masterarbeit/experiments/data/large/logs/dsjc1000_iterlp_live_10m_3079566.out
+
+scontrol show job 3077183 | egrep "JobId=|JobName=|UserId=|Account=|Partition=|QOS=|JobState=|Reason=|RunTime=|TimeLimit=|SubmitTime=|StartTime=|EndTime=|NodeList=|NumCPUs=|CPUs/Task=|MinMemory|ReqTRES=|AllocTRES="
+
 ```
 ```bash
 mmdc -i .\main_flow.mmd -o main_flow.svg -b transparent

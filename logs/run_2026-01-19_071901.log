@@ -1,0 +1,29 @@
+[Graph] demo |V|=20 |E|=88
+[Main] algo=iterlp2 | time=300s | seed=0 | init=smallest_last | fix-policy=prefix_shrink+rounded_support | restarts=2 | perturb-y=0.001
+[Baseline/DSATUR] colors=6 | time=0.0005s | feasible=True | conflicts=0
+[Init] graph: |V|=20 |E|=88 |LB|=5 |UB(init)|=6 |K|=6 via smallest_last
+[Init] LB=5 | UB(init:smallest_last)=6
+[LP] model built once (incremental), initial |C|=6 (K=6) with precedence & clique-cuts
+[Round 1] zLP=5.250000 | ceil(zLP)=6 | K=6 | UB=6 | t=0.01s
+  [Rounding] feasible=True | used=6 | conflicts=0
+[LocalSearch] highest color class removed; colors now=6
+[LocalSearch] highest color class removed; colors now=6
+[LocalSearch] highest color class removed; colors now=6
+[LocalSearch] highest color class removed; colors now=6
+[LocalSearch] highest color class removed; colors now=6
+  [Rounding] feasible=True | used=6 | conflicts=0
+  [Side] skip: K+1=7 exceeds current UB=6
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=1 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=6 | conflicts=0
+[LocalSearch] highest color class removed; colors now=6
+[LocalSearch] highest color class removed; colors now=6
+[LocalSearch] highest color class removed; colors now=6
+  [Round 1 END] UB=6 | K=6 | ceil(zLP)=6 | improved=False | fixed=True
+  [Stop] LP bound meets UB (ceil(zLP) >= UB and K <= UB)
+[Final] UB=6 LB=5 feasible=True zLP≈5.250000
+[Compare] DSATUR colors=6 vs IterLP2 colors=6  → Tie (Δ=0)
+[Compare] DSATUR time=0.0005s | IterLP2 time=0.0125s | stop=no_better_than_UB
+[Main] Done. stop_reason=no_better_than_UB | LB=5 | UB=6 | iters=1

@@ -1,6 +1,6 @@
 # main.py
 import argparse, time
-from graph.loader import load_demo_graph
+from graph.loader import load_graph
 from graph.verify import verify_coloring, print_check_summary
 from graph.dsatur import dsatur_coloring
 from driver.iterate_lp import run_iterative_lp_v2
@@ -8,8 +8,10 @@ from visualisierung.draw import visualize_coloring
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--graph", default="demo", choices=["demo", "rr100_d10"])
     ap.add_argument("--algo", default="iterlp2", choices=["dsatur", "iterlp", "iterlp2"])
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--algo-seed", type=int, default=0)
     ap.add_argument("--time", type=int, default=60)
     ap.add_argument("--init-heuristic", default="dsatur", choices=["dsatur","smallest_last"])
     ap.add_argument("--fix-policy", default="prefix_shrink+strong_assign")
@@ -21,8 +23,8 @@ if __name__ == "__main__":
     ap.add_argument("--viz-layout-seed", type=int, default=42)
     args = ap.parse_args()
 
-    G = load_demo_graph(seed=args.seed)
-
+    G = load_graph(args.graph, seed=args.seed)
+    print(f"[Graph] {args.graph} |V|={G.number_of_nodes()} |E|={G.number_of_edges()}")
     if args.algo == "dsatur":
         t0 = time.time()
         col = dsatur_coloring(G)
@@ -65,9 +67,10 @@ if __name__ == "__main__":
                 max_fix_per_round=args.max_fix_per_round,
                 restarts=args.restarts,
                 perturb_y=args.perturb_y,
-                enable_visualization=True,          
+                enable_visualization=False,          
                 viz_out_dir=args.viz_out,
                 viz_layout_seed=args.viz_layout_seed,
+                algo_seed=args.algo_seed,
             )
             lp_time = time.time() - t1
 

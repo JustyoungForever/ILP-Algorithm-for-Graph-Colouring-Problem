@@ -2,6 +2,9 @@
 from typing import Dict, List
 import random
 from graph.kempe import kempe_chain_component, kempe_swap
+import time
+from typing import Optional
+
 
 def round_and_repair(G, x_frac: Dict[tuple, float], y_frac: Dict[int, float], current_UB: int) -> Dict[int, int]:
     """
@@ -131,11 +134,13 @@ def round_and_repair(G, x_frac: Dict[tuple, float], y_frac: Dict[int, float], cu
 
 
 # heuristics/round_and_repair.py 仅改 wrap 多启动函数
-def round_and_repair_multi(G, x_frac, y_frac, current_UB, restarts=36, seed=0, perturb_y: float = 1e-6):
+def round_and_repair_multi(G, x_frac, y_frac, current_UB, restarts=36, seed=0, perturb_y: float = 1e-6,deadline_ts: Optional[float] = None):
     best = None
     best_used = 10**9
     rnd = random.Random(seed)
     for _ in range(restarts):
+        if deadline_ts is not None and time.monotonic() >= deadline_ts:
+            break
         y_jitter = {c: y_frac.get(c, 0.0) + perturb_y * rnd.random() for c in range(current_UB)}
         cand = round_and_repair(G, x_frac, y_jitter, current_UB)
         used = len(set(cand.values()))

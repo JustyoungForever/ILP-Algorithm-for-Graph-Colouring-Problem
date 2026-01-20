@@ -35,13 +35,41 @@ def run_iterative_lp_v2(
     max_fix_per_round: int = 50,
     restarts: int = 16,
     perturb_y: float = 1e-6,
-    enable_visualization: bool = True,
+    enable_visualization: bool = False,
     viz_out_dir: str = "visualisierung/picture",
     viz_layout_seed: int = 42,
+    algo_seed:int=0,
 ) -> Dict[str, Any]:
-    t0 = time.time()
+    t0 = time.monotonic()
+    deadline = t0 + float(time_limit_sec)
+    stop_reason = ""
+    best_time_sec = 0.0
+    best_round = 0
+    best_UB_seen = None  
+    def elapsed():
+        return time.monotonic() - t0
 
+    def time_left():
+        return deadline - time.monotonic()
+
+    def budget_exhausted(stage: str) -> bool:
+        nonlocal stop_reason
+        if time_left() <= 0.0:
+            stop_reason = "time_limit"
+            if verbose:
+                print(f"[Time] budget exhausted at {stage}, UB={UB if UB is not None else 'N/A'}")
+            return True
+        return False
+    
+    def mark_best(new_ub: int, rid: int) -> None:
+        nonlocal best_UB_seen, best_time_sec, best_round
+        if best_UB_seen is None or new_ub < best_UB_seen:
+            best_UB_seen = new_ub
+            best_time_sec = time.monotonic() - t0
+            best_round = rid
     def viz(step: str, rid: int, cmap: Dict[int, int], K_allowed: int, *, only_colored: bool = True) -> None:
+        if not enable_visualization:
+            return
         if not cmap:
             return
         visualize_coloring(
@@ -52,6 +80,19 @@ def run_iterative_lp_v2(
             conflict_nodes_fill_black=True,
         )
 
+    def _accept_if_feasible(label: str, cand_map: Dict[int, int], ub_new: int) -> Tuple[bool, Dict[int, int], int, Dict[str, Any]]:
+        """
+        Returns (ok, cand_compact, used, report)
+        Ensures cand is compacted and verified with allowed colors 0..used-1.
+        """
+        if not cand_map:
+            return False, {}, ub_new, {"feasible": False, "num_conflicts": -1}
+
+        cand_compact, used = compact_colors(cand_map)
+        rep_local = verify_coloring(G, cand_compact, allowed_colors=list(range(used)))
+        if verbose:
+            print(f"  [AcceptCheck:{label}] feasible={rep_local['feasible']} used={used} conflicts={rep_local['num_conflicts']}")
+        return bool(rep_local["feasible"]), cand_compact, used, rep_local
 
     stall_after_K = 8  # Trigger Step-5 termination when consecutive rounds without progress reach this value and K==ceil(zLP)
     
@@ -60,7 +101,9 @@ def run_iterative_lp_v2(
     LB = len(clique_nodes)
     init_col = smallest_last_coloring(G) if init_heuristic == "smallest_last" else dsatur_coloring(G)
     init_col, UB = compact_colors(init_col)   # Compact color indices to 0..UB-1
-
+    best_UB_seen = UB
+    best_time_sec = 0.0
+    best_round = 0
     best_coloring = init_col
     K = UB  # Initialize LP/rounding palette K, later tightened by ceil(zLP)
     if verbose:
@@ -79,7 +122,7 @@ def run_iterative_lp_v2(
     if UB <= LB:
         rep = verify_coloring(G, best_coloring, allowed_colors=list(range(UB)))
         return dict(UB=UB, LB=LB, coloring=best_coloring, iters=0, log=[], stop_reason="UB==LB",
-                    feasible=rep["feasible"], final_check=rep)
+                    feasible=rep["feasible"], final_check=rep,best_time_sec=best_time_sec, best_round=best_round)
 
     # build LP once (initial K = UB)
     extra_cliques = top_maximal_cliques(G, max_cliques=50, min_size=max(4, LB+1), time_limit_sec=2.0)
@@ -95,30 +138,41 @@ def run_iterative_lp_v2(
     prev_UB = UB
     no_progress_rounds = 0
 
-    while time.time() - t0 <= time_limit_sec:
+    while time.monotonic() - t0 <= time_limit_sec:
         round_id += 1
 
         # 1) solve LP first (get zLP)
-        info = inc.solve()
+        inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+        try:
+            info = inc.solve()
+        except TimeoutError:
+            stop_reason = "time_limit"
+            break
         zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
         if verbose:
             ceilK = int(math.ceil(zLP - 1e-12))
-            elapsed = time.time() - t0
+            elapsed = time.monotonic() - t0
             print(f"[Round {round_id}] zLP={zLP:.6f} | ceil(zLP)={ceilK} | K={K} | UB={UB} | t={elapsed:.2f}s")
         # 2) decide whether to tighten K based on ceil(zLP) (safe: try - rollback if fails)
-        K_target = max(LB, int(math.ceil(zLP - 1e-12)))
+        lb_lp = int(math.ceil(zLP))
+        K_target = max(LB, int(math.ceil(zLP - 1e-12)),UB - 1,lb_lp)
         K_shrunk_this_round = False
         x_fix_applied_this_round = False
         improved_this_round = False
 
         if K_target < K:
             tok = [inc.lock_prefix_K(K_target)]
-            ok_info, ok = inc.try_apply_and_solve(tok)
+            inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+            try:
+                ok_info, ok = inc.try_apply_and_solve(tok)
+            except TimeoutError:
+                stop_reason = "time_limit"
+                break
             if ok:
                 K = K_target
                 K_shrunk_this_round = True
                 if verbose:
-                    print(f"  [Fix] shrink K to {K} (ceil(zLP)={K})")
+                    print(f"  [Fix] set K to UB-1: {K} -> {K_target} (lb_lp={lb_lp}, UB={UB})")
                 dbg = _debug_candidate_from_xfrac(ok_info["x_frac"], K_eff=K)
                 if enable_visualization:
                     viz("ShrinkK-ok", round_id, dbg, K, only_colored=False)
@@ -133,9 +187,12 @@ def run_iterative_lp_v2(
                     viz("ShrinkK-rollback", round_id, dbg, K_target, only_colored=False)
 
         # 3) rounding with K colors
+        if budget_exhausted("before_rounding"):
+            break
         cand = round_and_repair_multi(G, x_frac, y_frac, current_UB=K,
-                                        restarts=restarts, seed=round_id, perturb_y=perturb_y)
+                                        restarts=restarts, seed=algo_seed + round_id, perturb_y=perturb_y,deadline_ts=deadline)
         rep = verify_coloring(G, cand, allowed_colors=list(range(K)))
+        if budget_exhausted("after_rounding"): break
         if enable_visualization:
             viz("Rounding", round_id, cand, K)
         if verbose:
@@ -155,16 +212,23 @@ def run_iterative_lp_v2(
                 UB = used
                 best_coloring = cand
                 improved_this_round = True
+                
                 if verbose:
                     print(f"  [Rounding/Local] improved UB -> {UB}")
                 if K > UB:
                     tok2 = [inc.lock_prefix_K(UB)]
-                    ok_info2, ok2 = inc.try_apply_and_solve(tok2)
+                    inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+                    try:
+                        ok_info2, ok2 = inc.try_apply_and_solve(tok2)
+                    except TimeoutError:
+                        stop_reason = "time_limit"
+                        break
                     if ok2:
                         K = UB
                         if verbose:
                             print(f"  [Sync] K aligned to new UB: K={K}")
                         zLP, x_frac, y_frac = ok_info2["z_LP"], ok_info2["x_frac"], ok_info2["y_frac"]
+                        mark_best(UB, round_id)
                     else:
                         inc.revert_all(tok2)
                 if UB <= LB:
@@ -176,16 +240,22 @@ def run_iterative_lp_v2(
                 print(f"  [Side] trying K+1 rounding (K={K} - {K+1}) to break stalemate")
             newUB, newCol, applied = try_side_rounding(
                     G, x_frac, y_frac, K, UB,
-                    restarts=restarts, perturb_y=perturb_y, seed=9000 + round_id, verbose=verbose,
+                    restarts=restarts, perturb_y=perturb_y, seed=algo_seed+ 9000 + round_id, verbose=verbose,
                     enable_visualization=enable_visualization,
                     viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,
                     step_name="Side-K+1",
                 )
             if applied and newUB < UB:
 
-                UB = newUB
-                best_coloring = newCol
-                improved_this_round = True
+                # UB = newUB
+                # best_coloring = newCol
+                # improved_this_round = True
+                ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
+                if ok and used_ok < UB:
+                    UB = used_ok
+                    best_coloring = cand_ok
+                    improved_this_round = True
+                mark_best(UB, round_id)
                 if UB <= LB:
                     stop_reason = "UB==LB"
                     break
@@ -197,15 +267,18 @@ def run_iterative_lp_v2(
         # 3.5) UB-1 side attempt (allow K+1 colors, only for constructing better feasible solutions; doesn't change LP locking)
         newUB, newCol, applied = try_side_rounding(
                 G, x_frac, y_frac, K, UB,
-                restarts=restarts, perturb_y=perturb_y, seed=9000 + round_id, verbose=verbose,
+                restarts=restarts, perturb_y=perturb_y, seed=algo_seed+9000 + round_id, verbose=verbose,
                 enable_visualization=enable_visualization,
                 viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,
                 step_name="UB-1-Side",
             )
         if applied and newUB < UB:
-            UB = newUB
-            best_coloring = newCol
-            improved_this_round = True
+            ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
+            if ok and used_ok < UB:
+                UB = used_ok
+                best_coloring = cand_ok
+                improved_this_round = True
+            mark_best(UB, round_id)
             if UB <= LB:
                 stop_reason = "UB==LB"
                 break
@@ -219,15 +292,23 @@ def run_iterative_lp_v2(
                 enable_visualization=enable_visualization,
                 viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,)
             if applied and newUB < UB:
-                UB = newUB
-                best_coloring = newCol
-
-                improved_this_round = True
+                ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
+                if ok and used_ok < UB:
+                    UB = used_ok
+                    best_coloring = cand_ok
+                    improved_this_round = True
+                
                 if K > UB:
                     tok3 = [inc.lock_prefix_K(UB)]
-                    ok_info3, ok3 = inc.try_apply_and_solve(tok3)
+                    inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+                    try:
+                        ok_info3, ok3 = inc.try_apply_and_solve(tok3)
+                    except TimeoutError:
+                        stop_reason = "time_limit"
+                        break
                     if ok3:
                         K = UB
+                        mark_best(UB, round_id)
                         if verbose:
                             print(f"  [Sync] K aligned to new UB: K={K}")
                     else:
@@ -241,15 +322,23 @@ def run_iterative_lp_v2(
                 viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,)
 
             if applied and newUB < UB:
-                UB = newUB
-                best_coloring = newCol
-
-                improved_this_round = True
+                ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
+                if ok and used_ok < UB:
+                    UB = used_ok
+                    best_coloring = cand_ok
+                    improved_this_round = True
+                
                 if K > UB:
                     tok4 = [inc.lock_prefix_K(UB)]
-                    ok_info4, ok4 = inc.try_apply_and_solve(tok4)
+                    inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+                    try:
+                        ok_info4, ok4 = inc.try_apply_and_solve(tok4)
+                    except TimeoutError:
+                        stop_reason = "time_limit"
+                        break
                     if ok4:
                         K = UB
+                        mark_best(UB, round_id)
                         if verbose:
                             print(f"  [Sync] K aligned to new UB: K={K}")
                     else:
@@ -277,8 +366,12 @@ def run_iterative_lp_v2(
         if tokens:
             if verbose:
                 print(f"  [FixApply] applying tokens={len(tokens)} (x fixings only in prefix K)")
-
-            ok_info3, ok3 = inc.try_apply_and_solve(tokens)
+            inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+            try:
+                ok_info3, ok3 = inc.try_apply_and_solve(tokens)
+            except TimeoutError:
+                stop_reason = "time_limit"
+                break
             if verbose:
                 print(f"  [FixApply] status={'OK' if ok3 else 'ROLLBACK'}")
             if not ok3:
@@ -288,10 +381,13 @@ def run_iterative_lp_v2(
                     viz("FixApply-rollback", round_id, dbg, K, only_colored=False)
             else:
                 x_fix_applied_this_round = True
+                if budget_exhausted("before_rounding"):
+                    break
                 cand3 = round_and_repair_multi(G, ok_info3["x_frac"], ok_info3["y_frac"],
                                                current_UB=K, restarts=max(2, restarts // 2),
-                                               seed=7777 + round_id, perturb_y=perturb_y)
+                                               seed=algo_seed+7777 + round_id, perturb_y=perturb_y,deadline_ts=deadline)
                 rep3 = verify_coloring(G, cand3, allowed_colors=list(range(K)))
+                if budget_exhausted("after_rounding"): break
                 if enable_visualization:
                     viz("After-Fix-Rounding", round_id, cand3, K, only_colored=rep3["feasible"])
                 if verbose:
@@ -310,13 +406,20 @@ def run_iterative_lp_v2(
 
 
                         improved_this_round = True
+                        
                         if verbose:
                             print(f"  [After-Fix] improved UB -> {UB}")
                         if K > UB:
                             tok4 = [inc.lock_prefix_K(UB)]
-                            ok_info4, ok4 = inc.try_apply_and_solve(tok4)
+                            inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+                            try:
+                                ok_info4, ok4 = inc.try_apply_and_solve(tok4)
+                            except TimeoutError:
+                                stop_reason = "time_limit"
+                                break
                             if ok4:
                                 K = UB
+                                mark_best(UB, round_id)
                                 if verbose:
                                     print(f"  [Sync] K aligned to new UB: K={K}")
                             else:
@@ -327,7 +430,8 @@ def run_iterative_lp_v2(
         if verbose:
             print(f"  [Round {round_id} END] UB={UB} | K={K} | ceil(zLP)={int(math.ceil(zLP - 1e-12))} "
                 f"| improved={improved_this_round} | fixed={(K_shrunk_this_round or x_fix_applied_this_round)}")
-        viz("End-Of-Round", round_id, best_coloring, UB)
+        if enable_visualization:
+            viz("End-Of-Round", round_id, best_coloring, UB)
         logs.append(dict(round=round_id, zLP=zLP, UB=UB, K=K))
 
         # 5) termination logic
@@ -352,7 +456,7 @@ def run_iterative_lp_v2(
 
 
     if not stop_reason:
-        stop_reason = "time_limit" if time.time() - t0 > time_limit_sec else "max_rounds"
+        stop_reason = "time_limit" if time.monotonic() - t0 > time_limit_sec else "max_rounds"
     
     # Final compaction before returning, ensure UB matches color indices (prevent out_of_range)
     best_coloring, used_final = compact_colors(best_coloring)
@@ -378,133 +482,155 @@ def run_iterative_lp_v2(
                 print(f"  [Viz] skip (Final) due to: {e}")
     return dict(
         UB=UB, LB=LB, coloring=best_coloring, iters=len(logs), log=logs,
-        stop_reason=stop_reason, feasible=final_report["feasible"], final_check=final_report
+        stop_reason=stop_reason, feasible=final_report["feasible"], final_check=final_report,
+        best_time_sec=best_time_sec, best_round=best_round
     )
 
 
-def _bootstrap_initial_from_lp(
-    G,
-    headroom: int = 3,
-    max_k_increase: int = None,
-    restarts: int = 16,
-    time_limit_bootstrap: float = 10.0,
-    verbose: bool = True,
-) -> Tuple[int, int, List[int], List[List[int]], Dict[int, int], float]:
-    """
-    use LP relaxation + rounding/repair to obtain the FIRST feasible coloring as the initial UB.
-    - start from LB = |clique| and set K = LB + headroom;
-    - iff rounding fails, increase K and retry (until success or limits).
-    returns: (UB, LB, clique_nodes, extra_cliques, best_coloring, z_LP_at_success)
-    """
-    t0 = time.time()
-    n = G.number_of_nodes()
+# def _bootstrap_initial_from_lp(
+#     G,
+#     headroom: int = 3,
+#     max_k_increase: int = None,
+#     restarts: int = 16,
+#     time_limit_bootstrap: float = 10.0,
+#     verbose: bool = True,
+# ) -> Tuple[int, int, List[int], List[List[int]], Dict[int, int], float]:
+#     """
+#     use LP relaxation + rounding/repair to obtain the FIRST feasible coloring as the initial UB.
+#     - start from LB = |clique| and set K = LB + headroom;
+#     - iff rounding fails, increase K and retry (until success or limits).
+#     returns: (UB, LB, clique_nodes, extra_cliques, best_coloring, z_LP_at_success)
+#     """
+#     t0 = time.monotonic()
+#     stop_reason = ""
+#     deadline = t0 + float(time_limit_sec)
+#     def elapsed():
+#         return time.monotonic() - t0
 
-    clique_nodes = greedy_max_clique(G)
-    LB = len(clique_nodes)
+#     def time_left():
+#         return deadline - time.monotonic()
+#     n = G.number_of_nodes()
+#     def budget_exhausted(stage: str) -> bool:
+#         nonlocal stop_reason
+#         if time_left() <= 0.0:
+#             stop_reason = "time_limit"
+#             if verbose:
+#                 print(f"[Time] budget exhausted at {stage}, UB={UB if UB is not None else 'N/A'}")
+#             return True
+#         return False
+#     clique_nodes = greedy_max_clique(G)
+#     LB = len(clique_nodes)
 
-    # clique cuts to strengthen the LP
-    extra_cliques = top_maximal_cliques(G, max_cliques=50, min_size=max(4, LB + 1), time_limit_sec=2.0)
+#     # clique cuts to strengthen the LP
+#     extra_cliques = top_maximal_cliques(G, max_cliques=50, min_size=max(4, LB + 1), time_limit_sec=2.0)
 
-    # start with K = LB + headroom and increase if rounding fails
-    K = min(n, max(LB, LB + headroom))
-    if max_k_increase is None:
-        max_k_increase = max(0, n - K)
+#     # start with K = LB + headroom and increase if rounding fails
+#     K = min(n, max(LB, LB + headroom))
+#     if max_k_increase is None:
+#         max_k_increase = max(0, n - K)
 
-    last_zLP = None
-    for bump in range(max_k_increase + 1):
-        if time.time() - t0 > time_limit_bootstrap:
-            break
+#     last_zLP = None
+#     for bump in range(max_k_increase + 1):
+#         if time.time() - t0 > time_limit_bootstrap:
+#             break
 
-        allowed_colors = list(range(K))
-        # Build and solve the LP
-        model, var_maps = build_lp_model(
-            G=G,
-            allowed_colors=allowed_colors,
-            clique_nodes=clique_nodes,
-            extra_cliques=extra_cliques,
-            add_precedence=True,
-        )
-        info = solve_lp_and_extract(model, var_maps)
-        last_zLP = info["z_LP"]
+#         allowed_colors = list(range(K))
+#         # Build and solve the LP
+#         model, var_maps = build_lp_model(
+#             G=G,
+#             allowed_colors=allowed_colors,
+#             clique_nodes=clique_nodes,
+#             extra_cliques=extra_cliques,
+#             add_precedence=True,
+#         )
+#         info = solve_lp_and_extract(model, var_maps)
+#         last_zLP = info["z_LP"]
 
-        # multi-start rounding + repair
-        cand = round_and_repair_multi(G, info["x_frac"], info["y_frac"], current_UB=K, restarts=restarts, seed=bump)
-        rep = verify_coloring(G, cand, allowed_colors=list(range(K)))
+#         # multi-start rounding + repair
+#         if budget_exhausted("before_rounding"):
+#             break
+#         cand = round_and_repair_multi(G, info["x_frac"], info["y_frac"], current_UB=K, restarts=restarts, seed=bump,deadline_ts=deadline)
+#         rep = verify_coloring(G, cand, allowed_colors=list(range(K)))
+#         if budget_exhausted("after_rounding"): break
+#         if verbose:
+#             print(f"[Init-LP] try K={K} -> feasible={rep['feasible']} | used={len(set(cand.values()))} | z_LP={last_zLP:.6f}")
+#             if not rep["feasible"]:
+#                 print(f"[Init-LP] conflicts_sample={rep['conflicts_sample'][:10]}")
 
-        if verbose:
-            print(f"[Init-LP] try K={K} -> feasible={rep['feasible']} | used={len(set(cand.values()))} | z_LP={last_zLP:.6f}")
-            if not rep["feasible"]:
-                print(f"[Init-LP] conflicts_sample={rep['conflicts_sample'][:10]}")
+#         if rep["feasible"]:
+#             UB0 = len(set(cand.values()))
+#             return UB0, LB, clique_nodes, extra_cliques, cand, last_zLP
 
-        if rep["feasible"]:
-            UB0 = len(set(cand.values()))
-            return UB0, LB, clique_nodes, extra_cliques, cand, last_zLP
+#         # otherwise increase K and try once again
+#         K = min(n, K + 1)
 
-        # otherwise increase K and try once again
-        K = min(n, K + 1)
+#     # fallback: try K = n one last time (should almost always succeed)
+#     if K < n:
+#         allowed_colors = list(range(n))
+#         model, var_maps = build_lp_model(
+#             G=G, allowed_colors=allowed_colors, clique_nodes=clique_nodes,
+#             extra_cliques=extra_cliques, add_precedence=True
+#         )
+#         info = solve_lp_and_extract(model, var_maps)
+#         last_zLP = info["z_LP"]
 
-    # fallback: try K = n one last time (should almost always succeed)
-    if K < n:
-        allowed_colors = list(range(n))
-        model, var_maps = build_lp_model(
-            G=G, allowed_colors=allowed_colors, clique_nodes=clique_nodes,
-            extra_cliques=extra_cliques, add_precedence=True
-        )
-        info = solve_lp_and_extract(model, var_maps)
-        last_zLP = info["z_LP"]
-        cand = round_and_repair_multi(G, info["x_frac"], info["y_frac"], current_UB=n, restarts=restarts, seed=999)
-        rep = verify_coloring(G, cand, allowed_colors=allowed_colors)
-        if verbose:
-            print(f"[Init-LP] fallback K=n -> feasible={rep['feasible']} | used={len(set(cand.values()))} | z_LP={last_zLP:.6f}")
-        if rep["feasible"]:
-            UB0 = len(set(cand.values()))
-            return UB0, LB, clique_nodes, extra_cliques, cand, last_zLP
+#         if budget_exhausted("before_rounding"):break
+#         cand = round_and_repair_multi(G, info["x_frac"], info["y_frac"], current_UB=n, restarts=restarts, seed=999,deadline_ts=deadline)
+#         rep = verify_coloring(G, cand, allowed_colors=allowed_colors)
+#         if budget_exhausted("after_rounding"): break
+#         if verbose:
+#             print(f"[Init-LP] fallback K=n -> feasible={rep['feasible']} | used={len(set(cand.values()))} | z_LP={last_zLP:.6f}")
+#         if rep["feasible"]:
+#             UB0 = len(set(cand.values()))
+#             return UB0, LB, clique_nodes, extra_cliques, cand, last_zLP
 
-    #maybe not happen: return an empty coloring (will be caught by assertions later)
-    return n, LB, clique_nodes, extra_cliques, {}, (last_zLP if last_zLP is not None else float("inf"))
+#     #maybe not happen: return an empty coloring (will be caught by assertions later)
+#     return n, LB, clique_nodes, extra_cliques, {}, (last_zLP if last_zLP is not None else float("inf"))
 
 
-def try_shrink_UB_by_one_LP(
-    G, UB: int, clique_nodes: List[int], extra_cliques: List[List[int]],
-    seed: int = 0, verbose: bool = False,
-    enable_visualization: bool = False, viz_round_id: int = 0,
-    viz_out_dir: str = "visualisierung", viz_layout_seed: int = 42
-):
-    """LP with K=UB-1 + multi-start rounding; success -> return (UB-1, coloring, True)."""
-    if UB <= len(clique_nodes):
-        # 没法再降，也给一张 -nc 占位图（可选）
-        return UB, None, False
+# def try_shrink_UB_by_one_LP(
+#     G, UB: int, clique_nodes: List[int], extra_cliques: List[List[int]],
+#     seed: int = 0, verbose: bool = False,
+#     enable_visualization: bool = False, viz_round_id: int = 0,
+#     viz_out_dir: str = "visualisierung", viz_layout_seed: int = 42
+# ):
+#     """LP with K=UB-1 + multi-start rounding; success -> return (UB-1, coloring, True)."""
+#     if UB <= len(clique_nodes):
+#         # 没法再降，也给一张 -nc 占位图（可选）
+#         return UB, None, False
 
-    K2 = list(range(UB - 1))
-    model2, var_maps2 = build_lp_model(
-        G, allowed_colors=K2, clique_nodes=clique_nodes,
-        extra_cliques=extra_cliques, add_precedence=True
-    )
-    info2 = solve_lp_and_extract(model2, var_maps2)
-    cand = round_and_repair_multi(G, info2["x_frac"], info2["y_frac"],
-                                  current_UB=UB - 1, restarts=8, seed=seed)
-    rep = verify_coloring(G, cand, allowed_colors=K2)
+#     K2 = list(range(UB - 1))
+#     model2, var_maps2 = build_lp_model(
+#         G, allowed_colors=K2, clique_nodes=clique_nodes,
+#         extra_cliques=extra_cliques, add_precedence=True
+#     )
+#     info2 = solve_lp_and_extract(model2, var_maps2)
+#     if budget_exhausted("before_rounding"):
+#         break
+#     cand = round_and_repair_multi(G, info2["x_frac"], info2["y_frac"],
+#                                   current_UB=UB - 1, restarts=8, seed=seed,deadline_ts=deadline)
+#     rep = verify_coloring(G, cand, allowed_colors=K2)
+#     if budget_exhausted("after_rounding"): break
+#     # —— 成败都出图（cand 可能是 infeasible 的失败候选，我们一样画）
+#     if enable_visualization:
+#         visualize_coloring(
+#             G, cand if cand else {},
+#             step=("LP-UB-1" if rep["feasible"] else "LP-UB-1-failed"),
+#             round_id=viz_round_id,
+#             out_dir=viz_out_dir, layout_seed=viz_layout_seed,
+#             only_colored=True,
+#             allowed_colors=K2,
+#             conflict_nodes_fill_black=True,
+#         )
 
-    # —— 成败都出图（cand 可能是 infeasible 的失败候选，我们一样画）
-    if enable_visualization:
-        visualize_coloring(
-            G, cand if cand else {},
-            step=("LP-UB-1" if rep["feasible"] else "LP-UB-1-failed"),
-            round_id=viz_round_id,
-            out_dir=viz_out_dir, layout_seed=viz_layout_seed,
-            only_colored=True,
-            allowed_colors=K2,
-            conflict_nodes_fill_black=True,
-        )
-
-    if rep["feasible"]:
-        if verbose:
-            print(f"  [UB-1 Test (LP)] success -> UB={UB-1}")
-        return UB - 1, cand, True
-    else:
-        if verbose:
-            print(f"  [UB-1 Test (LP)] failed")
-        return UB, None, False
+#     if rep["feasible"]:
+#         if verbose:
+#             print(f"  [UB-1 Test (LP)] success -> UB={UB-1}")
+#         return UB - 1, cand, True
+#     else:
+#         if verbose:
+#             print(f"  [UB-1 Test (LP)] failed")
+#         return UB, None, False
 
 # def run_iterative_lp(
 #     G,

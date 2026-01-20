@@ -1,0 +1,614 @@
+[Graph] rr100_d10 |V|=100 |E|=500
+[Main] algo=iterlp2 | time=300s | seed=0 | init=smallest_last | fix-policy=prefix_shrink+rounded_support | restarts=32 | perturb-y=0.001
+[Baseline/DSATUR] colors=5 | time=0.0082s | feasible=True | conflicts=0
+[Init] graph: |V|=100 |E|=500 |LB|=3 |UB(init)|=8 |K|=8 via smallest_last
+[Init] LB=3 | UB(init:smallest_last)=8
+[LP] model built once (incremental), initial |C|=8 (K=8) with precedence & clique-cuts
+[Round 1] zLP=3.000000 | ceil(zLP)=3 | K=8 | UB=8 | t=0.53s
+  [Fix] set K to UB-1: 7 -> 7 (lb_lp=3, UB=8)
+  [Rounding] feasible=True | used=5 | conflicts=0
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Rounding/Local] improved UB -> 5
+  [Sync] K aligned to new UB: K=5
+  [Rounding] feasible=True | used=5 | conflicts=0
+  [Side] skip: K+1=6 exceeds current UB=5
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=2 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=False | used=5 | conflicts=3
+  [Round 1 END] UB=5 | K=5 | ceil(zLP)=3 | improved=True | fixed=True
+[Round 2] zLP=3.000000 | ceil(zLP)=3 | K=5 | UB=5 | t=4.67s
+  [Fix] set K to UB-1: 4 -> 4 (lb_lp=3, UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=38
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=38
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 2 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=True
+[Round 3] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=12.96s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=42
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 3 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 4] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=20.20s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 4 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 5] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=27.56s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=54
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 5 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 6] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=35.70s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 6 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 7] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=44.36s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=53
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 7 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 8] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=52.48s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 8 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 9] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=61.55s
+  [Rounding] feasible=False | used=4 | conflicts=38
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=38
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 9 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 10] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=69.90s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 10 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 11] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=77.55s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 11 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 12] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=85.07s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=54
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 12 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 13] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=92.39s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 13 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 14] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=99.97s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 14 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 15] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=107.13s
+  [Rounding] feasible=False | used=4 | conflicts=36
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=36
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 15 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 16] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=114.72s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=42
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 16 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 17] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=122.44s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 17 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 18] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=129.85s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 18 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 19] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=137.12s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=53
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 19 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 20] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=144.67s
+  [Rounding] feasible=False | used=4 | conflicts=36
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=36
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 20 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 21] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=152.52s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=42
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 21 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 22] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=159.75s
+  [Rounding] feasible=False | used=4 | conflicts=38
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=38
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 22 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 23] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=167.60s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 23 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 24] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=174.80s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 24 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 25] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=182.04s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 25 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 26] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=189.64s
+  [Rounding] feasible=False | used=4 | conflicts=36
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=36
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 26 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 27] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=197.38s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=54
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 27 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 28] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=204.52s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 28 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 29] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=212.08s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=53
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 29 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 30] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=219.36s
+  [Rounding] feasible=False | used=4 | conflicts=38
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=38
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 30 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 31] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=226.78s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 31 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 32] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=234.24s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 32 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 33] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=241.84s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 33 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 34] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=249.02s
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=54
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 34 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 35] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=256.81s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=42
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 35 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 36] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=264.15s
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=42
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 36 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 37] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=271.32s
+  [Rounding] feasible=False | used=4 | conflicts=36
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=36
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 37 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 38] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=279.28s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 38 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 39] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=286.23s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 39 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Round 40] zLP=3.000000 | ceil(zLP)=3 | K=4 | UB=5 | t=293.66s
+  [Rounding] feasible=False | used=4 | conflicts=53
+  [Side] trying K+1 rounding (K=4 - 5) to break stalemate
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [Rounding] feasible=False | used=4 | conflicts=53
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+[LocalSearch] highest color class removed; colors now=5
+  [Side] feasible but not better (used=5 ≥ UB=5)
+  [PackWindow] UB==K+1 (UB=5, K=4) - attempt LP-guided pack and UB-1 greedy
+  [LP-guided pack] trying to empty highest color K=4 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=5 >= UB=5)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=20
+  [Round 40 END] UB=5 | K=4 | ceil(zLP)=3 | improved=False | fixed=False
+[Final] UB=5 LB=3 feasible=True zLP≈3.000000
+[Compare] DSATUR colors=5 vs IterLP2 colors=5  → Tie (Δ=0)
+[Compare] DSATUR time=0.0082s | IterLP2 time=301.6269s | stop=time_limit
+[Main] Done. stop_reason=time_limit | LB=3 | UB=5 | iters=40
