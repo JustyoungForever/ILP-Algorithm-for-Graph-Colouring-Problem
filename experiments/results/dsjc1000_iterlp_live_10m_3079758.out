@@ -1,0 +1,19 @@
+[INFO] Start Mon Jan 19 03:38:28 PM CET 2026
+[INFO] Instance=DSJC1000.9.col seed=1 algo=iterlp2_full TL=604800s (soft=604680s)
+[INFO] Outputs:
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_runs_3079758.csv
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_summary_3079758.csv
+[Runner] instances=1 algos=1 algo_seeds=[1] time_limit=604680s
+[Init] graph: |V|=1000 |E|=449449 |LB|=53 |UB(init)|=316 |K|=316 via smallest_last
+[Init] LB=53 | UB(init:smallest_last)=316
+[INFO] End   Mon Jan 19 04:13:48 PM CET 2026
+[INFO] WallClockSec=2120
+[INFO] runner.py exit code=137
+-rw------- 1 ta32xoy unijena 485 Jan 19 16:13 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_runs_3079758.csv
+-rw------- 1 ta32xoy unijena 145 Jan 19 16:13 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_summary_3079758.csv
+[INFO] Tail runs.csv:
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
+DSJC1000.9,dimacs,1000,449449,0.8997977977977978,898.898,iterlp2_full,1,604680,smallest_last,prefix_shrink+rounded_support,0.25,20,32,1e-06,full,,316,,False,,2087.708076648414,,,1.7023279666900635,0,running,1768835610,
+[INFO] Tail summary.csv:
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+DSJC1000.9,iterlp2_full,1,316,316.0,2087.708076648414,1.7023279666900635

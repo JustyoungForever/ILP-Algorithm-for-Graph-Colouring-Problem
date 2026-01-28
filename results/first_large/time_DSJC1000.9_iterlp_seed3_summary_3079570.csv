@@ -1,0 +1,2 @@
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+DSJC1000.9,iterlp2_full,1,316,316.0,1120.115313127637,1.6468029022216797

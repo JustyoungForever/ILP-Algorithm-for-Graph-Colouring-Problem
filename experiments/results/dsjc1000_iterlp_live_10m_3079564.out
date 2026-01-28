@@ -1,0 +1,12 @@
+[INFO] Start Mon Jan 19 02:55:04 AM CET 2026
+[INFO] Instance=DSJC1000.9.col seed=0 algo=iterlp2_full TL=600s (soft=540s)
+[INFO] Outputs:
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3079564.csv
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3079564.csv
+[INFO] End   Mon Jan 19 02:55:05 AM CET 2026
+[INFO] WallClockSec=1
+[INFO] runner.py exit code=2
+-rw------- 1 ta32xoy unijena 0 Jan 19 02:55 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3079564.csv
+-rw------- 1 ta32xoy unijena 0 Jan 19 02:55 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3079564.csv
+[INFO] Tail runs.csv:
+[INFO] Tail summary.csv:

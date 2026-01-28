@@ -1,0 +1,8 @@
+[INFO] Running DSJC1000.9.col seed=0 TL=60s HARD=360s
+[INFO] Expect outputs:
+  /home/ta32xoy/masterarbeit/results/smoke_DSJC1000.9_seed0_runs_3079486.csv
+  /home/ta32xoy/masterarbeit/results/smoke_DSJC1000.9_seed0_summary_3079486.csv
+Sun Jan 18 11:28:05 PM CET 2026
+[Runner] instances=1 algos=1 algo_seeds=[0] time_limit=60s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsatur_DSJC1000_seed0_runs_3079486.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsatur_DSJC1000_seed0_summary_3079486.csv

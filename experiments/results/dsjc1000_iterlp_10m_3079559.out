@@ -1,0 +1,8 @@
+[INFO] Start Mon Jan 19 01:27:58 AM CET 2026
+[INFO] Instance=DSJC1000.9.col seed=0 algo=iterlp2_full TL=600s (soft=540s)
+[INFO] Outputs:
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3079559.csv
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3079559.csv
+[Runner] instances=1 algos=1 algo_seeds=[0] time_limit=540s
+[WARN] Caught SIGTERM/SIGINT at Mon Jan 19 01:38:25 AM CET 2026. Forwarding SIGINT to python for graceful shutdown...
+[WARN] Caught SIGTERM/SIGINT at Mon Jan 19 01:40:25 AM CET 2026. Forwarding SIGINT to python for graceful shutdown...

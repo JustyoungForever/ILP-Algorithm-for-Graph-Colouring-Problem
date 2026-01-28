@@ -1,0 +1,26 @@
+[INFO] Start Mon Jan 19 03:20:34 AM CET 2026
+[INFO] Instance=DSJC1000.9.col seed=0 algo=iterlp2_full TL=600s (soft=540s)
+[INFO] Outputs:
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3079566.csv
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3079566.csv
+[Runner] instances=1 algos=1 algo_seeds=[0] time_limit=540s
+[Init] graph: |V|=1000 |E|=449449 |LB|=53 |UB(init)|=316 |K|=316 via smallest_last
+[Init] LB=53 | UB(init:smallest_last)=316
+[WARN] Caught SIGTERM/SIGINT at Mon Jan 19 03:24:27 AM CET 2026. Forwarding SIGINT to python for graceful shutdown...
+[WARN] CSV status after interrupt:
+-rw------- 1 ta32xoy unijena 481 Jan 19 03:24 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3079566.csv
+-rw------- 1 ta32xoy unijena 146 Jan 19 03:24 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3079566.csv
+[WARN] Tail runs.csv (if exists):
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
+DSJC1000.9,dimacs,1000,449449,0.8997977977977978,898.898,iterlp2_full,0,540,smallest_last,prefix_shrink+rounded_support,0.25,1,1,1e-06,full,,316,,False,,229.27846061438322,,,1.3211729526519775,0,running,1768789466,
+[INFO] End   Mon Jan 19 03:24:27 AM CET 2026
+[INFO] WallClockSec=233
+[INFO] runner.py exit code=143
+-rw------- 1 ta32xoy unijena 481 Jan 19 03:24 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3079566.csv
+-rw------- 1 ta32xoy unijena 146 Jan 19 03:24 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3079566.csv
+[INFO] Tail runs.csv:
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
+DSJC1000.9,dimacs,1000,449449,0.8997977977977978,898.898,iterlp2_full,0,540,smallest_last,prefix_shrink+rounded_support,0.25,1,1,1e-06,full,,316,,False,,229.27846061438322,,,1.3211729526519775,0,running,1768789466,
+[INFO] Tail summary.csv:
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+DSJC1000.9,iterlp2_full,1,316,316.0,229.27846061438322,1.3211729526519775

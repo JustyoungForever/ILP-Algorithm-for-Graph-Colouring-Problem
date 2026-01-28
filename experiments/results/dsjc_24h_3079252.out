@@ -1,0 +1,66 @@
+[INFO] Checking DSJC files...
+[INFO] All DSJC files exist.
+[INFO] ===== Instance DSJC250.9.col (TL=3s) start =====
+[INFO] Start inst=DSJC250.9.col seed=0 TL=3s
+[INFO] Start inst=DSJC250.9.col seed=1 TL=3s
+Sun Jan 18 03:28:20 AM CET 2026
+[INFO] Start inst=DSJC250.9.col seed=3 TL=3s
+[INFO] Start inst=DSJC250.9.col seed=2 TL=3s
+Sun Jan 18 03:28:20 AM CET 2026
+Sun Jan 18 03:28:20 AM CET 2026
+[INFO] Start inst=DSJC250.9.col seed=4 TL=3s
+Sun Jan 18 03:28:20 AM CET 2026
+Sun Jan 18 03:28:20 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[0] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed0_runs_3079252.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed0_summary_3079252.csv
+[INFO] Done inst=DSJC250.9.col seed=0
+Sun Jan 18 03:28:46 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[4] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed4_runs_3079252.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed4_summary_3079252.csv
+[INFO] Done inst=DSJC250.9.col seed=4
+Sun Jan 18 03:29:10 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[2] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed2_runs_3079252.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed2_summary_3079252.csv
+[INFO] Done inst=DSJC250.9.col seed=2
+Sun Jan 18 03:29:34 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[3] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed3_runs_3079252.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed3_summary_3079252.csv
+[INFO] Done inst=DSJC250.9.col seed=3
+Sun Jan 18 03:29:58 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[1] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed1_runs_3079252.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC250.9_seed1_summary_3079252.csv
+[INFO] Done inst=DSJC250.9.col seed=1
+Sun Jan 18 03:30:22 AM CET 2026
+[INFO] ===== Instance DSJC250.9.col finished =====
+[INFO] ===== Instance DSJC500.9.col (TL=3s) start =====
+[INFO] Start inst=DSJC500.9.col seed=3 TL=3s
+[INFO] Start inst=DSJC500.9.col seed=0 TL=3s
+[INFO] Start inst=DSJC500.9.col seed=1 TL=3s
+[INFO] Start inst=DSJC500.9.col seed=2 TL=3s
+[INFO] Start inst=DSJC500.9.col seed=4 TL=3s
+Sun Jan 18 03:30:22 AM CET 2026
+Sun Jan 18 03:30:22 AM CET 2026
+Sun Jan 18 03:30:22 AM CET 2026
+Sun Jan 18 03:30:22 AM CET 2026
+Sun Jan 18 03:30:22 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[4] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC500.9_seed4_runs_3079252.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC500.9_seed4_summary_3079252.csv
+[INFO] Done inst=DSJC500.9.col seed=4
+Sun Jan 18 03:32:59 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[3] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC500.9_seed3_runs_3079252.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC500.9_seed3_summary_3079252.csv
+[INFO] Done inst=DSJC500.9.col seed=3
+Sun Jan 18 03:35:36 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[1] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC500.9_seed1_runs_3079252.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/dsjc24_DSJC500.9_seed1_summary_3079252.csv
+[INFO] Done inst=DSJC500.9.col seed=1
+Sun Jan 18 03:38:08 AM CET 2026
+[Runner] instances=1 algos=3 algo_seeds=[2] time_limit=3s

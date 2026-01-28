@@ -46,6 +46,7 @@ def run_iterative_lp_v2(
     best_time_sec = 0.0
     best_round = 0
     best_UB_seen = None  
+    zLP = float("nan")
     def elapsed():
         return time.monotonic() - t0
 
@@ -65,7 +66,7 @@ def run_iterative_lp_v2(
         nonlocal best_UB_seen, best_time_sec, best_round
         if best_UB_seen is None or new_ub < best_UB_seen:
             best_UB_seen = new_ub
-            best_time_sec = time.monotonic() - t0
+            best_time_sec = elapsed()
             best_round = rid
     def viz(step: str, rid: int, cmap: Dict[int, int], K_allowed: int, *, only_colored: bool = True) -> None:
         if not enable_visualization:
@@ -109,6 +110,11 @@ def run_iterative_lp_v2(
     if verbose:
         n = G.number_of_nodes()
         m = G.number_of_edges()
+        is_big = (n >= 600) or (m * UB >= 2e7)
+        if is_big:
+            restarts = min(restarts, 12)
+            max_fix_per_round = min(max_fix_per_round, 10)
+            strong_margin = max(strong_margin, 0.30)
         print(f"[Init] graph: |V|={n} |E|={m} |LB|={LB} |UB(init)|={UB} |K|={K} via {init_heuristic}")
     if enable_visualization:
         visualize_coloring(
@@ -126,8 +132,9 @@ def run_iterative_lp_v2(
 
     # build LP once (initial K = UB)
     extra_cliques = top_maximal_cliques(G, max_cliques=50, min_size=max(4, LB+1), time_limit_sec=2.0)
-    inc = IncrementalLP(G, allowed_colors=list(range(UB)), clique_nodes=clique_nodes,
-                        extra_cliques=extra_cliques, add_precedence=True)
+    inc = IncrementalLP(    G, allowed_colors=list(range(UB)), clique_nodes=clique_nodes,
+        extra_cliques=extra_cliques, add_precedence=True,
+        edge_mode="auto", lazy_threshold=2e7,)
     if verbose:
         print(f"[LP] model built once (incremental), initial |C|={len(inc.C)} (K={K}) with precedence & clique-cuts")
 
@@ -138,11 +145,31 @@ def run_iterative_lp_v2(
     prev_UB = UB
     no_progress_rounds = 0
 
-    while time.monotonic() - t0 <= time_limit_sec:
+    while time_left() > 0.0:
         round_id += 1
+        n = G.number_of_nodes()
+        m = G.number_of_edges()
+        is_big = (n >= 600) or (m * UB >= 2e7)   # same criterion you already use elsewhere
+
+        lp_main_cap = 5.0 if not is_big else 0.7   # main LP solve budget per round
+        lp_sub_cap  = 2.0 if not is_big else 0.3
 
         # 1) solve LP first (get zLP)
-        inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+
+        inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_main_cap)) * 1000))
+                # LAZY: for big graphs, add only violated edge-color cuts and re-solve briefly
+        if inc.lazy_edges:
+            sep_rounds = 2
+            for _ in range(sep_rounds):
+                if time_left() <= 0:
+                    break
+                added = inc.lazy_separate_from_lp(x_frac, y_frac, top_t=2, eps=1e-6, max_new=200000)
+                if verbose:
+                    print(f"  [LazyEdge] added={added}")
+                if added <= 0:
+                    break
+                # keep re-solves short so we get many outer rounds
+                inc.set_time_limit_ms(int(min(0.5, max(0.05, time_left() * 0.05)) * 1000))
         try:
             info = inc.solve()
         except TimeoutError:
@@ -151,8 +178,8 @@ def run_iterative_lp_v2(
         zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
         if verbose:
             ceilK = int(math.ceil(zLP - 1e-12))
-            elapsed = time.monotonic() - t0
-            print(f"[Round {round_id}] zLP={zLP:.6f} | ceil(zLP)={ceilK} | K={K} | UB={UB} | t={elapsed:.2f}s")
+            t_sec = elapsed()
+            print(f"[Round {round_id}] zLP={zLP:.6f} | ceil(zLP)={ceilK} | K={K} | UB={UB} | t={t_sec:.2f}s")
         # 2) decide whether to tighten K based on ceil(zLP) (safe: try - rollback if fails)
         lb_lp = int(math.ceil(zLP))
         K_target = max(LB, int(math.ceil(zLP - 1e-12)),UB - 1,lb_lp)
@@ -162,12 +189,14 @@ def run_iterative_lp_v2(
 
         if K_target < K:
             tok = [inc.lock_prefix_K(K_target)]
-            inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
-            try:
+            sub_cap = 0.5
+            inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
+            try:    
                 ok_info, ok = inc.try_apply_and_solve(tok)
             except TimeoutError:
-                stop_reason = "time_limit"
-                break
+                ok_info, ok = None, False
+                if verbose:
+                    print("  [Fix] shrinkK solve timed out - rollback and continue (keep current K)")
             if ok:
                 K = K_target
                 K_shrunk_this_round = True
@@ -217,12 +246,14 @@ def run_iterative_lp_v2(
                     print(f"  [Rounding/Local] improved UB -> {UB}")
                 if K > UB:
                     tok2 = [inc.lock_prefix_K(UB)]
-                    inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+                    sub_cap = 0.5
+                    inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
                     try:
                         ok_info2, ok2 = inc.try_apply_and_solve(tok2)
                     except TimeoutError:
-                        stop_reason = "time_limit"
-                        break
+                        ok_info2, ok2 = None, False
+                        if verbose:
+                            print("  [rounding K] solve timed out - rollback and continue")
                     if ok2:
                         K = UB
                         if verbose:
@@ -236,6 +267,10 @@ def run_iterative_lp_v2(
                     break
         else:
             # (B) infeasible path: try K+1 side rounding before any fixing
+            if inc.lazy_edges:
+                added_conf = inc.lazy_add_conflict_cuts(cand, max_new=50000)
+                if verbose:
+                    print(f"  [LazyEdge-Conflicts] added={added_conf}")
             if verbose:
                 print(f"  [Side] trying K+1 rounding (K={K} - {K+1}) to break stalemate")
             newUB, newCol, applied = try_side_rounding(
@@ -300,12 +335,14 @@ def run_iterative_lp_v2(
                 
                 if K > UB:
                     tok3 = [inc.lock_prefix_K(UB)]
-                    inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+                    sub_cap = 0.5
+                    inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
                     try:
                         ok_info3, ok3 = inc.try_apply_and_solve(tok3)
                     except TimeoutError:
-                        stop_reason = "time_limit"
-                        break
+                        ok_info3, ok3 = None, False
+                        if verbose:
+                            print("  [LP-Pack] solve timed out - rollback and continue")
                     if ok3:
                         K = UB
                         mark_best(UB, round_id)
@@ -330,12 +367,14 @@ def run_iterative_lp_v2(
                 
                 if K > UB:
                     tok4 = [inc.lock_prefix_K(UB)]
-                    inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+                    sub_cap = 0.5 
+                    inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
                     try:
                         ok_info4, ok4 = inc.try_apply_and_solve(tok4)
                     except TimeoutError:
-                        stop_reason = "time_limit"
-                        break
+                        ok_info4, ok4 = None, False
+                        if verbose:
+                            print("  [UB-1 Greedy] solve timed out - rollback and continue")
                     if ok4:
                         K = UB
                         mark_best(UB, round_id)
@@ -366,12 +405,14 @@ def run_iterative_lp_v2(
         if tokens:
             if verbose:
                 print(f"  [FixApply] applying tokens={len(tokens)} (x fixings only in prefix K)")
-            inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+            sub_cap = 0.5
+            inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
             try:
                 ok_info3, ok3 = inc.try_apply_and_solve(tokens)
             except TimeoutError:
-                stop_reason = "time_limit"
-                break
+                ok_info3, ok3 = None, False
+                if verbose:
+                    print("  [FixApply] solve timed out - rollback and continue")
             if verbose:
                 print(f"  [FixApply] status={'OK' if ok3 else 'ROLLBACK'}")
             if not ok3:
@@ -411,12 +452,15 @@ def run_iterative_lp_v2(
                             print(f"  [After-Fix] improved UB -> {UB}")
                         if K > UB:
                             tok4 = [inc.lock_prefix_K(UB)]
-                            inc.set_time_limit_ms(int(max(1.0, time_left()) * 1000))
+                            sub_cap = 0.5
+                            inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
                             try:
                                 ok_info4, ok4 = inc.try_apply_and_solve(tok4)
                             except TimeoutError:
-                                stop_reason = "time_limit"
-                                break
+                                ok_info3, ok3 = None, False
+                                if verbose:
+                                    print("  [FixApply] solve timed out - rollback and continue")
+
                             if ok4:
                                 K = UB
                                 mark_best(UB, round_id)
@@ -456,7 +500,7 @@ def run_iterative_lp_v2(
 
 
     if not stop_reason:
-        stop_reason = "time_limit" if time.monotonic() - t0 > time_limit_sec else "max_rounds"
+        stop_reason = "time_limit" if time_left() <= 0.0 else "max_rounds"
     
     # Final compaction before returning, ensure UB matches color indices (prevent out_of_range)
     best_coloring, used_final = compact_colors(best_coloring)

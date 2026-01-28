@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=dsjc1000_iterlp_live_10m
+#SBATCH --job-name=dsjc1000_iterlp_live_8h
 #SBATCH --partition=b_standard
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=32G
-#SBATCH --time=8-08:00:00
+#SBATCH --mem=100G
+#SBATCH --time=08:00:00
 #SBATCH --signal=B:TERM@1200
 #SBATCH --chdir=/home/ta32xoy/masterarbeit
 #SBATCH --output=/home/ta32xoy/masterarbeit/experiments/data/large/logs/%x_%j.out
@@ -30,10 +30,10 @@ GRAPH_DIR="$ROOT/experiments/data/large/graphs"
 INST="DSJC1000.9.col"
 [[ -f "$GRAPH_DIR/$INST" ]] || { echo "[ERROR] Missing $GRAPH_DIR/$INST"; ls -lh "$GRAPH_DIR"; exit 1; }
 
-SEED=4
+SEED=0
 
-# ---- 10分钟算法预算 + buffer ----
-TL=604800               # 10 minutes algorithm budget
+# ---- 20分钟算法预算 + buffer ----
+TL=28800               # 10 minutes algorithm budget
 SOFT_TL=$((TL-120))     # leave 60s for graceful shutdown (runner flushes every --live-every)
 
 base="${INST%.col}"
@@ -73,6 +73,14 @@ trap on_term TERM INT
 
 # Don't let non-zero exit code prevent post-run checks & sync
 set +e
+
+echo "[INFO] runner path: $ROOT/runner.py"
+python -u "$ROOT/runner.py" -h 2>&1 | grep -q -- "--live-update" || {
+  echo "[ERROR] runner.py does NOT support --live-update (wrong version on cluster)."
+  python -u "$ROOT/runner.py" -h | head -n 80
+  exit 2
+}
+md5sum "$ROOT/runner.py" | sed 's/^/[INFO] runner md5: /'
 
 python -u "$ROOT/runner.py" --suite dimacs \
   --dimacs-dir "$tmp" \

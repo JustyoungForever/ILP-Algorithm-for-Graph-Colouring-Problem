@@ -8,6 +8,8 @@ def build_lp_model(
     clique_nodes: List[int],
     extra_cliques: Optional[List[List[int]]] = None,
     add_precedence: bool = True,
+    edge_mode: str = "auto",
+    lazy_threshold: float = 2e7,
 ) -> Tuple[pywraplp.Solver, Dict[str, Any]]:
     """
     Assignment-LP:
@@ -43,10 +45,13 @@ def build_lp_model(
         solver.Add(solver.Sum(x_vars[(v, c)] for c in C) == 1.0)
 
     # 2) edge constraints per color
-    for (u, v) in G.edges():
-        for c in C:
-            # solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= y_vars[c])
-            solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= 1.0)
+    m = G.number_of_edges()
+    KC = len(C)
+    use_lazy = (edge_mode == "lazy") or (edge_mode == "auto" and (m * KC) > lazy_threshold)
+    if not use_lazy:
+            for (u, v) in G.edges():
+                for c in C:
+                    solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= y_vars[c])
     #3) linking x <= y
     for v in V:
         for c in C:
@@ -82,5 +87,6 @@ def build_lp_model(
             for c in C:
                 solver.Add(solver.Sum(x_vars[(v, c)] for v in inter) <= 1.0)
 
-    var_maps = dict(x_vars=x_vars, y_vars=y_vars, V=V, C=C)
+    var_maps = dict(x_vars=x_vars, y_vars=y_vars, V=V, C=C, lazy_edges=use_lazy)
     return solver, var_maps
+

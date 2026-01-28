@@ -11,19 +11,22 @@ def solve_lp_and_extract(solver: pywraplp.Solver, var_maps: Dict[str, Any]) -> D
       - rc_y: dict[c] -> reduced cost of y_c
     """
     status = solver.Solve()
-    if status != pywraplp.Solver.OPTIMAL:
-        raise RuntimeError(f"LP not optimal (status={status})")
+    if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
+        pass
+    elif status == pywraplp.Solver.NOT_SOLVED:
+        # Most commonly: time limit reached or solver stopped early
+        raise TimeoutError(f"LP not solved (status={status})")
+    else:
+        # INFEASIBLE / UNBOUNDED / ABNORMAL / MODEL_INVALID
+        raise RuntimeError(f"LP failed (status={status})")
 
-    z_LP = solver.Objective().Value()
     x_vars = var_maps["x_vars"]
     y_vars = var_maps["y_vars"]
+    V = var_maps["V"]
     C = var_maps["C"]
 
-    x_frac = {k: v.solution_value() for k, v in x_vars.items()}
+    # extract
+    x_frac = {(v, c): x_vars[(v, c)].solution_value() for v in V for c in C}
     y_frac = {c: y_vars[c].solution_value() for c in C}
-
-    # reduced cost is available for simplex-based LP
-    rc_y = {c: y_vars[c].ReducedCost() for c in C}
-
-
-    return dict(z_LP=z_LP, x_frac=x_frac, y_frac=y_frac, rc_y=rc_y)
+    z_LP = solver.Objective().Value()
+    return {"z_LP": z_LP, "x_frac": x_frac, "y_frac": y_frac, "status": status}

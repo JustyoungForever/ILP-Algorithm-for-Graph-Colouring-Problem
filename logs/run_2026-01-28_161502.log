@@ -1,0 +1,38 @@
+[Graph] demo |V|=100 |E|=2444
+[Main] algo=iterlp2 | time=10s | seed=0 | init=smallest_last | fix-policy=prefix_shrink+rounded_support | restarts=2 | perturb-y=0.001
+[Baseline/DSATUR] colors=19 | time=0.0168s | feasible=True | conflicts=0
+[Init] graph: |V|=100 |E|=2444 |LB|=6 |UB(init)|=20 |K|=20 via smallest_last
+[Init] LB=6 | UB(init:smallest_last)=20
+[LP] model built once (incremental), initial |C|=20 (K=20) with precedence & clique-cuts
+[Round 1] zLP=7.000000 | ceil(zLP)=7 | K=20 | UB=20 | t=2.33s
+  [Fix] set K to UB-1: 19 -> 19 (lb_lp=7, UB=20)
+  [Rounding] feasible=True | used=18 | conflicts=0
+[LocalSearch] highest color class removed; colors now=18
+[LocalSearch] highest color class removed; colors now=18
+[LocalSearch] highest color class removed; colors now=18
+[LocalSearch] highest color class removed; colors now=18
+[LocalSearch] highest color class removed; colors now=18
+  [Rounding/Local] improved UB -> 18
+  [Sync] K aligned to new UB: K=18
+  [Rounding] feasible=True | used=18 | conflicts=0
+  [Side] skip: K+1=19 exceeds current UB=18
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=11 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=18 | conflicts=0
+[LocalSearch] highest color class removed; colors now=18
+[LocalSearch] highest color class removed; colors now=18
+[LocalSearch] highest color class removed; colors now=18
+  [Round 1 END] UB=18 | K=18 | ceil(zLP)=7 | improved=True | fixed=True
+[Round 2] zLP=7.000000 | ceil(zLP)=7 | K=18 | UB=18 | t=8.57s
+Traceback (most recent call last):
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/main.py", line 60, in <module>
+    res = run_iterative_lp_v2(
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/driver/iterate_lp.py", line 187, in run_iterative_lp_v2
+    ok_info, ok = inc.try_apply_and_solve(tok)
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/ilp/incremental.py", line 156, in try_apply_and_solve
+    info = solve_lp_and_extract(self.solver, self.var_maps)  # 内部 solve + extract
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/ilp/lp_solve.py", line 15, in solve_lp_and_extract
+    raise RuntimeError(f"LP not optimal (status={status})")
+RuntimeError: LP not optimal (status=6)

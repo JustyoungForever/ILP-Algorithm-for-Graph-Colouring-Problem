@@ -1,0 +1,36 @@
+[INFO] Checking files...
+[INFO] OK.
+[INFO] START inst=DSJC250.9.col seed=3 TL=3s
+[INFO] START inst=DSJC250.9.col seed=2 TL=3s
+[INFO] START inst=DSJC250.9.col seed=1 TL=3s
+[INFO] START inst=DSJC250.9.col seed=4 TL=3s
+[INFO] START inst=DSJC250.9.col seed=0 TL=3s
+[INFO] START inst=DSJC500.9.col seed=1 TL=3s
+[INFO] START inst=DSJC500.9.col seed=2 TL=3s
+[INFO] START inst=DSJC500.9.col seed=0 TL=3s
+[Runner] instances=1 algos=3 algo_seeds=[2] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/pool_DSJC250.9_seed2_runs_3079254.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/pool_DSJC250.9_seed2_summary_3079254.csv
+[INFO] DONE  inst=DSJC250.9.col seed=2
+[INFO] START inst=DSJC500.9.col seed=3 TL=3s
+[Runner] instances=1 algos=3 algo_seeds=[0] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/pool_DSJC250.9_seed0_runs_3079254.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/pool_DSJC250.9_seed0_summary_3079254.csv
+[INFO] DONE  inst=DSJC250.9.col seed=0
+[INFO] START inst=DSJC500.9.col seed=4 TL=3s
+[Runner] instances=1 algos=3 algo_seeds=[4] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/pool_DSJC250.9_seed4_runs_3079254.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/pool_DSJC250.9_seed4_summary_3079254.csv
+[INFO] DONE  inst=DSJC250.9.col seed=4
+[INFO] START inst=DSJC1000.9.col seed=0 TL=3s
+[Runner] instances=1 algos=3 algo_seeds=[0] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/pool_DSJC500.9_seed0_runs_3079254.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/pool_DSJC500.9_seed0_summary_3079254.csv
+[INFO] DONE  inst=DSJC500.9.col seed=0
+[INFO] START inst=DSJC1000.9.col seed=1 TL=3s
+[Runner] instances=1 algos=3 algo_seeds=[1] time_limit=3s
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/pool_DSJC250.9_seed1_runs_3079254.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/pool_DSJC250.9_seed1_summary_3079254.csv
+[INFO] DONE  inst=DSJC250.9.col seed=1
+[INFO] START inst=DSJC1000.9.col seed=2 TL=3s
+[Runner] instances=1 algos=3 algo_seeds=[0] time_limit=3s

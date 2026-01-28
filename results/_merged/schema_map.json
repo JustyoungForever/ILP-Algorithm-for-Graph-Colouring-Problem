@@ -1,4 +1,91 @@
 {
+  "38f0b8f97a": {
+    "num_cols": 4,
+    "columns_sorted": [
+      "ablation",
+      "algo",
+      "instance",
+      "runs"
+    ],
+    "files": [
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/_analysis_out/data/coverage_instance_algo.csv"
+    ]
+  },
+  "4d0555c337": {
+    "num_cols": 6,
+    "columns_sorted": [
+      "avg_deg",
+      "density",
+      "family",
+      "instance",
+      "m",
+      "n"
+    ],
+    "files": [
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/_analysis_out/data/instance_overview.csv"
+    ]
+  },
+  "0d7ac4d04a": {
+    "num_cols": 5,
+    "columns_sorted": [
+      "ablation",
+      "algo",
+      "count",
+      "share",
+      "stop_reason"
+    ],
+    "files": [
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/_analysis_out/data/stop_reason_dist.csv"
+    ]
+  },
+  "76576b73da": {
+    "num_cols": 13,
+    "columns_sorted": [
+      "UB_mean",
+      "UB_min",
+      "UB_std",
+      "ablation",
+      "algo",
+      "best_time_mean_sec",
+      "best_time_std_sec",
+      "feasible_rate",
+      "instance",
+      "runs",
+      "runtime_mean_sec",
+      "runtime_std_sec",
+      "time_limit_sec"
+    ],
+    "files": [
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/_analysis_out/data/summary_long.csv"
+    ]
+  },
+  "c8c7ead491": {
+    "num_cols": 6,
+    "columns_sorted": [
+      "ablation",
+      "dsatur",
+      "instance",
+      "iterlp2_full",
+      "slo",
+      "time_limit_sec"
+    ],
+    "files": [
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/_analysis_out/data/ub_mean_wide.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/_analysis_out/data/ub_min_wide.csv"
+    ]
+  },
+  "b7c592b23a": {
+    "num_cols": 4,
+    "columns_sorted": [
+      "ablation",
+      "algo",
+      "time_limit_sec",
+      "win_count"
+    ],
+    "files": [
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/_analysis_out/data/win_count.csv"
+    ]
+  },
   "74a81e418f": {
     "num_cols": 26,
     "columns_sorted": [
@@ -95,6 +182,7 @@
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/pool_DSJC500.9_seed4_runs_3079269.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/tiny_runs_3077136.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/tiny_runs_3079488.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/tiny_runs_3079558.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_medium/dimacs_all_safe_runs.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_medium/final_medium_fpsol2.i.1_runs_3077179.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_medium/final_medium_inithx.i.1_runs_3077179.csv",
@@ -181,8 +269,18 @@
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/pool_DSJC500.9_seed4_summary_3079255.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/pool_DSJC500.9_seed4_summary_3079257.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/pool_DSJC500.9_seed4_summary_3079269.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed0_summary_3079565.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed0_summary_3079566.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed0_summary_3079567.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed1_summary_3079568.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed1_summary_3079758.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed2_summary_3079569.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed2_summary_3079759.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed3_summary_3079570.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed4_summary_3079571.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/tiny_summary_3077136.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/tiny_summary_3079488.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/tiny_summary_3079558.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_medium/dimacs_all_safe_summary.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_medium/final_medium_fpsol2.i.1_summary_3077179.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_medium/final_medium_inithx.i.1_summary_3077179.csv",
@@ -224,6 +322,51 @@
     "files": [
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/dsatur_DSJC1000_seed0_runs_3079486.csv",
       "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/dsatur_DSJC1000_seed0_runs_3079487.csv"
+    ]
+  },
+  "da8be3d57c": {
+    "num_cols": 29,
+    "columns_sorted": [
+      "LB",
+      "UB",
+      "ablation",
+      "algo",
+      "algo_seed",
+      "avg_deg",
+      "best_round",
+      "best_time_sec",
+      "conflicts",
+      "density",
+      "error",
+      "family",
+      "feasible",
+      "fix_policy",
+      "gap",
+      "init_heuristic",
+      "instance",
+      "iters",
+      "last_update_ts",
+      "m",
+      "max_fix_per_round",
+      "n",
+      "perturb_y",
+      "restarts",
+      "runtime_sec",
+      "status",
+      "stop_reason",
+      "strong_margin",
+      "time_limit_sec"
+    ],
+    "files": [
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed0_runs_3079565.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed0_runs_3079566.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed0_runs_3079567.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed1_runs_3079568.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed1_runs_3079758.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed2_runs_3079569.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed2_runs_3079759.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed3_runs_3079570.csv",
+      "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/first_large/time_DSJC1000.9_iterlp_seed4_runs_3079571.csv"
     ]
   }
 }

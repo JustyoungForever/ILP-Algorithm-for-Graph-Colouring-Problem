@@ -1,0 +1,5 @@
+﻿algo,ablation,stop_reason,count,share
+dsatur,baseline,baseline,225,1.0
+iterlp2_full,full,time_limit,200,0.8968609865470852
+iterlp2_full,full,stalled_at_K_eq_ceil_zLP,23,0.1031390134529148
+slo,baseline,baseline,223,1.0

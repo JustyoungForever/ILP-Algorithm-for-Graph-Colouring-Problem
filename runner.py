@@ -31,6 +31,7 @@ import sys
 import time
 import threading
 import signal
+import hashlib
 from contextlib import redirect_stdout, redirect_stderr
 from dataclasses import dataclass
 from pathlib import Path
@@ -47,6 +48,27 @@ from driver.iterate_lp import run_iterative_lp_v2
 
 # We'll monkey-patch these inside driver.iterate_lp for ablations.
 import driver.iterate_lp as itlp  # type: ignore
+
+def ensure_dir(p: Path) -> None:
+    p.mkdir(parents=True, exist_ok=True)
+
+def atomic_write_csv(path: Path, fieldnames: list[str], rows: list[dict]) -> None:
+    """
+    原子重写 CSV：写到 .tmp -> flush+fsync -> os.replace
+    目的：即使被 kill，也尽量保证磁盘上始终有一个“完整可读”的 CSV。
+    """
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    ensure_dir(path.parent)
+
+    with tmp.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: r.get(k, "") for k in fieldnames})
+        f.flush()
+        os.fsync(f.fileno())
+
+    os.replace(tmp, path)
 
 
 class TeeParser(io.TextIOBase):
@@ -699,6 +721,9 @@ def parse_float_list(s: str) -> List[float]:
 # --------------------------
 
 def main() -> None:
+    p = Path(__file__).resolve()
+    md5 = hashlib.md5(p.read_bytes()).hexdigest()
+    print(f"[Runner] path={p} md5={md5}")
     ap = argparse.ArgumentParser()
     ap.add_argument("--suite", default="synthetic", choices=["quick", "synthetic", "dimacs", "real", "all"])
     ap.add_argument("--out-dir", default="results")
@@ -770,6 +795,56 @@ def main() -> None:
 
     # Prepare CSV rows
     run_rows: List[Dict[str, Any]] = []
+    RUN_FIELDS = [
+    "instance","family","n","m","density","avg_deg",
+    "algo","algo_seed","time_limit_sec",
+    "init_heuristic","fix_policy","strong_margin","max_fix_per_round","restarts","perturb_y",
+    "ablation",
+    "LB","UB","gap","feasible","conflicts","runtime_sec","iters","stop_reason","best_time_sec","best_round",
+    "status","last_update_ts","error",
+]
+    SUM_FIELDS = ["instance","algo","runs","UB_min","UB_mean","runtime_mean_sec","best_time_mean_sec"]
+
+    out_csv_path = Path(args.out_dir) / args.out_csv
+    out_sum_path = Path(args.out_dir) / args.summary_csv
+
+    csv_lock = threading.Lock()
+
+    def live_flush_all() -> None:
+        with csv_lock:
+            atomic_write_csv(out_csv_path, RUN_FIELDS, run_rows)
+            summ_rows = aggregate_summary(run_rows)  # 你需要已有 aggregate_summary
+            atomic_write_csv(out_sum_path, SUM_FIELDS, summ_rows)
+    def _flush_no_block() -> None:
+        if not args.live_update:
+            return
+        got = csv_lock.acquire(timeout=0.2)
+        if not got:
+            return
+        try:
+            atomic_write_csv(out_csv_path, RUN_FIELDS, run_rows)
+            summ_rows = aggregate_summary(run_rows)
+            atomic_write_csv(out_sum_path, SUM_FIELDS, summ_rows)
+        finally:
+            csv_lock.release()
+
+    def _sigterm_handler(signum, frame) -> None:
+        # 标记所有 still-running 行
+        now = int(time.time())
+        for r in run_rows:
+            if r.get("status") == "running":
+                r["status"] = "terminated"
+                r["last_update_ts"] = now
+        try:
+            _flush_no_block()
+        except Exception:
+            pass
+        raise SystemExit(128 + signum)
+
+    if args.live_update:
+        signal.signal(signal.SIGTERM, _sigterm_handler)
+        signal.signal(signal.SIGINT, _sigterm_handler)
+
 
     # Sweep grid (if enabled)
     sweep_perturb = parse_float_list(args.sweep_perturb_y)
@@ -801,11 +876,6 @@ def main() -> None:
 
     csv_lock = threading.Lock()
 
-    def live_flush_all() -> None:
-        with csv_lock:
-            atomic_write_csv(out_csv_path, RUN_FIELDS, run_rows)
-            summ_rows = aggregate_summary(run_rows)
-            atomic_write_csv(out_sum_path, SUM_FIELDS, summ_rows)
 
 
     for inst in instances:
@@ -892,7 +962,8 @@ def main() -> None:
                                 cur["best_round"] = state["best_round"]
                                 cur["best_time_sec"] = state["best_time_sec"]
                                 cur["last_update_ts"] = int(time.time())
-
+                                if args.live_update and (rid == 0 or ub == state["best_ub"]):
+                                    live_flush_all()
                             def ticker():
                                 while not stop_evt.wait(args.live_every):
                                     cur["runtime_sec"] = time.perf_counter() - t0
@@ -938,7 +1009,8 @@ def main() -> None:
                                 stop_evt.set()
                                 if th is not None:
                                     th.join(timeout=1.0)
-
+                                if args.live_update:
+                                    live_flush_all()
 
                     except Exception as e:
                         cur.update({

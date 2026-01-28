@@ -1,0 +1,25 @@
+[INFO] Start Tue Jan 27 01:08:56 AM CET 2026
+[INFO] Instance=DSJC1000.9.col seed=0 algo=iterlp2_full TL=1200s (soft=1080s)
+[INFO] Outputs:
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3089845.csv
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3089845.csv
+[INFO] runner path: /home/ta32xoy/masterarbeit/runner.py
+[INFO] runner md5: 2a825c6a9bb7ecda3f396f042df710d7  /home/ta32xoy/masterarbeit/runner.py
+[Runner] path=/home/ta32xoy/masterarbeit/runner.py md5=2a825c6a9bb7ecda3f396f042df710d7
+[Runner] instances=1 algos=1 algo_seeds=[0] time_limit=1080s
+[Init] graph: |V|=1000 |E|=449449 |LB|=53 |UB(init)|=316 |K|=316 via smallest_last
+[Init] LB=53 | UB(init:smallest_last)=316
+[LP] model built once (incremental), initial |C|=316 (K=316) with precedence & clique-cuts
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3089845.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3089845.csv
+[INFO] End   Tue Jan 27 01:30:35 AM CET 2026
+[INFO] WallClockSec=1299
+[INFO] runner.py exit code=0
+-rw------- 1 ta32xoy unijena 579 Jan 27 01:30 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_runs_3089845.csv
+-rw------- 1 ta32xoy unijena 146 Jan 27 01:30 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed0_summary_3089845.csv
+[INFO] Tail runs.csv:
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
+DSJC1000.9,dimacs,1000,449449,0.8997977977977978,898.898,iterlp2_full,0,1080,smallest_last,prefix_shrink+rounded_support,0.25,20,32,1e-06,full,,316,,False,,1241.9553291499615,,ERROR:UnboundLocalError,1.4916439056396484,0,error,1769473807,cannot access local variable 'zLP' where it is not associated with a value
+[INFO] Tail summary.csv:
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+DSJC1000.9,iterlp2_full,1,316,316.0,1241.9553291499615,1.4916439056396484

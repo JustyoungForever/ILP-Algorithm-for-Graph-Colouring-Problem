@@ -1,0 +1,13 @@
+srun: warning: can't run 1 processes on 2 nodes, setting nnodes to 1
+srun: warning: can't run 1 processes on 2 nodes, setting nnodes to 1
+srun: warning: can't run 1 processes on 2 nodes, setting nnodes to 1
+srun: warning: can't run 1 processes on 2 nodes, setting nnodes to 1
+srun: warning: can't run 1 processes on 2 nodes, setting nnodes to 1
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: error: Unable to create step for job 3079250: Job/step already completing or completed
+srun: error: Unable to create step for job 3079250: Job/step already completing or completed
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: error: Unable to create step for job 3079250: Job/step already completing or completed
+slurmstepd: error: *** STEP 3079250.1 ON node195 CANCELLED AT 2026-01-18T03:16:23 ***
+slurmstepd: error: *** JOB 3079250 ON node194 CANCELLED AT 2026-01-18T03:16:23 ***
+slurmstepd: error: *** STEP 3079250.0 ON node194 CANCELLED AT 2026-01-18T03:16:23 ***

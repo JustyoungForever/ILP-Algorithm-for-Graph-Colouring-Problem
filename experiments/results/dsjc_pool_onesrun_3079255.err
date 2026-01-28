@@ -1,0 +1,9 @@
+/usr/bin/bash: line 38: 1946770 Killed                  python -u "$ROOT/runner.py" --suite dimacs --dimacs-dir "$tmp" --time-limit "$tl" --algos dsatur,slo,iterlp2_full --algo-seeds "$seed" --restarts 4 --max-fix-per-round 5 --strong-margin 0.25 --perturb-y 1e-6 --save-trace 0 --out-dir "$ROOT/results" --out-csv "pool_${base}_seed${seed}_runs_${SLURM_JOB_ID}.csv" --summary-csv "pool_${base}_seed${seed}_summary_${SLURM_JOB_ID}.csv"
+srun: error: node204: task 13: Exited with exit code 137
+/usr/bin/bash: line 38: 1946769 Killed                  python -u "$ROOT/runner.py" --suite dimacs --dimacs-dir "$tmp" --time-limit "$tl" --algos dsatur,slo,iterlp2_full --algo-seeds "$seed" --restarts 4 --max-fix-per-round 5 --strong-margin 0.25 --perturb-y 1e-6 --save-trace 0 --out-dir "$ROOT/results" --out-csv "pool_${base}_seed${seed}_runs_${SLURM_JOB_ID}.csv" --summary-csv "pool_${base}_seed${seed}_summary_${SLURM_JOB_ID}.csv"
+srun: error: node204: task 11: Exited with exit code 137
+/usr/bin/bash: line 38: 1946786 Killed                  python -u "$ROOT/runner.py" --suite dimacs --dimacs-dir "$tmp" --time-limit "$tl" --algos dsatur,slo,iterlp2_full --algo-seeds "$seed" --restarts 4 --max-fix-per-round 5 --strong-margin 0.25 --perturb-y 1e-6 --save-trace 0 --out-dir "$ROOT/results" --out-csv "pool_${base}_seed${seed}_runs_${SLURM_JOB_ID}.csv" --summary-csv "pool_${base}_seed${seed}_summary_${SLURM_JOB_ID}.csv"
+srun: error: node204: task 10: Exited with exit code 137
+slurmstepd: error: *** JOB 3079255 ON node204 CANCELLED AT 2026-01-18T04:34:31 ***
+slurmstepd: error: *** STEP 3079255.0 ON node204 CANCELLED AT 2026-01-18T04:34:31 ***
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.

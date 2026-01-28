@@ -1,0 +1,20 @@
+srun: Step created for StepId=3079252.1
+srun: Step created for StepId=3079252.2
+srun: Step created for StepId=3079252.3
+srun: Step created for StepId=3079252.4
+srun: Job 3079252 step creation temporarily disabled, retrying (Requested nodes are busy)
+srun: Job 3079252 step creation temporarily disabled, retrying (Requested nodes are busy)
+srun: Job 3079252 step creation temporarily disabled, retrying (Requested nodes are busy)
+srun: Job 3079252 step creation temporarily disabled, retrying (Requested nodes are busy)
+srun: Step created for StepId=3079252.6
+srun: Job 3079252 step creation still disabled, retrying (Requested nodes are busy)
+srun: Job 3079252 step creation still disabled, retrying (Requested nodes are busy)
+srun: Job 3079252 step creation still disabled, retrying (Requested nodes are busy)
+srun: Step created for StepId=3079252.7
+srun: Job 3079252 step creation still disabled, retrying (Requested nodes are busy)
+srun: Job 3079252 step creation still disabled, retrying (Requested nodes are busy)
+srun: Step created for StepId=3079252.8
+srun: error: Unable to create step for job 3079252: Job/step already completing or completed
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** JOB 3079252 ON node172 CANCELLED AT 2026-01-18T03:39:32 ***
+slurmstepd: error: *** STEP 3079252.8 ON node172 CANCELLED AT 2026-01-18T03:39:32 ***

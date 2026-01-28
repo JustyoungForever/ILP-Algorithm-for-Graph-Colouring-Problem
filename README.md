@@ -42,7 +42,7 @@ ILP-Algorithm-for-Graph-Colouring-Problem/
 
 
 ```bash
-python3 main.py --algo iterlp2 --graph demo --time 10 --seed 0 \
+python3 main.py --algo iterlp2 --graph demo --time 100 --seed 0 \
   --init-heuristic smallest_last \
   --fix-policy prefix_shrink+rounded_support \
   --max-fix-per-round 5 \

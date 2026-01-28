@@ -1,0 +1,2 @@
+/var/tmp/spool/slurmd/job3079758/slurm_script: line 94: 654271 Killed                  python -u "$ROOT/runner.py" --suite dimacs --dimacs-dir "$tmp" --time-limit "$SOFT_TL" --algos iterlp2_full --algo-seeds "$SEED" --restarts 32 --max-fix-per-round 20 --strong-margin 0.25 --perturb-y 1e-6 --save-trace 0 --live-update 1 --live-every 10 --out-dir "$ROOT/results" --out-csv "$(basename "$OUT_RUN")" --summary-csv "$(basename "$OUT_SUM")"
+slurmstepd: error: Detected 1 oom_kill event in StepId=3079758.batch. Some of the step tasks have been OOM Killed.

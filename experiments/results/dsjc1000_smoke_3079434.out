@@ -1,0 +1,8 @@
+[INFO] Running DSJC1000.9.col seed=0 TL=60s HARD=360s
+[INFO] Expect outputs:
+  /home/ta32xoy/masterarbeit/results/smoke_DSJC1000.9_seed0_runs_3079434.csv
+  /home/ta32xoy/masterarbeit/results/smoke_DSJC1000.9_seed0_summary_3079434.csv
+Sun Jan 18 11:13:35 PM CET 2026
+[Runner] instances=1 algos=2 algo_seeds=[0] time_limit=60s
+[WATCHDOG] HARD limit 360s reached, sending SIGINT to PID=492887
+[WATCHDOG] still running after 120s, sending SIGKILL to PID=492887
