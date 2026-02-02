@@ -1,0 +1,10 @@
+[Graph] demo |V|=600 |E|=143684
+[Main] algo=iterlp2 | time=1000s | seed=0 | init=smallest_last | fix-policy=prefix_shrink | restarts=8 | perturb-y=0.001
+[Baseline/DSATUR] colors=146 | time=4.6727s | feasible=True | conflicts=0
+[Init] graph: |V|=600 |E|=143684 |LB|=23 |UB(init)|=153 |K|=153 via smallest_last
+[Init] LB=23 | UB(init:smallest_last)=153
+[LP] model built once (incremental), initial |C|=153 (K=153) with precedence & clique-cuts
+[Final] UB=153 LB=23 feasible=True zLP≈nan
+[Compare] DSATUR colors=146 vs IterLP2 colors=153  → DSATUR better (Δ=-7)
+[Compare] DSATUR time=4.6727s | IterLP2 time=2.8621s | stop=time_limit
+[Main] Done. stop_reason=time_limit | LB=23 | UB=153 | iters=0

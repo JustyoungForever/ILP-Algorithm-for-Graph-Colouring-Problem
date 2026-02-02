@@ -49,6 +49,9 @@ from driver.iterate_lp import run_iterative_lp_v2
 # We'll monkey-patch these inside driver.iterate_lp for ablations.
 import driver.iterate_lp as itlp  # type: ignore
 
+
+
+
 def ensure_dir(p: Path) -> None:
     p.mkdir(parents=True, exist_ok=True)
 
@@ -427,6 +430,10 @@ def run_iterlp2(
     max_fix_per_round: int,
     restarts: int,
     perturb_y: float,
+    edge_mode: str,
+    lazy_threshold: float,
+    viz_out_dir: str,
+    viz_layout_seed: int,
     algo_seed: int,
     ablation: str,
     save_trace: bool,
@@ -458,6 +465,10 @@ def run_iterlp2(
                     perturb_y=perturb_y,
                     enable_visualization=False,
                     algo_seed=algo_seed,
+                    edge_mode=edge_mode,
+                    lazy_threshold=float(lazy_threshold),
+                    viz_out_dir=viz_out_dir,
+                    viz_layout_seed=int(viz_layout_seed),
                 )
             captured = buf.getvalue()
             trace_rows = extract_trace(captured)
@@ -511,6 +522,10 @@ def run_iterlp2(
                     perturb_y=perturb_y,
                     enable_visualization=False,
                     algo_seed=algo_seed,
+                    edge_mode=edge_mode,
+                    lazy_threshold=float(lazy_threshold),
+                    viz_out_dir=viz_out_dir,
+                    viz_layout_seed=int(viz_layout_seed),
                 )
 
         else:
@@ -526,6 +541,10 @@ def run_iterlp2(
                 perturb_y=perturb_y,
                 enable_visualization=False,
                 algo_seed=algo_seed,
+                edge_mode=edge_mode,
+                lazy_threshold=float(lazy_threshold),
+                viz_out_dir=viz_out_dir,
+                viz_layout_seed=int(viz_layout_seed),
             )
 
 
@@ -745,7 +764,11 @@ def main() -> None:
     ap.add_argument("--max-fix-per-round", type=int, default=50)
     ap.add_argument("--restarts", type=int, default=48)
     ap.add_argument("--perturb-y", type=float, default=1e-6)
-
+    ap.add_argument("--edge-mode", default="auto", choices=["auto", "lazy", "full"])
+    ap.add_argument("--lazy-threshold", type=float, default=2e7)
+    ap.add_argument("--viz-out", default="results/viz")
+    ap.add_argument("--viz-layout-seed", type=int, default=0)
+    
     # Trace
     ap.add_argument("--save-trace", type=int, default=0)
     ap.add_argument("--trace-dir", default="results/traces")
@@ -778,7 +801,11 @@ def main() -> None:
     ap.add_argument("--sweep-strong-margin", default="0.10,0.15,0.20,0.25,0.30")
 
     args = ap.parse_args()
+    def _handle_term(signum, frame):
+        raise KeyboardInterrupt
+    signal.signal(signal.SIGTERM, _handle_term)
 
+    
     out_dir = Path(args.out_dir)
     ensure_dir(out_dir)
 
@@ -986,6 +1013,10 @@ def main() -> None:
                                     max_fix_per_round=int(args.max_fix_per_round),
                                     restarts=int(args.restarts),
                                     perturb_y=float(py),
+                                    edge_mode=args.edge_mode,
+                                    lazy_threshold=float(args.lazy_threshold),
+                                    viz_out_dir=str(args.viz_out),
+                                    viz_layout_seed=int(args.viz_layout_seed),
                                     algo_seed=int(aseed),
                                     ablation=str(ablation),
                                     save_trace=bool(args.save_trace),
@@ -1011,7 +1042,15 @@ def main() -> None:
                                     th.join(timeout=1.0)
                                 if args.live_update:
                                     live_flush_all()
-
+                    except KeyboardInterrupt:
+                        cur.update({
+                            "status": "interrupted",
+                            "stop_reason": "INTERRUPTED",
+                            "last_update_ts": int(time.time()),
+                        })
+                        if args.live_update:
+                            live_flush_all()
+                        raise
                     except Exception as e:
                         cur.update({
                             "LB": "",

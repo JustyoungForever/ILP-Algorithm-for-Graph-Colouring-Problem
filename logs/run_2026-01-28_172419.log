@@ -1,0 +1,12 @@
+[Graph] demo |V|=1000 |E|=399551
+[Main] algo=iterlp2 | time=1000s | seed=0 | init=smallest_last | fix-policy=prefix_shrink+rounded_support | restarts=2 | perturb-y=0.001
+[Baseline/DSATUR] colors=226 | time=24.8051s | feasible=True | conflicts=0
+[Init] graph: |V|=1000 |E|=399551 |LB|=28 |UB(init)|=241 |K|=241 via smallest_last
+[Init] LB=28 | UB(init:smallest_last)=241
+[LP] model built once (incremental), initial |C|=241 (K=241) with precedence & clique-cuts
+Traceback (most recent call last):
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/main.py", line 60, in <module>
+    res = run_iterative_lp_v2(
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/driver/iterate_lp.py", line 166, in run_iterative_lp_v2
+    added = inc.lazy_separate_from_lp(x_frac, y_frac, top_t=2, eps=1e-6, max_new=200000)
+UnboundLocalError: local variable 'x_frac' referenced before assignment

@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=dsjc1000_iterlp_live_8h
+#SBATCH --job-name=dsjc500_iterlp_live_8h
 #SBATCH --partition=b_standard
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=100G
-#SBATCH --time=08:00:00
+#SBATCH --time=08:20:00
 #SBATCH --signal=B:TERM@1200
 #SBATCH --chdir=/home/ta32xoy/masterarbeit
 #SBATCH --output=/home/ta32xoy/masterarbeit/experiments/data/large/logs/%x_%j.out
@@ -27,7 +27,7 @@ export OPENBLAS_NUM_THREADS=1
 export GCP_VIZ=0
 
 GRAPH_DIR="$ROOT/experiments/data/large/graphs"
-INST="DSJC1000.9.col"
+INST="DSJC500.9.col"
 [[ -f "$GRAPH_DIR/$INST" ]] || { echo "[ERROR] Missing $GRAPH_DIR/$INST"; ls -lh "$GRAPH_DIR"; exit 1; }
 
 SEED=0
@@ -88,12 +88,14 @@ python -u "$ROOT/runner.py" --suite dimacs \
   --algos iterlp2_full \
   --algo-seeds "$SEED" \
   --restarts 32 \
-  --max-fix-per-round 20 \
+  --max-fix-per-round 10 \
+  --edge-mode lazy \
+  --lazy-threshold 20000000 \
   --strong-margin 0.25 \
   --perturb-y 1e-6 \
   --save-trace 0 \
   --live-update 1 \
-  --live-every 10 \
+  --live-every 30 \
   --out-dir "$ROOT/results" \
   --out-csv "$(basename "$OUT_RUN")" \
   --summary-csv "$(basename "$OUT_SUM")" &

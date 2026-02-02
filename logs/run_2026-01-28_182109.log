@@ -1,0 +1,22 @@
+[Graph] demo |V|=600 |E|=143684
+[Main] algo=iterlp2 | time=10000s | seed=0 | init=smallest_last | fix-policy=prefix_shrink | restarts=8 | perturb-y=0.001
+[Baseline/DSATUR] colors=146 | time=5.2265s | feasible=True | conflicts=0
+[Init] graph: |V|=600 |E|=143684 |LB|=23 |UB(init)|=153 |K|=153 via smallest_last
+[Init] LB=23 | UB(init:smallest_last)=153
+[LP] model built once (incremental), initial |C|=153 (K=153) with precedence & clique-cuts
+[DBG] n=600 m=143684 UB=153 K=153 lazy=True is_big=True lp_main_cap=6.0
+  [LazyEdge] added=20000
+[Round 1] zLP=23.084257 | ceil(zLP)=24 | K=153 | UB=153 | t=9.02s
+  [Fix] set K to UB-1: 24 -> 24 (lb_lp=24, UB=153)
+  [Rounding] feasible=False | used=24 | conflicts=64465
+  [LazyEdge-Conflicts] added=50000
+  [Side] trying K+1 rounding (K=24 - 25) to break stalemate
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [Rounding] feasible=False | used=24 | conflicts=64465
+  [Side] K+1 rounding produced an infeasible coloring (will not update UB)
+  [FixPolicy] y_zero=1 | x_one=0 | x_zero=0 | strong_margin=0.35 | max_fix_per_round=10
+  [Round 1 END] UB=153 | K=24 | ceil(zLP)=24 | improved=False | fixed=True
+[Final] UB=153 LB=23 feasible=True zLP≈23.045455
+[Compare] DSATUR colors=146 vs IterLP2 colors=153  → DSATUR better (Δ=-7)
+[Compare] DSATUR time=5.2265s | IterLP2 time=14144.9165s | stop=time_limit
+[Main] Done. stop_reason=time_limit | LB=23 | UB=153 | iters=1

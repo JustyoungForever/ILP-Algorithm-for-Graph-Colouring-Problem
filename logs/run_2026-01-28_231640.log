@@ -1,0 +1,38 @@
+[Graph] demo |V|=500 |E|=99716
+[Main] algo=iterlp2 | time=1000s | seed=0 | init=smallest_last | fix-policy=prefix_shrink | restarts=8 | perturb-y=0.001
+[Baseline/DSATUR] colors=124 | time=2.6794s | feasible=True | conflicts=0
+[Init] graph: |V|=500 |E|=99716 |LB|=25 |UB(init)|=132 |K|=132 via smallest_last
+[Init] LB=25 | UB(init:smallest_last)=132
+[LP] model built once (incremental), initial |C|=132 (K=132) with precedence & clique-cuts
+[DBG] n=500 m=99716 UB=132 K=132 lazy=True is_big=True lp_main_cap=6.0
+  [LazyEdge] added=83233
+[Round 1] zLP=25.040000 | ceil(zLP)=26 | K=132 | UB=132 | t=7.07s
+  [Rounding] feasible=True | used=122 | conflicts=0
+[LocalSearch] highest color class removed; colors now=122
+[LocalSearch] highest color class removed; colors now=122
+[LocalSearch] highest color class removed; colors now=122
+[LocalSearch] highest color class removed; colors now=122
+[LocalSearch] highest color class removed; colors now=122
+  [Rounding/Local] improved UB -> 122
+  [Sync] K aligned to new UB: K=122
+  [Rounding] feasible=True | used=122 | conflicts=0
+  [FixPolicy] y_zero=97 | x_one=0 | x_zero=0 | strong_margin=0.35 | max_fix_per_round=10
+  [Round 1 END] UB=122 | K=122 | ceil(zLP)=26 | improved=True | fixed=False
+[DBG] n=500 m=99716 UB=122 K=122 lazy=True is_big=True lp_main_cap=3.0
+  [LazyEdge] added=82414
+[Round 2] zLP=25.041738 | ceil(zLP)=26 | K=122 | UB=122 | t=42.21s
+  [Rounding] feasible=False | used=122 | conflicts=57
+  [LazyEdge-Conflicts] added=0
+  [Side] trying K+1 rounding (K=122 - 123) to break stalemate
+  [Side] skip: K+1=123 exceeds current UB=122
+  [Rounding] feasible=False | used=122 | conflicts=57
+  [FixPolicy] y_zero=97 | x_one=0 | x_zero=0 | strong_margin=0.35 | max_fix_per_round=10
+  [Round 2 END] UB=122 | K=122 | ceil(zLP)=26 | improved=False | fixed=False
+[DBG] n=500 m=99716 UB=122 K=122 lazy=True is_big=True lp_main_cap=3.0
+  [LazyEdge] added=100000
+[Round 3] zLP=25.044835 | ceil(zLP)=26 | K=122 | UB=122 | t=890.77s
+[Time] budget exhausted at after_rounding, UB=122
+[Final] UB=122 LB=25 feasible=True zLP≈25.044835
+[Compare] DSATUR colors=124 vs IterLP2 colors=122  → IterLP2 better (Δ=2)
+[Compare] DSATUR time=2.6794s | IterLP2 time=1053.6542s | stop=time_limit
+[Main] Done. stop_reason=time_limit | LB=25 | UB=122 | iters=2

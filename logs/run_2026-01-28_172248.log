@@ -1,0 +1,133 @@
+[Graph] demo |V|=100 |E|=3941
+[Main] algo=iterlp2 | time=100s | seed=0 | init=smallest_last | fix-policy=prefix_shrink+rounded_support | restarts=2 | perturb-y=0.001
+[Baseline/DSATUR] colors=32 | time=0.0223s | feasible=True | conflicts=0
+[Init] graph: |V|=100 |E|=3941 |LB|=16 |UB(init)|=35 |K|=35 via smallest_last
+[Init] LB=16 | UB(init:smallest_last)=35
+[LP] model built once (incremental), initial |C|=35 (K=35) with precedence & clique-cuts
+[Round 1] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=35 | t=3.33s
+  [Fix] shrink to K=34 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=33 | conflicts=0
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+  [Rounding/Local] improved UB -> 33
+  [Rounding] feasible=True | used=33 | conflicts=0
+  [Side] skip: K+1=36 exceeds current UB=33
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=18 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+  [Round 1 END] UB=33 | K=35 | ceil(zLP)=17 | improved=True | fixed=False
+[Round 2] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=33 | t=9.30s
+  [Fix] shrink to K=32 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=32 | conflicts=0
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+  [Rounding/Local] improved UB -> 32
+  [Rounding] feasible=True | used=32 | conflicts=0
+  [Side] skip: K+1=36 exceeds current UB=32
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=18 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+  [Round 2 END] UB=32 | K=35 | ceil(zLP)=17 | improved=True | fixed=False
+[Round 3] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=32 | t=14.33s
+  [Fix] shrink to K=31 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=31 | conflicts=0
+[LocalSearch] highest color class removed; colors now=31
+[LocalSearch] highest color class removed; colors now=31
+[LocalSearch] highest color class removed; colors now=31
+[LocalSearch] highest color class removed; colors now=31
+[LocalSearch] highest color class removed; colors now=31
+  [Rounding/Local] improved UB -> 31
+  [Rounding] feasible=True | used=31 | conflicts=0
+  [Side] skip: K+1=36 exceeds current UB=31
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=18 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+  [Round 3 END] UB=31 | K=35 | ceil(zLP)=17 | improved=True | fixed=False
+[Round 4] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=31 | t=20.02s
+  [Fix] shrink to K=30 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=33 | conflicts=0
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+  [Rounding] feasible=True | used=33 | conflicts=0
+  [Side] skip: K+1=36 exceeds current UB=31
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=18 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+  [Round 4 END] UB=31 | K=35 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 5] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=31 | t=25.56s
+  [Fix] shrink to K=30 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=34 | conflicts=0
+[LocalSearch] highest color class removed; colors now=34
+[LocalSearch] highest color class removed; colors now=34
+[LocalSearch] highest color class removed; colors now=34
+[LocalSearch] highest color class removed; colors now=34
+[LocalSearch] highest color class removed; colors now=34
+  [Rounding] feasible=True | used=34 | conflicts=0
+  [Side] skip: K+1=36 exceeds current UB=31
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=18 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+  [Round 5 END] UB=31 | K=35 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 6] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=31 | t=30.72s
+  [Fix] shrink to K=30 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=32 | conflicts=0
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+[LocalSearch] highest color class removed; colors now=32
+  [Rounding] feasible=True | used=32 | conflicts=0
+  [Side] skip: K+1=36 exceeds current UB=31
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=18 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+  [Round 6 END] UB=31 | K=35 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 7] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=31 | t=36.23s
+  [Fix] shrink to K=30 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=33 | conflicts=0
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+[LocalSearch] highest color class removed; colors now=33
+  [Rounding] feasible=True | used=33 | conflicts=0
+  [Side] skip: K+1=36 exceeds current UB=31
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=18 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+  [Round 7 END] UB=31 | K=35 | ceil(zLP)=17 | improved=False | fixed=False
+[Round 8] zLP=17.000000 | ceil(zLP)=17 | K=35 | UB=31 | t=42.23s
+  [Fix] shrink to K=30 infeasible - rollback; keep K=35
+  [Rounding] feasible=True | used=34 | conflicts=0
+[LocalSearch] highest color class removed; colors now=34
+[LocalSearch] highest color class removed; colors now=34
+[LocalSearch] highest color class removed; colors now=34
+[LocalSearch] highest color class removed; colors now=34
+[LocalSearch] highest color class removed; colors now=34
+  [Rounding] feasible=True | used=34 | conflicts=0
+  [Side] skip: K+1=36 exceeds current UB=31
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=18 | x_one=2 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=5
+  [FixApply] applying tokens=2 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+  [Round 8 END] UB=31 | K=35 | ceil(zLP)=17 | improved=False | fixed=False
+[Final] UB=31 LB=16 feasible=True zLP≈17.000000
+[Compare] DSATUR colors=32 vs IterLP2 colors=31  → IterLP2 better (Δ=1)
+[Compare] DSATUR time=0.0223s | IterLP2 time=48.3882s | stop=time_limit
+[Main] Done. stop_reason=time_limit | LB=16 | UB=31 | iters=8

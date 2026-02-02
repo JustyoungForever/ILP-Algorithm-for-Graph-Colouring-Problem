@@ -42,12 +42,37 @@ ILP-Algorithm-for-Graph-Colouring-Problem/
 
 
 ```bash
-python3 main.py --algo iterlp2 --graph demo --time 100 --seed 0 \
+python3 main.py --algo iterlp2 --graph demo --time 1000 --seed 0 \
   --init-heuristic smallest_last \
   --fix-policy prefix_shrink+rounded_support \
   --max-fix-per-round 5 \
   --restarts 2 --perturb-y 1e-3 \
   2>&1 | tee -a logs/run_$(date +%F_%H%M%S).log
+
+## 小图full
+python3 main.py --algo iterlp2 --graph demo --time 100 \
+  --edge-mode full \
+  --init-heuristic smallest_last \
+  --fix-policy prefix_shrink+rounded_support \
+  --strong-margin 0.25 \
+  --max-fix-per-round 20 \
+  --restarts 32 \
+  --perturb-y 1e-3 \
+  2>&1 | tee -a logs/run_$(date +%F_%H%M%S).log
+
+## 大图跑lazy
+python3 main.py --algo iterlp2 --graph demo --time 1000 --seed 0 \
+  --edge-mode auto --lazy-threshold 2000000 \
+  --init-heuristic smallest_last \
+  --fix-policy prefix_shrink \
+  --strong-margin 0.35 \
+  --max-fix-per-round 10 \
+  --restarts 8 --perturb-y 1e-3 \
+  2>&1 | tee -a logs/run_$(date +%F_%H%M%S).log
+
+
+sacct -j 3098061 --format=JobID,JobName%20,Partition,State,ExitCode,Elapsed,AllocCPUS,ReqMem,MaxRSS,AveRSS,MaxVMSize,AveCPU
+
 
 
 python3 -m experiments.smoke_test

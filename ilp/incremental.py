@@ -25,6 +25,8 @@ class IncrementalLP:
 
         self.lazy_edges = bool(self.var_maps.get("lazy_edges", False))
         self._edge_cut_added = set()  # (min(u,v), max(u,v), c)
+        self.edges = self.var_maps.get("edges", [])
+        self._lazy_added = set()
     def set_time_limit_ms(self, ms: int) -> None:
         try:
             self.solver.SetTimeLimit(int(max(0, ms)))
@@ -155,7 +157,7 @@ class IncrementalLP:
         try:
             info = solve_lp_and_extract(self.solver, self.var_maps)  # 内部 solve + extract
             return info, True
-        except TimeoutError:
+        except (TimeoutError, RuntimeError):
             return None, False
 
     def revert_all(self, tokens: List[BoundsToken]) -> None:

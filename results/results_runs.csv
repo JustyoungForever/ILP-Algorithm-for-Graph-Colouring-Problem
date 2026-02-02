@@ -1,3 +1,2 @@
 instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
-K6,toy,6,15,1.0,5.0,iterlp2_full,0,60,smallest_last,prefix_shrink+rounded_support,0.25,50,48,1e-06,full,6,6,0,True,0,0.017743800000062038,0,UB==LB,0.0,0,done,1769472282,
-C9,toy,9,9,0.25,2.0,iterlp2_full,0,60,smallest_last,prefix_shrink+rounded_support,0.25,50,48,1e-06,full,2,3,1,True,0,0.0436964010000338,1,no_better_than_UB,0.0,0,done,1769472282,
+DSJC1000.9,dimacs,1000,449449,0.8997977977977978,898.898,iterlp2_full,4,3600,smallest_last,prefix_shrink+rounded_support,0.25,10,32,1e-06,full,53,297,244,True,0,3643.472326798,6,time_limit,0.0,0,done,1769913344,

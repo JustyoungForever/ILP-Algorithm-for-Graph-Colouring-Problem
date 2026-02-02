@@ -1,0 +1,15 @@
+[Graph] demo |V|=600 |E|=143684
+[Main] algo=iterlp2 | time=1000s | seed=0 | init=smallest_last | fix-policy=prefix_shrink | restarts=8 | perturb-y=0.001
+[Baseline/DSATUR] colors=146 | time=6.3623s | feasible=True | conflicts=0
+[Init] graph: |V|=600 |E|=143684 |LB|=23 |UB(init)|=153 |K|=153 via smallest_last
+[Init] LB=23 | UB(init:smallest_last)=153
+Traceback (most recent call last):
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/main.py", line 63, in <module>
+    res = run_iterative_lp_v2(
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/driver/iterate_lp.py", line 137, in run_iterative_lp_v2
+    inc = IncrementalLP(    G, allowed_colors=list(range(UB)), clique_nodes=clique_nodes,
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/ilp/incremental.py", line 16, in __init__
+    self.solver, self.var_maps = build_lp_model(
+  File "/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/ilp/model.py", line 92, in build_lp_model
+    edge_mode_used=mode,
+NameError: name 'mode' is not defined

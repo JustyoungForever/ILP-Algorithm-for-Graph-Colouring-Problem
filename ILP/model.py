@@ -44,14 +44,16 @@ def build_lp_model(
     for v in V:
         solver.Add(solver.Sum(x_vars[(v, c)] for c in C) == 1.0)
 
-    # 2) edge constraints per color
+    
     m = G.number_of_edges()
     KC = len(C)
     use_lazy = (edge_mode == "lazy") or (edge_mode == "auto" and (m * KC) > lazy_threshold)
+    edge_mode_used = "lazy" if use_lazy else "full"
     if not use_lazy:
-            for (u, v) in G.edges():
-                for c in C:
-                    solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= y_vars[c])
+        # 2) edge constraints per color
+        for (u, v) in G.edges():
+            for c in C:
+                solver.Add(x_vars[(u, c)] + x_vars[(v, c)] <= y_vars[c])
     #3) linking x <= y
     for v in V:
         for c in C:
@@ -86,7 +88,11 @@ def build_lp_model(
                 continue
             for c in C:
                 solver.Add(solver.Sum(x_vars[(v, c)] for v in inter) <= 1.0)
-
-    var_maps = dict(x_vars=x_vars, y_vars=y_vars, V=V, C=C, lazy_edges=use_lazy)
+    var_maps = dict(
+        x_vars=x_vars, y_vars=y_vars, V=V, C=C,
+        edge_mode_used=edge_mode_used,
+        lazy_edges=use_lazy,
+        edges=list(G.edges()) if use_lazy else []
+    )
     return solver, var_maps
 

@@ -1,0 +1,9 @@
+usage: main.py [-h] [--graph {demo,rr100_d10}]
+               [--algo {dsatur,iterlp,iterlp2}] [--seed SEED]
+               [--algo-seed ALGO_SEED] [--time TIME]
+               [--init-heuristic {dsatur,smallest_last}]
+               [--fix-policy FIX_POLICY] [--strong-margin STRONG_MARGIN]
+               [--max-fix-per-round MAX_FIX_PER_ROUND] [--restarts RESTARTS]
+               [--perturb-y PERTURB_Y] [--viz-out VIZ_OUT]
+               [--viz-layout-seed VIZ_LAYOUT_SEED]
+main.py: error: unrecognized arguments: --edge-mode auto --lazy-threshold 20000000

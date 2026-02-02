@@ -19,6 +19,9 @@ if __name__ == "__main__":
     ap.add_argument("--max-fix-per-round", type=int, default=50)
     ap.add_argument("--restarts", type=int, default=16)
     ap.add_argument("--perturb-y", type=float, default=1e-6)
+    ap.add_argument("--edge-mode", default="auto", choices=["auto", "full", "lazy"])
+    ap.add_argument("--lazy-threshold", type=float, default=2e7)
+
     ap.add_argument("--viz-out", default="visualisierung/picture")
     ap.add_argument("--viz-layout-seed", type=int, default=42)
     args = ap.parse_args()
@@ -67,7 +70,10 @@ if __name__ == "__main__":
                 max_fix_per_round=args.max_fix_per_round,
                 restarts=args.restarts,
                 perturb_y=args.perturb_y,
-                enable_visualization=False,          
+                enable_visualization=False, 
+                edge_mode=args.edge_mode,
+                lazy_threshold=float(args.lazy_threshold),
+         
                 viz_out_dir=args.viz_out,
                 viz_layout_seed=args.viz_layout_seed,
                 algo_seed=args.algo_seed,

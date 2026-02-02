@@ -39,9 +39,13 @@ def run_iterative_lp_v2(
     viz_out_dir: str = "visualisierung/picture",
     viz_layout_seed: int = 42,
     algo_seed:int=0,
+    edge_mode: str = "auto",
+    lazy_threshold: float = 2e7,
 ) -> Dict[str, Any]:
     t0 = time.monotonic()
     deadline = t0 + float(time_limit_sec)
+    print(f"[DBG-TL-init] time_limit_sec={time_limit_sec} deadline_in={deadline - t0:.1f}s")
+
     stop_reason = ""
     best_time_sec = 0.0
     best_round = 0
@@ -111,10 +115,10 @@ def run_iterative_lp_v2(
         n = G.number_of_nodes()
         m = G.number_of_edges()
         is_big = (n >= 600) or (m * UB >= 2e7)
-        if is_big:
-            restarts = min(restarts, 12)
-            max_fix_per_round = min(max_fix_per_round, 10)
-            strong_margin = max(strong_margin, 0.30)
+        # if is_big:
+        #     restarts = min(restarts, 12)
+        #     max_fix_per_round = min(max_fix_per_round, 10)
+        #     strong_margin = max(strong_margin, 0.30)
         print(f"[Init] graph: |V|={n} |E|={m} |LB|={LB} |UB(init)|={UB} |K|={K} via {init_heuristic}")
     if enable_visualization:
         visualize_coloring(
@@ -134,7 +138,7 @@ def run_iterative_lp_v2(
     extra_cliques = top_maximal_cliques(G, max_cliques=50, min_size=max(4, LB+1), time_limit_sec=2.0)
     inc = IncrementalLP(    G, allowed_colors=list(range(UB)), clique_nodes=clique_nodes,
         extra_cliques=extra_cliques, add_precedence=True,
-        edge_mode="auto", lazy_threshold=2e7,)
+        edge_mode=edge_mode, lazy_threshold=lazy_threshold,)
     if verbose:
         print(f"[LP] model built once (incremental), initial |C|={len(inc.C)} (K={K}) with precedence & clique-cuts")
 
@@ -149,40 +153,124 @@ def run_iterative_lp_v2(
         round_id += 1
         n = G.number_of_nodes()
         m = G.number_of_edges()
-        is_big = (n >= 600) or (m * UB >= 2e7)   # same criterion you already use elsewhere
+        est = m * K  # 用 K/|C| 更合理
+        if verbose:
+            print(f"[DBG-ENTER] round_id={round_id} elapsed={elapsed():.1f}s time_left={time_left():.1f}s UB={UB} K={K}")
+        if budget_exhausted("round_begin"):
+            break
 
-        lp_main_cap = 5.0 if not is_big else 0.7   # main LP solve budget per round
-        lp_sub_cap  = 2.0 if not is_big else 0.3
+
+        lazy = getattr(inc, "lazy_edges", False)
+
+        # 更保守的 big 判定：不要 n>=600 就判 big
+        is_big = lazy or (n >= 500) or (est >= 5e7)
+
+        # 主 solve：大图也别太小；Round 1 给更充足时间
+        if not is_big:
+            lp_main_cap = 8.0
+            lp_sub_cap  = 2.0
+        else:
+            lp_main_cap = 60.0
+            lp_sub_cap  = 10.0 
+            if round_id <= 1:      # 第一次主 solve 更关键
+                lp_main_cap = 300.0
 
         # 1) solve LP first (get zLP)
-
         inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_main_cap)) * 1000))
-                # LAZY: for big graphs, add only violated edge-color cuts and re-solve briefly
-        if inc.lazy_edges:
-            sep_rounds = 2
+        print(f"[DBG] n={n} m={m} UB={UB} K={K} lazy={getattr(inc,'lazy_edges',False)} "
+      f"is_big={is_big} lp_main_cap={lp_main_cap}")
+
+        # try:
+        #     info = inc.solve()
+        # except TimeoutError:
+        #     stop_reason = "time_limit"
+        #     break
+        try:
+            info = inc.solve()
+        except TimeoutError:
+            # 这是“LP 单次 solve 被 SetTimeLimit 截断”，不是全局 8h 用完
+            if budget_exhausted("lp_solve_timeout"):
+                break  # 只有全局时间真没了才退出
+
+            stop_reason = "lp_timeout"  # 改名，避免误导
+            if verbose:
+                print(f"  [LP] solve timed out under per-call cap={lp_main_cap}s, time_left={time_left():.1f}s -> continue")
+
+            # 策略 A：提高本轮 LP cap 再试一次（推荐）
+            lp_main_cap = min(lp_main_cap * 2.0, 120.0)  # 上限可调，比如 120s
+            inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_main_cap)) * 1000))
+            continue  # 不退出外层 while，继续下一轮/重试
+
+        zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
+        # LAZY: only after we have a current LP solution (x_frac/y_frac exist)
+        if getattr(inc, "lazy_edges", False):
+            sep_rounds = 5
             for _ in range(sep_rounds):
-                if time_left() <= 0:
+                if time_left() <= 0.0:
                     break
-                added = inc.lazy_separate_from_lp(x_frac, y_frac, top_t=2, eps=1e-6, max_new=200000)
+                added = inc.lazy_separate_from_lp(x_frac, y_frac, top_t=10, eps=1e-6, max_new=100000)
                 if verbose:
                     print(f"  [LazyEdge] added={added}")
                 if added <= 0:
                     break
-                # keep re-solves short so we get many outer rounds
-                inc.set_time_limit_ms(int(min(0.5, max(0.05, time_left() * 0.05)) * 1000))
-        try:
-            info = inc.solve()
-        except TimeoutError:
-            stop_reason = "time_limit"
-            break
-        zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
+                # short re-solve after adding cuts
+                inc.set_time_limit_ms(int(max(0.05, min(time_left(), 0.3)) * 1000))
+                try:
+                    info2 = inc.solve()
+                except TimeoutError:
+                    break
+                zLP, x_frac, y_frac = info2["z_LP"], info2["x_frac"], info2["y_frac"]
+
         if verbose:
             ceilK = int(math.ceil(zLP - 1e-12))
             t_sec = elapsed()
+            print(f"[DBG-TL-round] round_id={round_id} time_left={time_left():.1f}s")
+
             print(f"[Round {round_id}] zLP={zLP:.6f} | ceil(zLP)={ceilK} | K={K} | UB={UB} | t={t_sec:.2f}s")
-        # 2) decide whether to tighten K based on ceil(zLP) (safe: try - rollback if fails)
-        lb_lp = int(math.ceil(zLP))
-        K_target = max(LB, int(math.ceil(zLP - 1e-12)),UB - 1,lb_lp)
+        # # 2) decide whether to tighten K based on ceil(zLP) (safe: try - rollback if fails)
+        # n = G.number_of_nodes()
+        # m = G.number_of_edges()
+        # is_big = (n >= 600) or (m * K >= 2e7)
+        # lb_lp = int(math.ceil(zLP - 1e-12))   # 统一先算出来，避免未定义
+        # lazy = getattr(inc, "lazy_edges", False)
+        # if (not lazy) and is_big:
+        #     K_target = K 
+        # if lazy:
+        #     # lazy 模式：只有当 LP 下界已经非常接近 UB 时才可信，才允许 shrink
+        #     if lb_lp >= UB - 3:
+        #         K_target = max(LB, lb_lp)
+        #     else:
+        #         K_target = K   # 不 shrink，避免 K 被错误压到 clique 附近
+
+        # else:
+        #     K_target = max(LB, int(math.ceil(zLP - 1e-12)), UB - 1, lb_lp)  # keep on small graphs
+        lb_lp = int(math.ceil(zLP - 1e-12))
+
+        # 关键：K 不要一次性追 lb_lp；用一个“窗口”控制收缩幅度
+        WINDOW_SMALL = 2   # 小图：更激进（更精细）
+        WINDOW_BIG   = 6   # 大图：更保守（保证 rounding 有可行空间）
+
+        lazy = bool(getattr(inc, "lazy_edges", False))
+        n = G.number_of_nodes()
+        m = G.number_of_edges()
+        is_big = lazy or (n >= 600) or (m * K >= 2e6)   # 注意这里用 K，不用 UB
+
+        W = WINDOW_BIG if is_big else WINDOW_SMALL
+
+        # 目标：让 K 至少不要比 (lb_lp + W) 更小；否则 rounding 基本必死
+        K_floor = max(LB, lb_lp + W)
+
+        # 同时：K 也不应该超过当前 UB（否则浪费）
+        K_ceiling = UB
+
+        # 最终目标 K：在 [K_floor, K_ceiling] 之间，且不要上调 K
+        K_target = min(K, max(K_floor, K_ceiling))   # 注意：max(...)=K_ceiling 若 K_ceiling>=K_floor
+        K_target = min(K_target, UB)                 # 再保险一次
+
+        # 如果 floor 已经超过 UB，说明 LP 下界已经非常接近 UB（或窗口设太大）
+        # 这种情况下就直接让 K 对齐 UB（别乱 shrink）
+        if K_floor > UB:
+            K_target = UB
         K_shrunk_this_round = False
         x_fix_applied_this_round = False
         improved_this_round = False
@@ -271,6 +359,14 @@ def run_iterative_lp_v2(
                 added_conf = inc.lazy_add_conflict_cuts(cand, max_new=50000)
                 if verbose:
                     print(f"  [LazyEdge-Conflicts] added={added_conf}")
+                    if inc.lazy_edges and added_conf > 0:
+                        inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_sub_cap)) * 1000))
+                        try:
+                            info = inc.solve()
+                            zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
+                        except TimeoutError:
+                            pass
+
             if verbose:
                 print(f"  [Side] trying K+1 rounding (K={K} - {K+1}) to break stalemate")
             newUB, newCol, applied = try_side_rounding(
@@ -298,93 +394,93 @@ def run_iterative_lp_v2(
         if verbose:
             used_try = len(set(cand.values()))
             print(f"  [Rounding] feasible={rep['feasible']} | used={used_try} | conflicts={rep['num_conflicts']}")
-            
-        # 3.5) UB-1 side attempt (allow K+1 colors, only for constructing better feasible solutions; doesn't change LP locking)
-        newUB, newCol, applied = try_side_rounding(
-                G, x_frac, y_frac, K, UB,
-                restarts=restarts, perturb_y=perturb_y, seed=algo_seed+9000 + round_id, verbose=verbose,
-                enable_visualization=enable_visualization,
-                viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,
-                step_name="UB-1-Side",
-            )
-        if applied and newUB < UB:
-            ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
-            if ok and used_ok < UB:
-                UB = used_ok
-                best_coloring = cand_ok
-                improved_this_round = True
-            mark_best(UB, round_id)
-            if UB <= LB:
-                stop_reason = "UB==LB"
-                break
-        #  and LP-guided pack: when UB == K+1, pack highest color layer back into 0..K-1
-        if verbose and UB == K + 1:
-            print(f"  [PackWindow] UB==K+1 (UB={UB}, K={K}) - attempt LP-guided pack and UB-1 greedy")
-
-        if UB == K + 1:
-            # B1) LP-guided highest color layer packing
-            newUB, newCol, applied = try_lp_guided_pack(G, best_coloring, x_frac, K, UB, verbose=verbose,
-                enable_visualization=enable_visualization,
-                viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,)
+        if not is_big:    
+            # 3.5) UB-1 side attempt (allow K+1 colors, only for constructing better feasible solutions; doesn't change LP locking)
+            newUB, newCol, applied = try_side_rounding(
+                    G, x_frac, y_frac, K, UB,
+                    restarts=restarts, perturb_y=perturb_y, seed=algo_seed+9000 + round_id, verbose=verbose,
+                    enable_visualization=enable_visualization,
+                    viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,
+                    step_name="UB-1-Side",
+                )
             if applied and newUB < UB:
                 ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
                 if ok and used_ok < UB:
                     UB = used_ok
                     best_coloring = cand_ok
                     improved_this_round = True
-                
-                if K > UB:
-                    tok3 = [inc.lock_prefix_K(UB)]
-                    sub_cap = 0.5
-                    inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
-                    try:
-                        ok_info3, ok3 = inc.try_apply_and_solve(tok3)
-                    except TimeoutError:
-                        ok_info3, ok3 = None, False
-                        if verbose:
-                            print("  [LP-Pack] solve timed out - rollback and continue")
-                    if ok3:
-                        K = UB
-                        mark_best(UB, round_id)
-                        if verbose:
-                            print(f"  [Sync] K aligned to new UB: K={K}")
-                    else:
-                        inc.revert_all(tok3)
+                mark_best(UB, round_id)
                 if UB <= LB:
                     stop_reason = "UB==LB"
                     break
-            # B2) pure graph-domain UB-1 greedy 
-            newUB, newCol, applied = try_graph_ub1_greedy(G, best_coloring, UB, verbose=verbose,
-                enable_visualization=enable_visualization,
-                viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,)
+            #  and LP-guided pack: when UB == K+1, pack highest color layer back into 0..K-1
+            if verbose and UB == K + 1:
+                print(f"  [PackWindow] UB==K+1 (UB={UB}, K={K}) - attempt LP-guided pack and UB-1 greedy")
+        if (not is_big) and (UB == K + 1):
+            if UB == K + 1:
+                # B1) LP-guided highest color layer packing
+                newUB, newCol, applied = try_lp_guided_pack(G, best_coloring, x_frac, K, UB, verbose=verbose,
+                    enable_visualization=enable_visualization,
+                    viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,)
+                if applied and newUB < UB:
+                    ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
+                    if ok and used_ok < UB:
+                        UB = used_ok
+                        best_coloring = cand_ok
+                        improved_this_round = True
+                    
+                    if K > UB:
+                        tok3 = [inc.lock_prefix_K(UB)]
+                        sub_cap = 0.5
+                        inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
+                        try:
+                            ok_info3, ok3 = inc.try_apply_and_solve(tok3)
+                        except TimeoutError:
+                            ok_info3, ok3 = None, False
+                            if verbose:
+                                print("  [LP-Pack] solve timed out - rollback and continue")
+                        if ok3:
+                            K = UB
+                            mark_best(UB, round_id)
+                            if verbose:
+                                print(f"  [Sync] K aligned to new UB: K={K}")
+                        else:
+                            inc.revert_all(tok3)
+                    if UB <= LB:
+                        stop_reason = "UB==LB"
+                        break
+                # B2) pure graph-domain UB-1 greedy 
+                newUB, newCol, applied = try_graph_ub1_greedy(G, best_coloring, UB, verbose=verbose,
+                    enable_visualization=enable_visualization,
+                    viz_round_id=round_id, viz_out_dir=viz_out_dir, viz_layout_seed=viz_layout_seed,)
 
-            if applied and newUB < UB:
-                ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
-                if ok and used_ok < UB:
-                    UB = used_ok
-                    best_coloring = cand_ok
-                    improved_this_round = True
-                
-                if K > UB:
-                    tok4 = [inc.lock_prefix_K(UB)]
-                    sub_cap = 0.5 
-                    inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
-                    try:
-                        ok_info4, ok4 = inc.try_apply_and_solve(tok4)
-                    except TimeoutError:
-                        ok_info4, ok4 = None, False
-                        if verbose:
-                            print("  [UB-1 Greedy] solve timed out - rollback and continue")
-                    if ok4:
-                        K = UB
-                        mark_best(UB, round_id)
-                        if verbose:
-                            print(f"  [Sync] K aligned to new UB: K={K}")
-                    else:
-                        inc.revert_all(tok4)
-                if UB <= LB:
-                    stop_reason = "UB==LB"
-                    break
+                if applied and newUB < UB:
+                    ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("LP-Pack", newCol, newUB)
+                    if ok and used_ok < UB:
+                        UB = used_ok
+                        best_coloring = cand_ok
+                        improved_this_round = True
+                    
+                    if K > UB:
+                        tok4 = [inc.lock_prefix_K(UB)]
+                        sub_cap = 0.5 
+                        inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
+                        try:
+                            ok_info4, ok4 = inc.try_apply_and_solve(tok4)
+                        except TimeoutError:
+                            ok_info4, ok4 = None, False
+                            if verbose:
+                                print("  [UB-1 Greedy] solve timed out - rollback and continue")
+                        if ok4:
+                            K = UB
+                            mark_best(UB, round_id)
+                            if verbose:
+                                print(f"  [Sync] K aligned to new UB: K={K}")
+                        else:
+                            inc.revert_all(tok4)
+                    if UB <= LB:
+                        stop_reason = "UB==LB"
+                        break
 
         # 4) maybe other fixing policies (strong x fixing, etc.), also follow safe process (only in prefix color domain)
         plan = pick_fixings(
@@ -472,6 +568,8 @@ def run_iterative_lp_v2(
                             stop_reason = "UB==LB"
                             break
         if verbose:
+            print(f"[DBG-TL-round] round_id={round_id} time_left={time_left():.1f}s")
+
             print(f"  [Round {round_id} END] UB={UB} | K={K} | ceil(zLP)={int(math.ceil(zLP - 1e-12))} "
                 f"| improved={improved_this_round} | fixed={(K_shrunk_this_round or x_fix_applied_this_round)}")
         if enable_visualization:
@@ -500,8 +598,11 @@ def run_iterative_lp_v2(
 
 
     if not stop_reason:
-        stop_reason = "time_limit" if time_left() <= 0.0 else "max_rounds"
+        stop_reason = "time_limit" if time_left() <= 0.0 else "stopped_without_reason"
     
+    if verbose:
+        print(f"[DBG-EXIT] elapsed={elapsed():.1f}s time_left={time_left():.1f}s stop_reason={stop_reason}")
+
     # Final compaction before returning, ensure UB matches color indices (prevent out_of_range)
     best_coloring, used_final = compact_colors(best_coloring)
     if used_final != UB:
