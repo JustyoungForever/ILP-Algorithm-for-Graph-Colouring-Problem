@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=100G
+#SBATCH --mem=32G
 #SBATCH --time=08:20:00
 #SBATCH --signal=B:TERM@1200
 #SBATCH --chdir=/home/ta32xoy/masterarbeit

@@ -1,0 +1,214 @@
+[Runner] path=/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/runner.py md5=84431bb375b9ff2ed1e759e18f46fbfc
+[Runner] instances=1 algos=1 algo_seeds=[4] time_limit=600s
+[DBG-TL-init] time_limit_sec=600 deadline_in=600.0s
+[Init] graph: |V|=500 |E|=112437 |LB|=43 |UB(init)|=172 |K|=172 via smallest_last
+[Init] LB=43 | UB(init:smallest_last)=172
+[LP] model built once (incremental), initial |C|=172 (K=172) with precedence & clique-cuts
+[DBG-ENTER] round_id=1 elapsed=3.5s time_left=596.5s UB=172 K=172
+[DBG] n=500 m=112437 UB=172 K=172 lazy=True is_big=True lp_main_cap=60.0
+  [BIG-T] after_lp_or_cache dt=0.37s time_left=596.2s
+  [BIG-LP] solve_count=1 (main solve)
+  [LazyEdge] added=94025
+  [BIG-T] after_lp_or_cache dt=2.51s time_left=594.0s
+  [BIG-LP] solve_count=2 (lazy re-solve)
+  [BIG-LP] cached LP at round 1 (zLP=43.000)
+[DBG-TL-round] round_id=1 time_left=594.0s
+[Round 1] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=5.97s
+  [BIG-BUDGET] round_budget=90.0s
+  [RNR-r1] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r1] restarts_done=32/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=72.62s time_left=523.9s
+  [Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+  [Rounding] feasible=True | used=172 | conflicts=0
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+[DBG-TL-round] round_id=1 time_left=523.9s
+  [Round 1 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=False
+  [STALL] stall_rounds=1 last_improve_round=0
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=72.64s time_left=523.9s
+[DBG-ENTER] round_id=2 elapsed=76.1s time_left=523.9s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=1 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=2 time_left=523.9s
+[Round 2] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=76.10s
+  [BIG-BUDGET] round_budget=90.0s
+  [RNR-r2] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r2] restarts_done=32/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=88.58s time_left=435.3s
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [BIG-RNR] infeasible candidate -> conflicts=2 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=8.7s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+[DBG-TL-round] round_id=2 time_left=434.8s
+  [Round 2 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=False
+  [STALL] stall_rounds=2 last_improve_round=0
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=89.07s time_left=434.8s
+[DBG-ENTER] round_id=3 elapsed=165.2s time_left=434.8s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=2 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=3 time_left=434.8s
+[Round 3] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=165.16s
+  [BIG-BUDGET] round_budget=87.0s
+  [RNR-r3] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r3] restarts_done=32/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=79.56s time_left=355.3s
+  [Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+  [Rounding] feasible=True | used=172 | conflicts=0
+  [BIG-UB1] start: UB=172 LB=43 budget=30.0s
+  [AcceptCheck:BIG-UB1-RNR] feasible=True used=171 conflicts=0
+  [BIG-UB1] SUCCESS via quick RNR: new UB=171
+  [BIG-UB1] done: dec_done=1 tries=0 spent=12.1s UB=171
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+[DBG-TL-round] round_id=3 time_left=343.1s
+  [Round 3 END] UB=171 | K=171 | ceil(zLP)=43 | improved=True | fixed=False
+  [STALL] stall_rounds=0 last_improve_round=3
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=91.70s time_left=343.1s
+[DBG-ENTER] round_id=4 elapsed=12.1s time_left=343.1s UB=171 K=171
+  [BIG-LP] reuse cached LP from round 1 (age=3 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=4 time_left=343.1s
+[Round 4] zLP=43.000000 | ceil(zLP)=43 | K=171 | UB=171 | t=12.12s
+  [BIG-BUDGET] round_budget=68.6s
+  [RNR-r4] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r4] restarts_done=17/32 used_min=171 used_mean=171.00 unique_ratio=1.00 best_used=171
+  [BIG-T] after_rounding_multi dt=70.49s time_left=272.6s
+  [Rounding] feasible=False | used=171 | conflicts=2
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=171 - 172) to break stalemate
+  [Side] skip: K+1=172 exceeds current UB=171
+  [Rounding] feasible=False | used=171 | conflicts=2
+  [BIG-RNR] infeasible candidate -> conflicts=2 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=5.5s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+[DBG-TL-round] round_id=4 time_left=272.2s
+  [Round 4 END] UB=171 | K=171 | ceil(zLP)=43 | improved=False | fixed=False
+  [STALL] stall_rounds=1 last_improve_round=3
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=70.97s time_left=272.2s
+[DBG-ENTER] round_id=5 elapsed=83.1s time_left=272.2s UB=171 K=171
+  [BIG-LP] reuse cached LP from round 1 (age=4 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=5 time_left=272.2s
+[Round 5] zLP=43.000000 | ceil(zLP)=43 | K=171 | UB=171 | t=83.09s
+  [BIG-BUDGET] round_budget=54.4s
+  [RNR-r5] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r5] restarts_done=16/32 used_min=171 used_mean=171.00 unique_ratio=1.00 best_used=171
+  [BIG-T] after_rounding_multi dt=55.05s time_left=217.1s
+  [Rounding] feasible=False | used=171 | conflicts=3
+  [LazyEdge-Conflicts] added=3
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=171 - 172) to break stalemate
+  [Side] skip: K+1=172 exceeds current UB=171
+  [Rounding] feasible=False | used=171 | conflicts=3
+  [BIG-RNR] infeasible candidate -> conflicts=3 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=4.3s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+[DBG-TL-round] round_id=5 time_left=216.6s
+  [Round 5 END] UB=171 | K=171 | ceil(zLP)=43 | improved=False | fixed=False
+  [STALL] stall_rounds=2 last_improve_round=3
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=55.53s time_left=216.6s
+[DBG-ENTER] round_id=6 elapsed=138.6s time_left=216.6s UB=171 K=171
+  [BIG-LP] reuse cached LP from round 1 (age=5 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=6 time_left=216.6s
+[Round 6] zLP=43.000000 | ceil(zLP)=43 | K=171 | UB=171 | t=138.62s
+  [BIG-BUDGET] round_budget=43.3s
+  [RNR-r6] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r6] restarts_done=11/32 used_min=171 used_mean=171.00 unique_ratio=1.00 best_used=171
+  [BIG-T] after_rounding_multi dt=46.48s time_left=170.2s
+  [Rounding] feasible=False | used=171 | conflicts=2
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=171 - 172) to break stalemate
+  [Side] skip: K+1=172 exceeds current UB=171
+  [Rounding] feasible=False | used=171 | conflicts=2
+  [BIG-RNR] infeasible candidate -> conflicts=2 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=3.4s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG-UB1] start: UB=171 LB=43 budget=17.0s
+  [BIG-UB1] try#1: LP-pack UB 171 -> 170
+  [LP-guided pack] trying to empty highest color K=170 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [BIG-UB1] try#1: UB1-greedy on UB=171
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=171 >= UB=171)
+  [BIG-UB1] no improvement, stop squeezing.
+  [BIG-UB1] done: dec_done=0 tries=1 spent=8.0s UB=171
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+[DBG-TL-round] round_id=6 time_left=161.6s
+  [Round 6 END] UB=171 | K=171 | ceil(zLP)=43 | improved=False | fixed=False
+  [STALL] stall_rounds=3 last_improve_round=3
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=55.08s time_left=161.6s
+[DBG-ENTER] round_id=7 elapsed=8.0s time_left=161.6s UB=171 K=171
+  [BIG-LP] reuse cached LP from round 1 (age=6 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=7 time_left=161.6s
+[Round 7] zLP=43.000000 | ceil(zLP)=43 | K=171 | UB=171 | t=8.01s
+  [BIG-BUDGET] round_budget=32.3s
+  [RNR-r7] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r7] restarts_done=10/32 used_min=171 used_mean=171.00 unique_ratio=1.00 best_used=171
+  [BIG-T] after_rounding_multi dt=36.44s time_left=125.1s
+  [Rounding] feasible=False | used=171 | conflicts=2
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=171 - 172) to break stalemate
+  [Side] skip: K+1=172 exceeds current UB=171
+  [Rounding] feasible=False | used=171 | conflicts=2
+  [BIG-RNR] infeasible candidate -> conflicts=2 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=2.5s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG-UB1] start: UB=171 LB=43 budget=12.5s
+  [BIG-UB1] try#1: LP-pack UB 171 -> 170
+  [LP-guided pack] trying to empty highest color K=170 (only active if UB==K+1)
+  [LP-guided pack] no full emptying of highest color — no UB reduction
+  [BIG-UB1] try#1: UB1-greedy on UB=171
+  [UB-1 greedy] attempting to fold top color class graphically
+  [UB-1 greedy] feasible but not better (used=171 >= UB=171)
+  [BIG-UB1] no improvement, stop squeezing.
+  [BIG-UB1] done: dec_done=0 tries=1 spent=7.8s UB=171
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+[DBG-TL-round] round_id=7 time_left=116.8s
+  [Round 7 END] UB=171 | K=171 | ceil(zLP)=43 | improved=False | fixed=False
+  [STALL] stall_rounds=4 last_improve_round=3
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=44.77s time_left=116.8s
+[DBG-ENTER] round_id=8 elapsed=7.8s time_left=116.8s UB=171 K=171
+  [BIG-LP] reuse cached LP from round 1 (age=7 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=8 time_left=116.8s
+[Round 8] zLP=43.000000 | ceil(zLP)=43 | K=171 | UB=171 | t=7.80s
+  [BIG-BUDGET] round_budget=23.4s
+  [RNR-r8] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r8] restarts_done=7/32 used_min=171 used_mean=171.00 unique_ratio=1.00 best_used=171
+  [BIG-T] after_rounding_multi dt=23.90s time_left=92.9s
+  [Rounding] feasible=True | used=171 | conflicts=0
+[LocalSearch] highest color class removed; colors now=171
+[LocalSearch] highest color class removed; colors now=171
+[LocalSearch] highest color class removed; colors now=171
+[LocalSearch] highest color class removed; colors now=171
+[LocalSearch] highest color class removed; colors now=171
+  [Rounding] feasible=True | used=171 | conflicts=0
+  [BIG-UB1] start: UB=171 LB=43 budget=9.3s
+[Runner] wrote runs -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_runs.csv
+[Runner] wrote summary -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_summary.csv

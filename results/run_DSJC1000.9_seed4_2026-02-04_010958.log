@@ -1,0 +1,25 @@
+[Runner] path=/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/runner.py md5=84431bb375b9ff2ed1e759e18f46fbfc
+[Runner] instances=1 algos=1 algo_seeds=[4] time_limit=600s
+[DBG-TL-init] time_limit_sec=600 deadline_in=600.0s
+[Init] graph: |V|=500 |E|=112437 |LB|=43 |UB(init)|=172 |K|=172 via smallest_last
+[Init] LB=43 | UB(init:smallest_last)=172
+[LP] model built once (incremental), initial |C|=172 (K=172) with precedence & clique-cuts
+[DBG-ENTER] round_id=1 elapsed=3.4s time_left=596.6s UB=172 K=172
+[DBG] n=500 m=112437 UB=172 K=172 lazy=True is_big=True lp_main_cap=60.0
+  [BIG-T] after_lp_or_cache dt=0.33s time_left=596.3s
+  [BIG-LP] solve_count=1 (main solve)
+  [LazyEdge] added=94025
+  [BIG-T] after_lp_or_cache dt=2.29s time_left=594.3s
+  [BIG-LP] solve_count=2 (lazy re-solve)
+  [BIG-LP] cached LP at round 1 (zLP=43.000)
+[DBG-TL-round] round_id=1 time_left=594.3s
+[Round 1] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=5.67s
+  [RNR-r1] cfg vertex_rcl=4 color_rcl=10 x_jitter=1.0e-04 color_tau=0.050 diversify_ties=True
+  [RNR-r1] restarts_done=6/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=604.03s time_left=-7.4s
+[Time] budget exhausted at after_rounding, UB=172
+[DBG-EXIT] elapsed=607.4s time_left=-7.4s stop_reason=time_limit
+[Final] UB=172 LB=43 feasible=True zLP≈43.000000
+  [BIG] lp_solves_total=2
+[Runner] wrote runs -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_runs.csv
+[Runner] wrote summary -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_summary.csv

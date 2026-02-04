@@ -148,8 +148,31 @@ def run_iterative_lp_v2(
     stop_reason = ""
     prev_UB = UB
     no_progress_rounds = 0
+    stall_rounds = 0          # 连续无改进轮数
+    last_improve_round = 0    # 上次改进发生在哪一轮（可选，用于日志）
+
+        # ---------------- Big-graph strategy toggles ----------------
+    # Goal: on big instances, solve the LP *as few times as possible* and reuse its fractional guidance.
+    # Small instances keep the original behavior.
+    BIG_ONE_SHOT_LP = True      # is_big -> only solve once (round 1), then reuse cached (zLP,x,y)
+    BIG_SKIP_FIXING = True      # is_big -> skip FixPolicy/FixApply (avoids extra LP solves)
+    BIG_DIVERSIFY_TIES = True   # is_big -> diversify DSATUR tie-breaking across restarts (no extra LP)
+
+    lp_solves_total = 0
+    lp_cache = None             # (zLP, x_frac, y_frac)
+    lp_cache_round = 0
+    lp_dirty = False
+    lazy_added_since_solve = 0
+    BIG_LAZY_RESOLVE_THRESHOLD = 2000     # 累计到多少条 conflict-cuts 再重解一次
+    BIG_LAZY_RESOLVE_MIN_TLEFT = 120.0    # 剩余时间太少就别重解（避免尾部浪费）
+
 
     while time_left() > 0.0:
+        t_round0 = time.monotonic()
+        def big_mark(tag: str) -> None:
+            if verbose and is_big:
+                dt = time.monotonic() - t_round0
+                print(f"  [BIG-T] {tag} dt={dt:.2f}s time_left={time_left():.1f}s")
         round_id += 1
         n = G.number_of_nodes()
         m = G.number_of_edges()
@@ -172,54 +195,132 @@ def run_iterative_lp_v2(
         else:
             lp_main_cap = 60.0
             lp_sub_cap  = 10.0 
-            if round_id <= 1:      # 第一次主 solve 更关键
-                lp_main_cap = 300.0
+            # if round_id <= 1:      # 第一次主 solve 更关键
+            #     lp_main_cap = 300.0
 
-        # 1) solve LP first (get zLP)
-        inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_main_cap)) * 1000))
-        print(f"[DBG] n={n} m={m} UB={UB} K={K} lazy={getattr(inc,'lazy_edges',False)} "
-      f"is_big={is_big} lp_main_cap={lp_main_cap}")
+        # 1) solve LP first (get zLP)  -- big-graph mode may reuse cached LP solution
+        need_lp = (
+            (not is_big)
+            or (round_id == 1)
+            or (lp_cache is None)
+            or (not BIG_ONE_SHOT_LP)
+            or (lp_dirty and lazy_added_since_solve >= BIG_LAZY_RESOLVE_THRESHOLD and time_left() >= BIG_LAZY_RESOLVE_MIN_TLEFT)
+        )
 
-        # try:
-        #     info = inc.solve()
-        # except TimeoutError:
-        #     stop_reason = "time_limit"
-        #     break
-        try:
-            info = inc.solve()
-        except TimeoutError:
-            # 这是“LP 单次 solve 被 SetTimeLimit 截断”，不是全局 8h 用完
-            if budget_exhausted("lp_solve_timeout"):
-                break  # 只有全局时间真没了才退出
 
-            stop_reason = "lp_timeout"  # 改名，避免误导
+        if (is_big and (not need_lp) and lp_cache is not None):
+            zLP, x_frac, y_frac = lp_cache
             if verbose:
-                print(f"  [LP] solve timed out under per-call cap={lp_main_cap}s, time_left={time_left():.1f}s -> continue")
-
-            # 策略 A：提高本轮 LP cap 再试一次（推荐）
-            lp_main_cap = min(lp_main_cap * 2.0, 120.0)  # 上限可调，比如 120s
+                age = round_id - lp_cache_round
+                print(f"  [BIG-LP] reuse cached LP from round {lp_cache_round} (age={age} rounds, lp_solves_total={lp_solves_total})")
+        else:
             inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_main_cap)) * 1000))
-            continue  # 不退出外层 while，继续下一轮/重试
+            print(f"[DBG] n={n} m={m} UB={UB} K={K} lazy={getattr(inc,'lazy_edges',False)} "
+                  f"is_big={is_big} lp_main_cap={lp_main_cap}")
 
-        zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
-        # LAZY: only after we have a current LP solution (x_frac/y_frac exist)
-        if getattr(inc, "lazy_edges", False):
-            sep_rounds = 5
-            for _ in range(sep_rounds):
-                if time_left() <= 0.0:
+            try:
+                info = inc.solve()
+                big_mark("after_lp_or_cache")
+
+                lp_solves_total += 1
+                if verbose and is_big:
+                    print(f"  [BIG-LP] solve_count={lp_solves_total} (main solve)")
+            except TimeoutError:
+                if budget_exhausted("lp_solve_timeout"):
                     break
-                added = inc.lazy_separate_from_lp(x_frac, y_frac, top_t=10, eps=1e-6, max_new=100000)
+                stop_reason = "lp_timeout"
                 if verbose:
-                    print(f"  [LazyEdge] added={added}")
-                if added <= 0:
-                    break
-                # short re-solve after adding cuts
-                inc.set_time_limit_ms(int(max(0.05, min(time_left(), 0.3)) * 1000))
-                try:
-                    info2 = inc.solve()
-                except TimeoutError:
-                    break
-                zLP, x_frac, y_frac = info2["z_LP"], info2["x_frac"], info2["y_frac"]
+                    print(f"  [LP] solve timed out under per-call cap={lp_main_cap}s, time_left={time_left():.1f}s")
+
+                if lp_cache is not None:
+                    zLP, x_frac, y_frac = lp_cache
+                    if verbose:
+                        print("  [BIG-LP] fallback to cached LP due to timeout")
+                else:
+                    # Fallback: pseudo guidance from current best coloring (no LP info)
+                    x_frac = {(v, best_coloring.get(v, 0)): 1.0 for v in G.nodes()}
+                    y_frac = {c: 1.0 for c in range(K)}
+                    zLP = float(LB)
+                    if verbose:
+                        print("  [BIG-LP] no cached LP available -> using heuristic pseudo-guidance (x from best_coloring)")
+            else:
+                zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
+                if is_big and lp_dirty:
+                    if verbose:
+                        print(f"  [BIG-LAZY] re-solved LP after dirty; reset counters (added={lazy_added_since_solve})")
+                    lp_dirty = False
+                    lazy_added_since_solve = 0
+
+                # LAZY separation: big graphs do at most 1 round + 1 short re-solve
+                if getattr(inc, "lazy_edges", False):
+                    sep_rounds = 1 if is_big else 5
+                    for _ in range(sep_rounds):
+                        if time_left() <= 0.0:
+                            break
+                        added = inc.lazy_separate_from_lp(x_frac, y_frac, top_t=10, eps=1e-6, max_new=100000)
+                        if verbose:
+                            print(f"  [LazyEdge] added={added}")
+                        if added <= 0:
+                            break
+                        re_cap = 0.5 if is_big else 0.3
+                        inc.set_time_limit_ms(int(max(0.05, min(time_left(), re_cap)) * 1000))
+                        try:
+                            info2 = inc.solve()
+                            big_mark("after_lp_or_cache")
+
+                            lp_solves_total += 1
+                            if verbose and is_big:
+                                print(f"  [BIG-LP] solve_count={lp_solves_total} (lazy re-solve)")
+                        except TimeoutError:
+                            break
+                        zLP, x_frac, y_frac = info2["z_LP"], info2["x_frac"], info2["y_frac"]
+
+                if is_big and BIG_ONE_SHOT_LP:
+                    lp_cache = (zLP, x_frac, y_frac)
+                    lp_cache_round = round_id
+                    if verbose:
+                        print(f"  [BIG-LP] cached LP at round {round_id} (zLP={zLP:.3f})")
+
+    #     # 1) solve LP first (get zLP)
+    #     inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_main_cap)) * 1000))
+    #     print(f"[DBG] n={n} m={m} UB={UB} K={K} lazy={getattr(inc,'lazy_edges',False)} "
+    #   f"is_big={is_big} lp_main_cap={lp_main_cap}")
+
+    #     try:
+    #         info = inc.solve()
+    #     except TimeoutError:
+    #         # 这是“LP 单次 solve 被 SetTimeLimit 截断”，不是全局 8h 用完
+    #         if budget_exhausted("lp_solve_timeout"):
+    #             break  # 只有全局时间真没了才退出
+
+    #         stop_reason = "lp_timeout"  # 改名，避免误导
+    #         if verbose:
+    #             print(f"  [LP] solve timed out under per-call cap={lp_main_cap}s, time_left={time_left():.1f}s -> continue")
+
+    #         # 策略 A：提高本轮 LP cap 再试一次（推荐）
+    #         lp_main_cap = min(lp_main_cap * 2.0, 120.0)  # 上限可调，比如 120s
+    #         inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_main_cap)) * 1000))
+    #         continue  # 不退出外层 while，继续下一轮/重试
+
+    #     zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
+    #     # LAZY: only after we have a current LP solution (x_frac/y_frac exist)
+    #     if getattr(inc, "lazy_edges", False):
+    #         sep_rounds = 5
+    #         for _ in range(sep_rounds):
+    #             if time_left() <= 0.0:
+    #                 break
+    #             added = inc.lazy_separate_from_lp(x_frac, y_frac, top_t=10, eps=1e-6, max_new=100000)
+    #             if verbose:
+    #                 print(f"  [LazyEdge] added={added}")
+    #             if added <= 0:
+    #                 break
+    #             # short re-solve after adding cuts
+    #             inc.set_time_limit_ms(int(max(0.05, min(time_left(), 0.3)) * 1000))
+    #             try:
+    #                 info2 = inc.solve()
+    #             except TimeoutError:
+    #                 break
+    #             zLP, x_frac, y_frac = info2["z_LP"], info2["x_frac"], info2["y_frac"]
 
         if verbose:
             ceilK = int(math.ceil(zLP - 1e-12))
@@ -253,7 +354,7 @@ def run_iterative_lp_v2(
         lazy = bool(getattr(inc, "lazy_edges", False))
         n = G.number_of_nodes()
         m = G.number_of_edges()
-        is_big = lazy or (n >= 600) or (m * K >= 2e6)   # 注意这里用 K，不用 UB
+        is_big = lazy or (n >= 500) or (m * K >= 2e6)   # 注意这里用 K，不用 UB
 
         W = WINDOW_BIG if is_big else WINDOW_SMALL
 
@@ -275,9 +376,9 @@ def run_iterative_lp_v2(
         x_fix_applied_this_round = False
         improved_this_round = False
 
-        if K_target < K:
+        if (not is_big) and (K_target < K):
             tok = [inc.lock_prefix_K(K_target)]
-            sub_cap = 0.5
+            sub_cap = 50
             inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
             try:    
                 ok_info, ok = inc.try_apply_and_solve(tok)
@@ -285,11 +386,12 @@ def run_iterative_lp_v2(
                 ok_info, ok = None, False
                 if verbose:
                     print("  [Fix] shrinkK solve timed out - rollback and continue (keep current K)")
+            oldK = K
             if ok:
                 K = K_target
                 K_shrunk_this_round = True
                 if verbose:
-                    print(f"  [Fix] set K to UB-1: {K} -> {K_target} (lb_lp={lb_lp}, UB={UB})")
+                    print(f"  [Fix] shrink K: {oldK} -> {K_target} (lb_lp={lb_lp}, UB={UB})")
                 dbg = _debug_candidate_from_xfrac(ok_info["x_frac"], K_eff=K)
                 if enable_visualization:
                     viz("ShrinkK-ok", round_id, dbg, K, only_colored=False)
@@ -302,12 +404,45 @@ def run_iterative_lp_v2(
                 dbg = _debug_candidate_from_xfrac(x_frac, K_eff=K_target)
                 if enable_visualization:
                     viz("ShrinkK-rollback", round_id, dbg, K_target, only_colored=False)
+        if is_big and (K_target < K) and verbose:
+            print(f"  [BIG] skip shrinkK via LP (K={K}, K_target={K_target})")
 
         # 3) rounding with K colors
         if budget_exhausted("before_rounding"):
             break
+        if is_big:
+            vrcl = 1
+            crcl = 3
+            xjit = 0.0
+            tau  = 0.02
+        else:
+            vrcl = 1
+            crcl = 1
+            xjit = 0.0
+            tau  = 0.0
+        # --- BIG: per-round budget to prevent RNR from consuming whole time limit ---
+        global_deadline_ts = deadline  # 你原来用于全局 time limit 的那个（必须是 monotonic 时间戳）
+        if is_big:
+            # 让每轮最多用掉剩余时间的一部分，保证还能进 local search / UB1 / 下一轮
+            time_left_now = global_deadline_ts - time.monotonic()
+            round_budget = max(20.0, min(90.0, 0.20 * time_left_now))  # 20~90s 或剩余时间 20%
+            round_deadline_ts = min(global_deadline_ts, time.monotonic() + round_budget)
+            if verbose:
+                print(f"  [BIG-BUDGET] round_budget={round_budget:.1f}s")
+        else:
+            round_deadline_ts = global_deadline_ts
         cand = round_and_repair_multi(G, x_frac, y_frac, current_UB=K,
-                                        restarts=restarts, seed=algo_seed + round_id, perturb_y=perturb_y,deadline_ts=deadline)
+                                        restarts=restarts, seed=algo_seed + round_id, perturb_y=perturb_y,deadline_ts=round_deadline_ts,
+                                        diversify_ties=(is_big and BIG_DIVERSIFY_TIES),
+                                        debug=(is_big and verbose),
+                                        debug_tag=f"RNR-r{round_id}",
+                                        vertex_rcl=vrcl, color_rcl=crcl, x_jitter=xjit,color_tau=tau)
+        if cand is None:
+            if verbose:
+                print("  [RNR] returned None (deadline hit) -> fallback to incumbent")
+            cand = best_coloring  # 这是你始终维护的 incumbent feasible dict
+        big_mark("after_rounding_multi")
+
         rep = verify_coloring(G, cand, allowed_colors=list(range(K)))
         if budget_exhausted("after_rounding"): break
         if enable_visualization:
@@ -333,23 +468,31 @@ def run_iterative_lp_v2(
                 if verbose:
                     print(f"  [Rounding/Local] improved UB -> {UB}")
                 if K > UB:
-                    tok2 = [inc.lock_prefix_K(UB)]
-                    sub_cap = 0.5
-                    inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
-                    try:
-                        ok_info2, ok2 = inc.try_apply_and_solve(tok2)
-                    except TimeoutError:
-                        ok_info2, ok2 = None, False
-                        if verbose:
-                            print("  [rounding K] solve timed out - rollback and continue")
-                    if ok2:
+                    if is_big:
+                        big_mark("after_local_search")
+
                         K = UB
-                        if verbose:
-                            print(f"  [Sync] K aligned to new UB: K={K}")
-                        zLP, x_frac, y_frac = ok_info2["z_LP"], ok_info2["x_frac"], ok_info2["y_frac"]
                         mark_best(UB, round_id)
-                    else:
-                        inc.revert_all(tok2)
+                        if verbose:
+                            print(f"  [BIG-Sync] K aligned to new UB without LP: K={K}")
+                    else:        
+                        tok2 = [inc.lock_prefix_K(UB)]
+                        sub_cap = 50
+                        inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
+                        try:
+                            ok_info2, ok2 = inc.try_apply_and_solve(tok2)
+                        except TimeoutError:
+                            ok_info2, ok2 = None, False
+                            if verbose:
+                                print("  [rounding K] solve timed out - rollback and continue")
+                        if ok2:
+                            K = UB
+                            if verbose:
+                                print(f"  [Sync] K aligned to new UB: K={K}")
+                            zLP, x_frac, y_frac = ok_info2["z_LP"], ok_info2["x_frac"], ok_info2["y_frac"]
+                            mark_best(UB, round_id)
+                        else:
+                            inc.revert_all(tok2)
                 if UB <= LB:
                     stop_reason = "UB==LB"
                     break
@@ -359,10 +502,19 @@ def run_iterative_lp_v2(
                 added_conf = inc.lazy_add_conflict_cuts(cand, max_new=50000)
                 if verbose:
                     print(f"  [LazyEdge-Conflicts] added={added_conf}")
-                    if inc.lazy_edges and added_conf > 0:
+                # BIG: one-shot LP mode -> do NOT re-solve LP here
+                if is_big and BIG_ONE_SHOT_LP:
+                    if verbose and added_conf > 0:
+                        print("  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)")
+                else:
+                    if added_conf > 0:
                         inc.set_time_limit_ms(int(max(0.05, min(time_left(), lp_sub_cap)) * 1000))
                         try:
                             info = inc.solve()
+                            big_mark("after_lp_or_cache")
+                            lp_solves_total += 1
+                            if verbose and is_big:
+                                print(f"  [BIG-LP] solve_count={lp_solves_total} (conflict re-solve)")
                             zLP, x_frac, y_frac = info["z_LP"], info["x_frac"], info["y_frac"]
                         except TimeoutError:
                             pass
@@ -394,6 +546,53 @@ def run_iterative_lp_v2(
         if verbose:
             used_try = len(set(cand.values()))
             print(f"  [Rounding] feasible={rep['feasible']} | used={used_try} | conflicts={rep['num_conflicts']}")
+            # ---------------- BIG: infeasible fallback (do NOT terminate) ----------------
+            if is_big and (not rep["feasible"]):
+                if verbose:
+                    print(f"  [BIG-RNR] infeasible candidate -> conflicts={rep['num_conflicts']} (will fallback)")
+
+                # 1) feed conflicts into lazy LP (but do NOT re-solve immediately)
+                if getattr(inc, "lazy_edges", False):
+                    added_conf = inc.lazy_add_conflict_cuts(cand, max_new=50000)
+                    if added_conf > 0:
+                        lp_dirty = True
+                        lazy_added_since_solve += added_conf
+                    if verbose:
+                        print(f"  [BIG-LazyEdge-Conflicts] added={added_conf} "
+                            f"dirty={lp_dirty} lazy_added_since_solve={lazy_added_since_solve}")
+
+                # 2) quick "safe" rounding retry with conservative settings (cheap, no LP solve)
+                #    goal: at least get a feasible coloring, not necessarily improve UB
+                safe_budget = min(10.0, max(2.0, 0.02 * time_left()))  # 2~10s
+                safe_deadline = time.monotonic() + safe_budget
+                if verbose:
+                    print(f"  [BIG-RNR] safe-retry budget={safe_budget:.1f}s")
+
+                cand2 = round_and_repair_multi(
+                    G, x_frac, y_frac, current_UB=K,
+                    restarts=min(3, restarts),                   # 很小的重启数
+                    seed=algo_seed + 777777 + round_id,
+                    perturb_y=perturb_y,
+                    deadline_ts=safe_deadline,
+                    diversify_ties=False,
+                    debug=False,
+                    vertex_rcl=1, color_rcl=1, x_jitter=0.0,     # 保守：接近原始 deterministic
+                )
+                rep2 = verify_coloring(G, cand2, allowed_colors=list(range(K)))
+
+                if rep2["feasible"]:
+                    cand = cand2
+                    rep = rep2
+                    if verbose:
+                        print("  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand")
+                else:
+                    # 3) final fallback: revert to incumbent feasible coloring
+                    cand = best_coloring
+                    rep = verify_coloring(G, cand, allowed_colors=list(range(K)))
+                    if verbose:
+                        print(f"  [BIG-RNR] fallback to incumbent -> feasible={rep['feasible']} conflicts={rep['num_conflicts']}")
+            # ---------------- end BIG fallback ----------------
+
         if not is_big:    
             # 3.5) UB-1 side attempt (allow K+1 colors, only for constructing better feasible solutions; doesn't change LP locking)
             newUB, newCol, applied = try_side_rounding(
@@ -431,7 +630,7 @@ def run_iterative_lp_v2(
                     
                     if K > UB:
                         tok3 = [inc.lock_prefix_K(UB)]
-                        sub_cap = 0.5
+                        sub_cap = 50
                         inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
                         try:
                             ok_info3, ok3 = inc.try_apply_and_solve(tok3)
@@ -463,7 +662,7 @@ def run_iterative_lp_v2(
                     
                     if K > UB:
                         tok4 = [inc.lock_prefix_K(UB)]
-                        sub_cap = 0.5 
+                        sub_cap = 50
                         inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
                         try:
                             ok_info4, ok4 = inc.try_apply_and_solve(tok4)
@@ -482,91 +681,221 @@ def run_iterative_lp_v2(
                         stop_reason = "UB==LB"
                         break
 
-        # 4) maybe other fixing policies (strong x fixing, etc.), also follow safe process (only in prefix color domain)
-        plan = pick_fixings(
-            G=G, x_frac=x_frac, y_frac=y_frac, z_LP=zLP, UB=K, LB=LB,
-            policy=fix_policy, strong_margin=strong_margin,
-            max_fix_per_round=max_fix_per_round,
-            rounding_coloring=cand if rep["feasible"] else None
-        )
-        if verbose:
-            print(f"  [FixPolicy] y_zero={len(plan['y_zero'])} | x_one={len(plan['x_one'])} | x_zero={len(plan['x_zero'])} "
-                f"| strong_margin={strong_margin} | max_fix_per_round={max_fix_per_round}")
+        # ---- BIG: UB-1 squeezing phase (NO LP SOLVE) ----
+        # 只在“确实接近可降 1 色”的时候做，避免前期 UB 很大时白耗时
+        UB1_STALL = 2          # 连续 2 轮无改进就触发一次
+        UB1_EVERY = 3          # 或者每 3 轮强制触发一次（防止一直不触发）
+        UB1_MIN_LEFT = 60.0    # 剩余时间太少就别折腾
 
-        tokens = []
-        for (v, c) in plan["x_one"]:
-            if c < K:
-                tokens.append(inc.fix_vertex_color(v, c))
+        if is_big and (x_frac is not None) and (best_coloring is not None) \
+            and (time_left() > UB1_MIN_LEFT) \
+            and (stall_rounds >= UB1_STALL or (round_id % UB1_EVERY == 0)):
 
-        if tokens:
-            if verbose:
-                print(f"  [FixApply] applying tokens={len(tokens)} (x fixings only in prefix K)")
-            sub_cap = 0.5
-            inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
-            try:
-                ok_info3, ok3 = inc.try_apply_and_solve(tokens)
-            except TimeoutError:
-                ok_info3, ok3 = None, False
+
+            time_left_now = time_left()  # 你上面定义过的 closure
+            squeeze_budget = min(30.0, max(5.0, 0.10 * time_left_now))
+
+
+            max_dec = 3
+            max_tries = 12
+            dec_done = 0
+
+            print(f"  [BIG-UB1] start: UB={UB} LB={LB} budget={squeeze_budget:.1f}s")
+            quick_success = False
+            squeeze_t0  = time.monotonic()   # 用于统计 squeezing 总耗时（顺便把你后面那个 t0 挪到这里）
+
+            # (0) quick UB-1 rounding attempt (cheap)
+            K_try = UB - 1
+            if K_try > LB + 1:
+                quick_budget = min(12.0, max(3.0, 0.03 * time_left()))
+                quick_deadline = min(deadline, time.monotonic() + quick_budget)
+
+                cand_try = round_and_repair_multi(
+                    G, x_frac, y_frac,
+                    current_UB=K_try,
+                    restarts=min(8, restarts),
+                    seed=algo_seed + 123456 + round_id,
+                    perturb_y=perturb_y,
+                    deadline_ts=quick_deadline,
+                    diversify_ties=True,
+                    debug=False,
+                    debug_tag=f"UB1-RNR-r{round_id}",
+                    vertex_rcl=1, color_rcl=3, x_jitter=0.0, color_tau=0.02,
+                )
+            if cand_try is None:
                 if verbose:
-                    print("  [FixApply] solve timed out - rollback and continue")
-            if verbose:
-                print(f"  [FixApply] status={'OK' if ok3 else 'ROLLBACK'}")
-            if not ok3:
-                inc.revert_all(tokens)
-                if enable_visualization:
-                    dbg = _debug_candidate_from_xfrac(x_frac, K_eff=K)
-                    viz("FixApply-rollback", round_id, dbg, K, only_colored=False)
+                    print("  [BIG-UB1] quick RNR returned None (deadline hit) -> skip")
             else:
-                x_fix_applied_this_round = True
-                if budget_exhausted("before_rounding"):
-                    break
-                cand3 = round_and_repair_multi(G, ok_info3["x_frac"], ok_info3["y_frac"],
-                                               current_UB=K, restarts=max(2, restarts // 2),
-                                               seed=algo_seed+7777 + round_id, perturb_y=perturb_y,deadline_ts=deadline)
-                rep3 = verify_coloring(G, cand3, allowed_colors=list(range(K)))
-                if budget_exhausted("after_rounding"): break
-                if enable_visualization:
-                    viz("After-Fix-Rounding", round_id, cand3, K, only_colored=rep3["feasible"])
-                if verbose:
-                    used3_try = len(set(cand3.values()))
-                    print(f"  [After-Fix Rounding] feasible={rep3['feasible']} | used={used3_try} | conflicts={rep3['num_conflicts']}")
-                
-                if rep3["feasible"]:
-                    cand3, used3 = compact_colors(cand3)
-                    cand3b, reduced3 = consolidate_colors(G, dict(cand3), passes=3)
-                    if reduced3:
-                        cand3b, used3 = compact_colors(cand3b)
-                        cand3 = cand3b
-                    if used3 < UB:
-                        UB = used3
-                        best_coloring = cand3
-
-
+                rep_try = verify_coloring(G, cand_try, allowed_colors=list(range(K_try)))
+                if rep_try["feasible"]:
+                    ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("BIG-UB1-RNR", cand_try, K_try)
+                    if ok and used_ok < UB:
+                        UB = used_ok
+                        best_coloring = cand_ok
                         improved_this_round = True
-                        
-                        if verbose:
-                            print(f"  [After-Fix] improved UB -> {UB}")
+                        dec_done += 1
                         if K > UB:
-                            tok4 = [inc.lock_prefix_K(UB)]
-                            sub_cap = 0.5
-                            inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
-                            try:
-                                ok_info4, ok4 = inc.try_apply_and_solve(tok4)
-                            except TimeoutError:
-                                ok_info3, ok3 = None, False
-                                if verbose:
-                                    print("  [FixApply] solve timed out - rollback and continue")
+                            K = UB
+                        mark_best(UB, round_id)
+                        print(f"  [BIG-UB1] SUCCESS via quick RNR: new UB={UB}")
+                        quick_success = True
 
-                            if ok4:
+            tries_done = 0
+
+            if not quick_success:
+                for tries in range(max_tries):
+                    tries_done = tries + 1
+
+                    # 预算 / 停止条件
+                    if dec_done >= max_dec:
+                        break
+                    if UB <= LB + 1:
+                        break
+                    if (time.monotonic() - t0) >= squeeze_budget:
+                        break
+
+                    K_try = UB - 1
+                    improved = False
+
+                    if verbose:
+                        print(f"  [BIG-UB1] try#{tries+1}: LP-pack UB {UB} -> {K_try}")
+
+                    # (1) LP-pack
+                    ub2, col2, applied = try_lp_guided_pack(G, best_coloring, x_frac, K_try, UB, verbose=verbose)
+                    if applied and (col2 is not None):
+                        ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("BIG-UB1-LP-Pack", col2, ub2)
+                        if ok and used_ok < UB:
+                            UB = used_ok
+                            best_coloring = cand_ok
+                            improved_this_round = True
+                            dec_done += 1
+                            improved = True
+                            if K > UB:
                                 K = UB
+                            mark_best(UB, round_id)
+                            if verbose:
+                                print(f"  [BIG-UB1] SUCCESS via LP-pack: new UB={UB} (dec_done={dec_done})")
+
+                    # (2) UB1-greedy（只在 pack 没成功时才做）
+                    if (not improved) and ((time.monotonic() - t0) < squeeze_budget):
+                        if verbose:
+                            print(f"  [BIG-UB1] try#{tries+1}: UB1-greedy on UB={UB}")
+
+                        ub3, col3, applied3 = try_graph_ub1_greedy(G, best_coloring, UB, verbose=verbose)
+                        if applied3 and (col3 is not None):
+                            ok, cand_ok, used_ok, rep_ok = _accept_if_feasible("BIG-UB1-UB1Greedy", col3, ub3)
+                            if ok and used_ok < UB:
+                                UB = used_ok
+                                best_coloring = cand_ok
+                                improved_this_round = True
+                                dec_done += 1
+                                improved = True
+                                if K > UB:
+                                    K = UB
                                 mark_best(UB, round_id)
                                 if verbose:
-                                    print(f"  [Sync] K aligned to new UB: K={K}")
-                            else:
-                                inc.revert_all(tok4)
-                        if UB <= LB:
-                            stop_reason = "UB==LB"
-                            break
+                                    print(f"  [BIG-UB1] SUCCESS via UB1-greedy: new UB={UB} (dec_done={dec_done})")
+
+                    # 两个算子都没改进：直接退出 squeezing（避免白耗时）
+                    if not improved:
+                        if verbose:
+                            print("  [BIG-UB1] no improvement, stop squeezing.")
+                        break
+
+            print(f"  [BIG-UB1] done: dec_done={dec_done} tries={tries_done} spent={time.monotonic()-squeeze_t0:.1f}s UB={UB}")
+
+        # ---- end BIG UB-1 squeezing ----
+
+        # Big-graph mode: skip FixPolicy/FixApply (each would trigger additional LP solves).
+        if is_big and BIG_SKIP_FIXING:
+            if verbose:
+                print("  [BIG] skip FixPolicy/FixApply to avoid extra LP solves")
+        else:
+            # 4) maybe other fixing policies (strong x fixing, etc.), also follow safe process (only in prefix color domain)
+            plan = pick_fixings(
+                G=G, x_frac=x_frac, y_frac=y_frac, z_LP=zLP, UB=K, LB=LB,
+                policy=fix_policy, strong_margin=strong_margin,
+                max_fix_per_round=max_fix_per_round,
+                rounding_coloring=cand if rep["feasible"] else None
+            )
+            if verbose:
+                print(f"  [FixPolicy] y_zero={len(plan['y_zero'])} | x_one={len(plan['x_one'])} | x_zero={len(plan['x_zero'])} "
+                    f"| strong_margin={strong_margin} | max_fix_per_round={max_fix_per_round}")
+
+            tokens = []
+            for (v, c) in plan["x_one"]:
+                if c < K:
+                    tokens.append(inc.fix_vertex_color(v, c))
+
+            if tokens:
+                if verbose:
+                    print(f"  [FixApply] applying tokens={len(tokens)} (x fixings only in prefix K)")
+                sub_cap = 50
+                inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
+                try:
+                    ok_info3, ok3 = inc.try_apply_and_solve(tokens)
+                except TimeoutError:
+                    ok_info3, ok3 = None, False
+                    if verbose:
+                        print("  [FixApply] solve timed out - rollback and continue")
+                if verbose:
+                    print(f"  [FixApply] status={'OK' if ok3 else 'ROLLBACK'}")
+                if not ok3:
+                    inc.revert_all(tokens)
+                    if enable_visualization:
+                        dbg = _debug_candidate_from_xfrac(x_frac, K_eff=K)
+                        viz("FixApply-rollback", round_id, dbg, K, only_colored=False)
+                else:
+                    x_fix_applied_this_round = True
+                    if budget_exhausted("before_rounding"):
+                        break
+                    cand3 = round_and_repair_multi(G, ok_info3["x_frac"], ok_info3["y_frac"],
+                                                current_UB=K, restarts=max(2, restarts // 2),
+                                                seed=algo_seed+7777 + round_id, perturb_y=perturb_y,deadline_ts=deadline)
+                    rep3 = verify_coloring(G, cand3, allowed_colors=list(range(K)))
+                    if budget_exhausted("after_rounding"): break
+                    if enable_visualization:
+                        viz("After-Fix-Rounding", round_id, cand3, K, only_colored=rep3["feasible"])
+                    if verbose:
+                        used3_try = len(set(cand3.values()))
+                        print(f"  [After-Fix Rounding] feasible={rep3['feasible']} | used={used3_try} | conflicts={rep3['num_conflicts']}")
+                    
+                    if rep3["feasible"]:
+                        cand3, used3 = compact_colors(cand3)
+                        cand3b, reduced3 = consolidate_colors(G, dict(cand3), passes=3)
+                        if reduced3:
+                            cand3b, used3 = compact_colors(cand3b)
+                            cand3 = cand3b
+                        if used3 < UB:
+                            UB = used3
+                            best_coloring = cand3
+
+
+                            improved_this_round = True
+                            
+                            if verbose:
+                                print(f"  [After-Fix] improved UB -> {UB}")
+                            if K > UB:
+                                tok4 = [inc.lock_prefix_K(UB)]
+                                sub_cap = 50
+                                inc.set_time_limit_ms(int(max(0.05, min(time_left(), sub_cap)) * 1000))
+                                try:
+                                    ok_info4, ok4 = inc.try_apply_and_solve(tok4)
+                                except TimeoutError:
+                                    ok_info3, ok3 = None, False
+                                    if verbose:
+                                        print("  [FixApply] solve timed out - rollback and continue")
+
+                                if ok4:
+                                    K = UB
+                                    mark_best(UB, round_id)
+                                    if verbose:
+                                        print(f"  [Sync] K aligned to new UB: K={K}")
+                                else:
+                                    inc.revert_all(tok4)
+                            if UB <= LB:
+                                stop_reason = "UB==LB"
+                                break
         if verbose:
             print(f"[DBG-TL-round] round_id={round_id} time_left={time_left():.1f}s")
 
@@ -595,6 +924,19 @@ def run_iterative_lp_v2(
                 print(f"  [Stop] stalled at K==ceil(zLP) for {no_progress_rounds} rounds")
 
             break
+        if improved_this_round:
+            stall_rounds = 0
+            last_improve_round = round_id
+        else:
+            stall_rounds += 1
+
+        if verbose:
+            print(f"  [STALL] stall_rounds={stall_rounds} last_improve_round={last_improve_round}")
+
+        if is_big:
+            print(f"  [BIG] lp_solves_total={lp_solves_total} lp_cache_round={lp_cache_round}")
+            big_mark("round_end")
+
 
 
     if not stop_reason:
@@ -613,6 +955,9 @@ def run_iterative_lp_v2(
     final_report = verify_coloring(G, best_coloring, allowed_colors=list(range(UB)))
     if verbose:
         print(f"[Final] UB={UB} LB={LB} feasible={final_report['feasible']} zLP≈{zLP:.6f}")
+    if verbose and is_big:
+            print(f"  [BIG] lp_solves_total={lp_solves_total}")
+
     if enable_visualization:
         try:
             visualize_coloring(

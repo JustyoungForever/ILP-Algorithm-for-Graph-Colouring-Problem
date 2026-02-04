@@ -1,0 +1,172 @@
+[INFO] Start Mon Feb  2 10:35:03 PM CET 2026
+[INFO] Instance=DSJC500.9.col seed=1 algo=iterlp2_full TL=28800s (soft=28680s)
+[INFO] Outputs:
+  /home/ta32xoy/masterarbeit/results/time_DSJC500.9_iterlp_seed1_runs_3098679.csv
+  /home/ta32xoy/masterarbeit/results/time_DSJC500.9_iterlp_seed1_summary_3098679.csv
+[INFO] runner path: /home/ta32xoy/masterarbeit/runner.py
+[INFO] runner md5: 84431bb375b9ff2ed1e759e18f46fbfc  /home/ta32xoy/masterarbeit/runner.py
+[Runner] path=/home/ta32xoy/masterarbeit/runner.py md5=84431bb375b9ff2ed1e759e18f46fbfc
+[Runner] instances=1 algos=1 algo_seeds=[1] time_limit=28680s
+[DBG-TL-init] time_limit_sec=28680 deadline_in=28680.0s
+[Init] graph: |V|=500 |E|=112437 |LB|=43 |UB(init)|=172 |K|=172 via smallest_last
+[Init] LB=43 | UB(init:smallest_last)=172
+[LP] model built once (incremental), initial |C|=172 (K=172) with precedence & clique-cuts
+[DBG-ENTER] round_id=1 elapsed=3.8s time_left=28676.2s UB=172 K=172
+[DBG] n=500 m=112437 UB=172 K=172 lazy=True is_big=True lp_main_cap=300.0
+  [LazyEdge] added=94025
+  [LazyEdge] added=94032
+[DBG-TL-round] round_id=1 time_left=28671.4s
+[Round 1] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=8.63s
+  [Rounding] feasible=True | used=165 | conflicts=0
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+  [Rounding/Local] improved UB -> 165
+  [Sync] K aligned to new UB: K=165
+  [Rounding] feasible=True | used=165 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=122 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=False | used=165 | conflicts=2
+[DBG-TL-round] round_id=1 time_left=26768.0s
+  [Round 1 END] UB=165 | K=165 | ceil(zLP)=43 | improved=True | fixed=True
+[DBG-ENTER] round_id=2 elapsed=1912.0s time_left=26768.0s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94032
+[DBG-TL-round] round_id=2 time_left=26765.3s
+[Round 2] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=1914.74s
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [LazyEdge-Conflicts] added=0
+  [Side] trying K+1 rounding (K=165 - 166) to break stalemate
+  [Side] skip: K+1=166 exceeds current UB=165
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [FixPolicy] y_zero=122 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+[DBG-TL-round] round_id=2 time_left=23542.7s
+  [Round 2 END] UB=165 | K=165 | ceil(zLP)=43 | improved=False | fixed=False
+[DBG-ENTER] round_id=3 elapsed=5137.3s time_left=23542.7s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94035
+[DBG-TL-round] round_id=3 time_left=23539.7s
+[Round 3] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=5140.25s
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [LazyEdge-Conflicts] added=0
+  [Side] trying K+1 rounding (K=165 - 166) to break stalemate
+  [Side] skip: K+1=166 exceeds current UB=165
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [FixPolicy] y_zero=122 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+[DBG-TL-round] round_id=3 time_left=20237.5s
+  [Round 3 END] UB=165 | K=165 | ceil(zLP)=43 | improved=False | fixed=False
+[DBG-ENTER] round_id=4 elapsed=8442.5s time_left=20237.5s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94037
+[DBG-TL-round] round_id=4 time_left=20234.4s
+[Round 4] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=8445.61s
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [LazyEdge-Conflicts] added=0
+  [Side] trying K+1 rounding (K=165 - 166) to break stalemate
+  [Side] skip: K+1=166 exceeds current UB=165
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [FixPolicy] y_zero=122 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+[DBG-TL-round] round_id=4 time_left=16825.8s
+  [Round 4 END] UB=165 | K=165 | ceil(zLP)=43 | improved=False | fixed=False
+[DBG-ENTER] round_id=5 elapsed=11854.2s time_left=16825.8s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94038
+[DBG-TL-round] round_id=5 time_left=16822.5s
+[Round 5] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=11857.45s
+  [Rounding] feasible=True | used=165 | conflicts=0
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+  [Rounding] feasible=True | used=165 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=122 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=5 time_left=13951.8s
+  [Round 5 END] UB=165 | K=165 | ceil(zLP)=43 | improved=False | fixed=False
+[DBG-ENTER] round_id=6 elapsed=14728.2s time_left=13951.8s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94038
+[DBG-TL-round] round_id=6 time_left=13948.5s
+[Round 6] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=14731.50s
+  [Rounding] feasible=True | used=165 | conflicts=0
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+[LocalSearch] highest color class removed; colors now=165
+  [Rounding] feasible=True | used=165 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=122 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=6 time_left=10971.4s
+  [Round 6 END] UB=165 | K=165 | ceil(zLP)=43 | improved=False | fixed=False
+[DBG-ENTER] round_id=7 elapsed=17708.6s time_left=10971.4s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94038
+[DBG-TL-round] round_id=7 time_left=10967.9s
+[Round 7] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=17712.09s
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [LazyEdge-Conflicts] added=0
+  [Side] trying K+1 rounding (K=165 - 166) to break stalemate
+  [Side] skip: K+1=166 exceeds current UB=165
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [FixPolicy] y_zero=122 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+[DBG-TL-round] round_id=7 time_left=7665.3s
+  [Round 7 END] UB=165 | K=165 | ceil(zLP)=43 | improved=False | fixed=False
+[DBG-ENTER] round_id=8 elapsed=21014.7s time_left=7665.3s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94040
+[DBG-TL-round] round_id=8 time_left=7661.7s
+[Round 8] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=21018.34s
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [LazyEdge-Conflicts] added=0
+  [Side] trying K+1 rounding (K=165 - 166) to break stalemate
+  [Side] skip: K+1=166 exceeds current UB=165
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [FixPolicy] y_zero=122 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+[DBG-TL-round] round_id=8 time_left=4251.7s
+  [Round 8 END] UB=165 | K=165 | ceil(zLP)=43 | improved=False | fixed=False
+[DBG-ENTER] round_id=9 elapsed=24428.3s time_left=4251.7s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94040
+[DBG-TL-round] round_id=9 time_left=4247.8s
+[Round 9] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=24432.22s
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [LazyEdge-Conflicts] added=0
+  [Side] trying K+1 rounding (K=165 - 166) to break stalemate
+  [Side] skip: K+1=166 exceeds current UB=165
+  [Rounding] feasible=False | used=165 | conflicts=2
+  [FixPolicy] y_zero=122 | x_one=0 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+[DBG-TL-round] round_id=9 time_left=1045.3s
+  [Round 9 END] UB=165 | K=165 | ceil(zLP)=43 | improved=False | fixed=False
+[DBG-ENTER] round_id=10 elapsed=27634.7s time_left=1045.3s UB=165 K=165
+[DBG] n=500 m=112437 UB=165 K=165 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=94041
+[DBG-TL-round] round_id=10 time_left=1041.3s
+[Round 10] zLP=43.000000 | ceil(zLP)=43 | K=165 | UB=165 | t=27638.72s
+[WARN] Caught SIGTERM/SIGINT at Tue Feb  3 06:34:40 AM CET 2026. Forwarding SIGINT to python for graceful shutdown...
+[WARN] CSV status after interrupt:
+-rw------- 1 ta32xoy unijena 486 Feb  3 06:34 /home/ta32xoy/masterarbeit/results/time_DSJC500.9_iterlp_seed1_runs_3098679.csv
+-rw------- 1 ta32xoy unijena 144 Feb  3 06:34 /home/ta32xoy/masterarbeit/results/time_DSJC500.9_iterlp_seed1_summary_3098679.csv
+[WARN] Tail runs.csv (if exists):
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
+DSJC500.9,dimacs,500,112437,0.9012985971943888,449.748,iterlp2_full,1,28680,smallest_last,prefix_shrink+rounded_support,0.25,10,32,1e-06,full,,165,,False,,28767.44405142218,,,199.17512249946594,-1,terminated,1770096880,
+[INFO] End   Tue Feb  3 06:34:40 AM CET 2026
+[INFO] WallClockSec=28777
+[INFO] runner.py exit code=143
+-rw------- 1 ta32xoy unijena 486 Feb  3 06:34 /home/ta32xoy/masterarbeit/results/time_DSJC500.9_iterlp_seed1_runs_3098679.csv
+-rw------- 1 ta32xoy unijena 144 Feb  3 06:34 /home/ta32xoy/masterarbeit/results/time_DSJC500.9_iterlp_seed1_summary_3098679.csv
+[INFO] Tail runs.csv:
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
+DSJC500.9,dimacs,500,112437,0.9012985971943888,449.748,iterlp2_full,1,28680,smallest_last,prefix_shrink+rounded_support,0.25,10,32,1e-06,full,,165,,False,,28767.44405142218,,,199.17512249946594,-1,terminated,1770096880,
+[INFO] Tail summary.csv:
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+DSJC500.9,iterlp2_full,1,165,165.0,28767.44405142218,199.17512249946594

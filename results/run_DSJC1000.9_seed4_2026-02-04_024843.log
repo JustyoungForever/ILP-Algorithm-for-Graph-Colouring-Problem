@@ -1,0 +1,370 @@
+[Runner] path=/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/runner.py md5=84431bb375b9ff2ed1e759e18f46fbfc
+[Runner] instances=1 algos=1 algo_seeds=[4] time_limit=600s
+[DBG-TL-init] time_limit_sec=600 deadline_in=600.0s
+[Init] graph: |V|=500 |E|=112437 |LB|=43 |UB(init)|=172 |K|=172 via smallest_last
+[Init] LB=43 | UB(init:smallest_last)=172
+[LP] model built once (incremental), initial |C|=172 (K=172) with precedence & clique-cuts
+[DBG-ENTER] round_id=1 elapsed=3.5s time_left=596.5s UB=172 K=172
+[DBG] n=500 m=112437 UB=172 K=172 lazy=True is_big=True lp_main_cap=60.0
+  [BIG-T] after_lp_or_cache dt=0.41s time_left=596.1s
+  [BIG-LP] solve_count=1 (main solve)
+  [LazyEdge] added=94025
+  [BIG-T] after_lp_or_cache dt=2.65s time_left=593.8s
+  [BIG-LP] solve_count=2 (lazy re-solve)
+  [BIG-LP] cached LP at round 1 (zLP=43.000)
+[DBG-TL-round] round_id=1 time_left=593.8s
+[Round 1] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=6.18s
+  [BIG-BUDGET] round_budget=90.0s
+  [RNR-r1] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r1] restarts_done=32/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=74.78s time_left=521.7s
+  [Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+  [Rounding] feasible=True | used=172 | conflicts=0
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=1 time_left=519.2s
+  [Round 1 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=77.24s time_left=519.2s
+[DBG-ENTER] round_id=2 elapsed=80.8s time_left=519.2s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=1 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=2 time_left=519.2s
+[Round 2] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=80.78s
+  [BIG-BUDGET] round_budget=90.0s
+  [RNR-r2] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r2] restarts_done=32/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=86.60s time_left=432.6s
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [BIG-RNR] infeasible candidate -> conflicts=2 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=8.7s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=2 time_left=429.7s
+  [Round 2 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=89.53s time_left=429.7s
+[DBG-ENTER] round_id=3 elapsed=170.3s time_left=429.7s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=2 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=3 time_left=429.7s
+[Round 3] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=170.30s
+  [BIG-BUDGET] round_budget=85.9s
+  [RNR-r3] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r3] restarts_done=32/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=77.53s time_left=352.2s
+  [Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+  [Rounding] feasible=True | used=172 | conflicts=0
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=3 time_left=349.7s
+  [Round 3 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=79.96s time_left=349.7s
+[DBG-ENTER] round_id=4 elapsed=250.3s time_left=349.7s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=3 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=4 time_left=349.7s
+[Round 4] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=250.27s
+  [BIG-BUDGET] round_budget=69.9s
+  [RNR-r4] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r4] restarts_done=23/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=71.54s time_left=278.2s
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [BIG-RNR] infeasible candidate -> conflicts=2 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=5.6s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=4 time_left=275.2s
+  [Round 4 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=74.58s time_left=275.2s
+[DBG-ENTER] round_id=5 elapsed=324.8s time_left=275.2s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=4 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=5 time_left=275.2s
+[Round 5] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=324.84s
+  [BIG-BUDGET] round_budget=55.0s
+  [RNR-r5] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r5] restarts_done=18/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=58.30s time_left=216.9s
+  [Rounding] feasible=False | used=172 | conflicts=3
+  [LazyEdge-Conflicts] added=3
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=3
+  [BIG-RNR] infeasible candidate -> conflicts=3 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=4.3s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=5 time_left=213.9s
+  [Round 5 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=61.21s time_left=213.9s
+[DBG-ENTER] round_id=6 elapsed=386.1s time_left=213.9s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=5 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=6 time_left=213.9s
+[Round 6] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=386.05s
+  [BIG-BUDGET] round_budget=42.8s
+  [RNR-r6] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r6] restarts_done=19/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=46.19s time_left=167.8s
+  [Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+  [Rounding] feasible=True | used=172 | conflicts=0
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=6 time_left=165.4s
+  [Round 6 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=48.60s time_left=165.4s
+[DBG-ENTER] round_id=7 elapsed=434.6s time_left=165.4s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=6 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=7 time_left=165.4s
+[Round 7] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=434.65s
+  [BIG-BUDGET] round_budget=33.1s
+  [RNR-r7] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r7] restarts_done=9/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=34.16s time_left=131.2s
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [BIG-RNR] infeasible candidate -> conflicts=2 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=2.6s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=7 time_left=128.3s
+  [Round 7 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=37.03s time_left=128.3s
+[DBG-ENTER] round_id=8 elapsed=471.7s time_left=128.3s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=7 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=8 time_left=128.3s
+[Round 8] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=471.68s
+  [BIG-BUDGET] round_budget=25.7s
+  [RNR-r8] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r8] restarts_done=8/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=27.81s time_left=100.5s
+  [Rounding] feasible=False | used=172 | conflicts=1
+  [LazyEdge-Conflicts] added=1
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=1
+  [BIG-RNR] infeasible candidate -> conflicts=1 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=2.0s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=8 time_left=97.6s
+  [Round 8 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=30.69s time_left=97.6s
+[DBG-ENTER] round_id=9 elapsed=502.4s time_left=97.6s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=8 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=9 time_left=97.6s
+[Round 9] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=502.37s
+  [BIG-BUDGET] round_budget=20.0s
+  [RNR-r9] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r9] restarts_done=10/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=20.11s time_left=77.5s
+  [Rounding] feasible=False | used=172 | conflicts=3
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=3
+  [BIG-RNR] infeasible candidate -> conflicts=3 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=2.0s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=9 time_left=74.6s
+  [Round 9 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=23.00s time_left=74.6s
+[DBG-ENTER] round_id=10 elapsed=525.4s time_left=74.6s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=9 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=10 time_left=74.6s
+[Round 10] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=525.37s
+  [BIG-BUDGET] round_budget=20.0s
+  [RNR-r10] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r10] restarts_done=7/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=23.88s time_left=50.7s
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [LazyEdge-Conflicts] added=2
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=2
+  [BIG-RNR] infeasible candidate -> conflicts=2 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=2.0s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=10 time_left=47.9s
+  [Round 10 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=26.76s time_left=47.9s
+[DBG-ENTER] round_id=11 elapsed=552.1s time_left=47.9s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=10 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=11 time_left=47.9s
+[Round 11] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=552.14s
+  [BIG-BUDGET] round_budget=20.0s
+  [RNR-r11] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r11] restarts_done=5/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=23.37s time_left=24.5s
+  [Rounding] feasible=False | used=172 | conflicts=11
+  [LazyEdge-Conflicts] added=11
+  [BIG] conflict cuts added, skip LP re-solve (one-shot LP mode)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=11
+  [BIG-RNR] infeasible candidate -> conflicts=11 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=2.0s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+  [After-Fix Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[DBG-TL-round] round_id=11 time_left=21.6s
+  [Round 11 END] UB=172 | K=172 | ceil(zLP)=43 | improved=False | fixed=True
+  [BIG] lp_solves_total=2 lp_cache_round=1
+  [BIG-T] round_end dt=26.29s time_left=21.6s
+[DBG-ENTER] round_id=12 elapsed=578.4s time_left=21.6s UB=172 K=172
+  [BIG-LP] reuse cached LP from round 1 (age=11 rounds, lp_solves_total=2)
+[DBG-TL-round] round_id=12 time_left=21.6s
+[Round 12] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=578.43s
+  [BIG-BUDGET] round_budget=20.0s
+  [RNR-r12] cfg vertex_rcl=1 color_rcl=3 x_jitter=0.0e+00 color_tau=0.020 diversify_ties=True
+  [RNR-r12] restarts_done=12/32 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=20.36s time_left=1.2s
+  [Rounding] feasible=True | used=172 | conflicts=0
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+[LocalSearch] highest color class removed; colors now=172
+  [Rounding] feasible=True | used=172 | conflicts=0
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=129 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+[Time] budget exhausted at after_rounding, UB=172
+[DBG-EXIT] elapsed=600.0s time_left=-0.0s stop_reason=time_limit
+[Final] UB=172 LB=43 feasible=True zLP≈43.000000
+  [BIG] lp_solves_total=2
+[Runner] wrote runs -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_runs.csv
+[Runner] wrote summary -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_summary.csv

@@ -1,6 +1,6 @@
 ROOT="/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem"
 DIMACS_DIR="$ROOT/experiments/data/dimacs_selected"
-INST="DSJC1000.9.col"
+INST="DSJC500.9.col"
 
 # 1) 确认文件存在
 ls -lh "$DIMACS_DIR/$INST"
@@ -17,7 +17,7 @@ export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
 python3 -u "$ROOT/runner.py" --suite dimacs \
   --dimacs-dir "$ONE_DIR" \
   --max-instances 1 \
-  --time-limit 3600 \
+  --time-limit 600 \
   --algos iterlp2_full \
   --algo-seeds 4 \
   --restarts 32 \

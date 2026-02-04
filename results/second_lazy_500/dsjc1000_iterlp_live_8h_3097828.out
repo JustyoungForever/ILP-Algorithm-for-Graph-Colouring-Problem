@@ -1,0 +1,6 @@
+[INFO] Start Fri Jan 30 11:37:59 PM CET 2026
+[INFO] Instance=DSJC1000.9.col seed=1 algo=iterlp2_full TL=28800s (soft=28680s)
+[INFO] Outputs:
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_runs_3097828.csv
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_summary_3097828.csv
+[INFO] runner path: /home/ta32xoy/masterarbeit/runner.py

@@ -3,13 +3,26 @@ from typing import Dict, Any, List, Tuple, Optional, Iterable
 
 def verify_coloring(
     G,
-    coloring: Dict[int, int],
+    coloring: Optional[Dict[int, int]],
     allowed_colors: Optional[Iterable[int]] = None,
     sample_conflicts: int = 10,
 ) -> Dict[str, Any]:
 
     report: Dict[str, Any] = {}
-
+    # --- GUARD: coloring may be None (e.g., no restart executed due to deadline) ---
+    if coloring is None:
+        V = sorted(G.nodes())
+        report["missing_nodes"] = V
+        report["bad_nodes"] = V
+        report["used_colors"] = []
+        report["num_used_colors"] = 0
+        report["out_of_range_nodes"] = V if allowed_colors is not None else []
+        report["num_conflicts"] = -1
+        report["conflicts_sample"] = []
+        report["feasible"] = False
+        report["error"] = "coloring is None"
+        return report
+    
     V = set(G.nodes())
     nodes_colored = set(coloring.keys())
 
@@ -59,6 +72,10 @@ def print_check_summary(report: Dict[str, Any], prefix: str = "[Check] ") -> Non
     num_conflicts = report.get("num_conflicts", -1)
     num_used = report.get("num_used_colors", -1)
     print(f"{prefix}feasible={feasible}|used_colors={num_used}|conflicts={num_conflicts}")
+    err = report.get("error", "")
+    if err:
+        print(f"{prefix}error={err}")
+    
     if not feasible:
         miss = report.get("missing_nodes", [])
         oor  = report.get("out_of_range_nodes", [])

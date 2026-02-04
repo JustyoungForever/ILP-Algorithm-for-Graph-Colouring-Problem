@@ -1,0 +1,32 @@
+[Runner] path=/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/runner.py md5=84431bb375b9ff2ed1e759e18f46fbfc
+[Runner] instances=1 algos=1 algo_seeds=[4] time_limit=600s
+[DBG-TL-init] time_limit_sec=600 deadline_in=600.0s
+[Init] graph: |V|=500 |E|=112437 |LB|=43 |UB(init)|=172 |K|=172 via smallest_last
+[Init] LB=43 | UB(init:smallest_last)=172
+[LP] model built once (incremental), initial |C|=172 (K=172) with precedence & clique-cuts
+[DBG-ENTER] round_id=1 elapsed=3.5s time_left=596.5s UB=172 K=172
+[DBG] n=500 m=112437 UB=172 K=172 lazy=True is_big=True lp_main_cap=300.0
+  [LazyEdge] added=94025
+  [BIG-LP] cached LP at round 1 (zLP=43.000)
+[DBG-TL-round] round_id=1 time_left=593.7s
+[Round 1] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=6.25s
+  [RNR-r1] restarts_done=32/32 used_min=162 used_mean=164.91 unique_ratio=1.00 best_used=162
+  [Rounding] feasible=True | used=162 | conflicts=0
+[LocalSearch] highest color class removed; colors now=162
+[LocalSearch] highest color class removed; colors now=162
+[LocalSearch] highest color class removed; colors now=162
+[LocalSearch] highest color class removed; colors now=162
+[LocalSearch] highest color class removed; colors now=162
+  [Rounding/Local] improved UB -> 162
+  [BIG-Sync] K aligned to new UB without LP: K=162
+  [Rounding] feasible=True | used=162 | conflicts=0
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=119 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=OK
+[Time] budget exhausted at after_rounding, UB=162
+[DBG-EXIT] elapsed=635.2s time_left=-35.2s stop_reason=time_limit
+[Final] UB=162 LB=43 feasible=True zLP≈43.000000
+[Runner] wrote runs -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_runs.csv
+[Runner] wrote summary -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_summary.csv

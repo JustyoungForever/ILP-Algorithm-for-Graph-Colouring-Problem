@@ -1,0 +1,34 @@
+[Runner] path=/mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/runner.py md5=84431bb375b9ff2ed1e759e18f46fbfc
+[Runner] instances=1 algos=1 algo_seeds=[4] time_limit=600s
+[DBG-TL-init] time_limit_sec=600 deadline_in=600.0s
+[Init] graph: |V|=500 |E|=112437 |LB|=43 |UB(init)|=172 |K|=172 via smallest_last
+[Init] LB=43 | UB(init:smallest_last)=172
+[LP] model built once (incremental), initial |C|=172 (K=172) with precedence & clique-cuts
+[DBG-ENTER] round_id=1 elapsed=3.5s time_left=596.5s UB=172 K=172
+[DBG] n=500 m=112437 UB=172 K=172 lazy=True is_big=True lp_main_cap=60.0
+  [BIG-T] after_lp_or_cache dt=0.37s time_left=596.1s
+  [BIG-LP] solve_count=1 (main solve)
+  [LazyEdge] added=94025
+  [BIG-T] after_lp_or_cache dt=2.65s time_left=593.8s
+  [BIG-LP] solve_count=2 (lazy re-solve)
+  [BIG-LP] cached LP at round 1 (zLP=43.000)
+[DBG-TL-round] round_id=1 time_left=593.8s
+[Round 1] zLP=43.000000 | ceil(zLP)=43 | K=172 | UB=172 | t=6.15s
+  [BIG-BUDGET] round_budget=90.0s
+  [RNR-r1] cfg vertex_rcl=4 color_rcl=10 x_jitter=1.0e-04 color_tau=0.050 diversify_ties=True
+  [RNR-r1] restarts_done=12/12 used_min=172 used_mean=172.00 unique_ratio=1.00 best_used=172
+  [BIG-T] after_rounding_multi dt=77.75s time_left=518.8s
+  [Rounding] feasible=False | used=172 | conflicts=26
+  [LazyEdge-Conflicts] added=26
+  [BIG-T] after_lp_or_cache dt=78.16s time_left=518.3s
+  [BIG-LP] solve_count=3 (main solve)
+  [Side] trying K+1 rounding (K=172 - 173) to break stalemate
+  [Side] skip: K+1=173 exceeds current UB=172
+  [Rounding] feasible=False | used=172 | conflicts=26
+  [BIG-RNR] infeasible candidate -> conflicts=26 (will fallback)
+  [BIG-LazyEdge-Conflicts] added=0 dirty=False lazy_added_since_solve=0
+  [BIG-RNR] safe-retry budget=10.0s
+  [BIG-RNR] safe-retry SUCCESS -> proceed with feasible cand
+  [BIG] skip FixPolicy/FixApply to avoid extra LP solves
+[Runner] wrote runs -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_runs.csv
+[Runner] wrote summary -> /mnt/g/Nextcloud/FSU_Cloud/毕设/ILP-Algorithm-for-Graph-Colouring-Problem/results/results_summary.csv

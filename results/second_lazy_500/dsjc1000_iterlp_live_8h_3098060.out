@@ -1,0 +1,284 @@
+[INFO] Start Sun Feb  1 03:43:02 AM CET 2026
+[INFO] Instance=DSJC1000.9.col seed=1 algo=iterlp2_full TL=28800s (soft=28680s)
+[INFO] Outputs:
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_runs_3098060.csv
+  /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_summary_3098060.csv
+[INFO] runner path: /home/ta32xoy/masterarbeit/runner.py
+[INFO] runner md5: 84431bb375b9ff2ed1e759e18f46fbfc  /home/ta32xoy/masterarbeit/runner.py
+[Runner] path=/home/ta32xoy/masterarbeit/runner.py md5=84431bb375b9ff2ed1e759e18f46fbfc
+[Runner] instances=1 algos=1 algo_seeds=[1] time_limit=28680s
+[DBG-TL-init] time_limit_sec=28680 deadline_in=28680.0s
+[Init] graph: |V|=1000 |E|=449449 |LB|=53 |UB(init)|=316 |K|=316 via smallest_last
+[Init] LB=53 | UB(init:smallest_last)=316
+[LP] model built once (incremental), initial |C|=316 (K=316) with precedence & clique-cuts
+[DBG-ENTER] round_id=1 elapsed=10.2s time_left=28669.8s UB=316 K=316
+[DBG] n=1000 m=449449 UB=316 K=316 lazy=True is_big=True lp_main_cap=300.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=1 time_left=28664.7s
+[Round 1] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=316 | t=15.27s
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding/Local] improved UB -> 297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=1 time_left=26368.8s
+  [Round 1 END] UB=297 | K=316 | ceil(zLP)=53 | improved=True | fixed=False
+[DBG-ENTER] round_id=2 elapsed=2311.2s time_left=26368.8s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=2 time_left=26361.9s
+[Round 2] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=2318.14s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=2 time_left=24134.0s
+  [Round 2 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=3 elapsed=4546.0s time_left=24134.0s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=3 time_left=24070.0s
+[Round 3] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=4610.04s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=3 time_left=21926.8s
+  [Round 3 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=4 elapsed=6753.2s time_left=21926.8s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=4 time_left=21862.6s
+[Round 4] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=6817.37s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=4 time_left=19740.3s
+  [Round 4 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=5 elapsed=8939.7s time_left=19740.3s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=5 time_left=19676.0s
+[Round 5] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=9004.04s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=299 | conflicts=0
+[LocalSearch] highest color class removed; colors now=299
+[LocalSearch] highest color class removed; colors now=299
+[LocalSearch] highest color class removed; colors now=299
+[LocalSearch] highest color class removed; colors now=299
+[LocalSearch] highest color class removed; colors now=299
+  [Rounding] feasible=True | used=299 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=5 time_left=17558.1s
+  [Round 5 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=6 elapsed=11121.9s time_left=17558.1s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=6 time_left=17493.5s
+[Round 6] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=11186.55s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=6 time_left=15363.0s
+  [Round 6 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=7 elapsed=13317.0s time_left=15363.0s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LP] solve timed out under per-call cap=60.0s, time_left=15302.4s -> continue
+[DBG-ENTER] round_id=8 elapsed=13377.6s time_left=15302.4s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LP] solve timed out under per-call cap=60.0s, time_left=15241.8s -> continue
+[DBG-ENTER] round_id=9 elapsed=13438.2s time_left=15241.8s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LP] solve timed out under per-call cap=60.0s, time_left=15181.1s -> continue
+[DBG-ENTER] round_id=10 elapsed=13498.9s time_left=15181.1s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LP] solve timed out under per-call cap=60.0s, time_left=15120.6s -> continue
+[DBG-ENTER] round_id=11 elapsed=13559.4s time_left=15120.6s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LP] solve timed out under per-call cap=60.0s, time_left=15059.9s -> continue
+[DBG-ENTER] round_id=12 elapsed=13620.1s time_left=15059.9s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LP] solve timed out under per-call cap=60.0s, time_left=14999.4s -> continue
+[DBG-ENTER] round_id=13 elapsed=13680.7s time_left=14999.3s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LP] solve timed out under per-call cap=60.0s, time_left=14938.8s -> continue
+[DBG-ENTER] round_id=14 elapsed=13741.2s time_left=14938.8s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=14 time_left=14874.0s
+[Round 14] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=13806.02s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=301 | conflicts=0
+[LocalSearch] highest color class removed; colors now=301
+[LocalSearch] highest color class removed; colors now=301
+[LocalSearch] highest color class removed; colors now=301
+[LocalSearch] highest color class removed; colors now=301
+[LocalSearch] highest color class removed; colors now=301
+  [Rounding] feasible=True | used=301 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=14 time_left=12725.0s
+  [Round 14 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=15 elapsed=15955.0s time_left=12725.0s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=15 time_left=12659.6s
+[Round 15] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=16020.38s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=15 time_left=10455.2s
+  [Round 15 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=16 elapsed=18224.8s time_left=10455.2s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=16 time_left=10389.7s
+[Round 16] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=18290.27s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=16 time_left=8228.0s
+  [Round 16 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=17 elapsed=20452.0s time_left=8228.0s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=17 time_left=8164.3s
+[Round 17] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=20515.73s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=17 time_left=6011.5s
+  [Round 17 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=18 elapsed=22668.5s time_left=6011.5s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=18 time_left=6003.3s
+[Round 18] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=22676.70s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=299 | conflicts=0
+[LocalSearch] highest color class removed; colors now=299
+[LocalSearch] highest color class removed; colors now=299
+[LocalSearch] highest color class removed; colors now=299
+[LocalSearch] highest color class removed; colors now=299
+[LocalSearch] highest color class removed; colors now=299
+  [Rounding] feasible=True | used=299 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=18 time_left=3688.4s
+  [Round 18 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=19 elapsed=24991.6s time_left=3688.4s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=19 time_left=3677.7s
+[Round 19] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=25002.33s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+  [Rounding] feasible=True | used=297 | conflicts=0
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+[LocalSearch] highest color class removed; colors now=297
+  [Rounding] feasible=True | used=297 | conflicts=0
+  [FixPolicy] sample x-gap min/max over first 10 picks: 1.000/1.000
+  [FixPolicy] y_zero=263 | x_one=5 | x_zero=0 | strong_margin=0.25 | max_fix_per_round=10
+  [FixApply] applying tokens=5 (x fixings only in prefix K)
+  [FixApply] status=ROLLBACK
+[DBG-TL-round] round_id=19 time_left=1328.2s
+  [Round 19 END] UB=297 | K=316 | ceil(zLP)=53 | improved=False | fixed=False
+[DBG-ENTER] round_id=20 elapsed=27351.8s time_left=1328.2s UB=297 K=316
+[DBG] n=1000 m=449449 UB=297 K=316 lazy=True is_big=True lp_main_cap=60.0
+  [LazyEdge] added=100000
+[DBG-TL-round] round_id=20 time_left=1319.2s
+[Round 20] zLP=53.000000 | ceil(zLP)=53 | K=316 | UB=297 | t=27360.82s
+  [Fix] shrink to K=297 infeasible - rollback; keep K=316
+[Time] budget exhausted at after_rounding, UB=297
+[DBG-EXIT] elapsed=28693.8s time_left=-13.8s stop_reason=time_limit
+[Final] UB=297 LB=53 feasible=True zLP≈53.000000
+[Runner] wrote runs -> /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_runs_3098060.csv
+[Runner] wrote summary -> /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_summary_3098060.csv
+[INFO] End   Sun Feb  1 11:41:21 AM CET 2026
+[INFO] WallClockSec=28699
+[INFO] runner.py exit code=0
+-rw------- 1 ta32xoy unijena 484 Feb  1 11:41 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_runs_3098060.csv
+-rw------- 1 ta32xoy unijena 131 Feb  1 11:41 /home/ta32xoy/masterarbeit/results/time_DSJC1000.9_iterlp_seed1_summary_3098060.csv
+[INFO] Tail runs.csv:
+instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
+DSJC1000.9,dimacs,1000,449449,0.8997977977977978,898.898,iterlp2_full,1,28680,smallest_last,prefix_shrink+rounded_support,0.25,10,32,1e-06,full,53,297,244,True,0,28694.641786284745,12,time_limit,0.0,0,done,1769942481,
+[INFO] Tail summary.csv:
+instance,algo,runs,UB_min,UB_mean,runtime_mean_sec,best_time_mean_sec
+DSJC1000.9,iterlp2_full,1,297,297.0,28694.641786284745,0.0

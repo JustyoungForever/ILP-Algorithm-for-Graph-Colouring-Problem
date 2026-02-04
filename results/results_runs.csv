@@ -1,2 +1,2 @@
 instance,family,n,m,density,avg_deg,algo,algo_seed,time_limit_sec,init_heuristic,fix_policy,strong_margin,max_fix_per_round,restarts,perturb_y,ablation,LB,UB,gap,feasible,conflicts,runtime_sec,iters,stop_reason,best_time_sec,best_round,status,last_update_ts,error
-DSJC1000.9,dimacs,1000,449449,0.8997977977977978,898.898,iterlp2_full,4,3600,smallest_last,prefix_shrink+rounded_support,0.25,10,32,1e-06,full,53,297,244,True,0,3643.472326798,6,time_limit,0.0,0,done,1769913344,
+DSJC500.9,dimacs,500,112437,0.9012985971943888,449.748,iterlp2_full,4,600,smallest_last,prefix_shrink+rounded_support,0.25,10,32,1e-06,full,43,170,127,True,0,603.3923892069997,11,time_limit,538.0232676309988,9,done,1770176900,
